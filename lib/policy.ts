@@ -3,7 +3,7 @@ import type { Outcome } from "./scenarios";
 export const STALE_CONFIRMATION_DAYS = 10;
 
 export interface ListingObservation {
-  status: "found" | "not_found" | "incomplete" | "not_checked";
+  status: "found" | "not_found" | "incomplete" | "not_checked" | "baseline_found" | "baseline_absent";
   evidenceId?: string;
 }
 
@@ -11,6 +11,14 @@ export interface ReplyReading {
   outcome: "client_pause" | "placed_elsewhere" | "still_active" | "unclear";
   pausedUntil: string | null;
   replyId: string;
+  replyDate?: string;
+}
+
+export interface CompanyTrend {
+  fromDate: string;
+  fromJobs: number;
+  toDate: string;
+  toJobs: number;
 }
 
 export interface PolicyInput {
@@ -19,6 +27,7 @@ export interface PolicyInput {
   cashDate: string;
   listing: ListingObservation;
   reply: ReplyReading | null;
+  companyTrend?: CompanyTrend | null;
 }
 
 export interface PolicyResult {
@@ -42,7 +51,12 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
     if (p.reply.outcome === "placed_elsewhere") {
       return { outcome: "placed_elsewhere", needsTask: false, considered, missing: [], observation: "Client confirmed the role was filled another way." };
     }
-    return { outcome: "unreviewed", needsTask: false, considered, missing: [], observation: "Client confirmed the role is still active." };
+    const t = p.companyTrend;
+    const confirmed = `Client confirmed${p.reply.replyDate ? ` on ${p.reply.replyDate}` : ""} that this role is still active.`;
+    const observation = t && t.toJobs < t.fromJobs
+      ? `${confirmed} Crustdata shows company-wide open roles fell from ${t.fromJobs} on ${t.fromDate} to ${t.toJobs} on ${t.toDate}. That count covers the whole company and says nothing about this role, so the dated confirmation for this role is used and the fee assumption is kept.`
+      : confirmed;
+    return { outcome: "unreviewed", needsTask: false, considered, missing: [], observation };
   }
   if (p.stage === "offer_accepted") {
     return { outcome: "offer_accepted", needsTask: false, considered, missing: [], observation: "Agency records show an accepted offer." };

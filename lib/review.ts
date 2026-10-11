@@ -3,7 +3,7 @@ import { fetchCompany, fetchListings, titleMatches, type CompanySnapshot, type L
 import { draftCaseNote, ModelOutputError, type CaseNote } from "./llm";
 import { faultEnabled } from "./faults";
 import { newId, stableId } from "./ids";
-import { decideTreatment, type ListingObservation, type ReplyReading } from "./policy";
+import { decideTreatment, type CompanyTrend, type ListingObservation, type ReplyReading } from "./policy";
 import { addDays, calculateScenarios, type MandateTreatment } from "./scenarios";
 import { agencyInput, clients, evidenceFor, getAgency, inputVersion, insertEvidence, mandateInput, mandates, type CfoBindings, type ClientRecord, type MandateRecord } from "./store";
 import { liveCfo, syncScenario, type CfoPort } from "./sync";
@@ -182,6 +182,16 @@ async function stepMatchCompanies(db: Database.Database, run: RunRow, ports: Por
   return out;
 }
 
+function companyTrend(db: Database.Database, agencyId: string, clientId: string): CompanyTrend | null {
+  const row = db.prepare("SELECT payload FROM evidence WHERE agency_id = ? AND client_id = ? AND source_type = 'company_snapshot' AND retired_at IS NULL ORDER BY retrieved_at DESC LIMIT 1").get(agencyId, clientId) as { payload: string } | undefined;
+  if (!row) return null;
+  const pts = (JSON.parse(row.payload) as { timeseries?: CompanySnapshot["timeseries"] }).timeseries ?? [];
+  if (pts.length < 2) return null;
+  const last = pts[pts.length - 1];
+  const prior = pts[Math.max(0, pts.length - 4)];
+  return { fromDate: prior.date, fromJobs: prior.openJobs, toDate: last.date, toJobs: last.openJobs };
+}
+
 function trendText(s: CompanySnapshot): string {
   const pts = s.timeseries;
   if (pts.length < 2) return "";
@@ -195,19 +205,22 @@ async function stepCheckListings(db: Database.Database, run: RunRow, ports: Port
   const byId = new Map(clients(db, run.agency_id).map((c) => [c.id, c]));
   for (const m of mandates(db, run.agency_id)) {
     const c = byId.get(m.client_id)!;
-    if (!m.listing_seen_at) { out[m.id] = "not_checked"; continue; }
     if (c.match_status !== "matched" || !c.company_id) { out[m.id] = "blocked_by_match"; continue; }
+    const firstCheck = !m.listing_seen_at && !db.prepare("SELECT 1 FROM evidence WHERE agency_id = ? AND mandate_id = ? AND source_type = 'listing_check' AND retired_at IS NULL AND json_extract(payload, '$.status') IN ('found', 'baseline_found')").get(run.agency_id, m.id);
     const evId = stableId("ev", run.id, m.id, "listings");
     if (!evidenceExists(db, evId)) {
-      const since = addDays(m.listing_seen_at, -30);
+      const since = addDays(m.listing_seen_at ?? new Date().toISOString().slice(0, 10), -30);
       const snap = await toolSpan("crustdata.job_search", () => ports.fetchListings(c.company_id!, m.role_title, since));
       chargeUsage(db, run, { crustdataCredits: snap.credits ?? snap.listings.length * 0.03 });
       const hit = snap.listings.find((l) => titleMatches(l.title, m.role_title));
-      const status: ListingObservation["status"] = hit ? "found" : snap.complete ? "not_found" : "incomplete";
+      const status: ListingObservation["status"] = !snap.complete && !hit ? "incomplete" : firstCheck ? (hit ? "baseline_found" : "baseline_absent") : hit ? "found" : "not_found";
       const now = new Date().toISOString();
+      const noHistory = "This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet.";
       insertEvidence(db, {
         id: evId, agency_id: run.agency_id, client_id: c.id, mandate_id: m.id, source_type: "listing_check", provenance: "live", source_date: now.slice(0, 10), retrieved_at: now,
-        summary: status === "found" ? `Crustdata still lists "${hit!.title}" (added ${hit!.dateAdded?.slice(0, 10) ?? "unknown"}).`
+        summary: status === "baseline_found" ? `Baseline: Crustdata currently lists "${hit!.title}" (added ${hit!.dateAdded?.slice(0, 10) ?? "unknown"}). ${noHistory}`
+          : status === "baseline_absent" ? `Baseline: Crustdata's complete search found no listing matching "${m.role_title}" at ${c.matched_name} added since ${since}. ${noHistory}`
+          : status === "found" ? `Crustdata still lists "${hit!.title}" (added ${hit!.dateAdded?.slice(0, 10) ?? "unknown"}).`
           : status === "not_found" ? `Crustdata's complete search found no listing matching "${m.role_title}" at ${c.matched_name} since ${since}. A missing listing is an observation, not a confirmed pause.`
           : `Crustdata's listing search for "${m.role_title}" was incomplete, so no conclusion is drawn.`,
         payload: JSON.stringify({ ...snap, status }),
@@ -220,10 +233,10 @@ async function stepCheckListings(db: Database.Database, run: RunRow, ports: Port
 }
 
 export function latestReply(db: Database.Database, caseId: string): ReplyReading | null {
-  const r = db.prepare("SELECT id, interpretation FROM client_reply WHERE case_id = ? AND interpretation IS NOT NULL ORDER BY reply_date DESC, created_at DESC LIMIT 1").get(caseId) as { id: string; interpretation: string } | undefined;
+  const r = db.prepare("SELECT id, interpretation, reply_date FROM client_reply WHERE case_id = ? AND interpretation IS NOT NULL ORDER BY reply_date DESC, created_at DESC LIMIT 1").get(caseId) as { id: string; interpretation: string; reply_date: string } | undefined;
   if (!r) return null;
   const i = JSON.parse(r.interpretation) as { outcome: ReplyReading["outcome"]; paused_until: string | null };
-  return { outcome: i.outcome, pausedUntil: i.paused_until, replyId: r.id };
+  return { outcome: i.outcome, pausedUntil: i.paused_until, replyId: r.id, replyDate: r.reply_date };
 }
 
 function listingObservation(db: Database.Database, run: RunRow, m: MandateRecord): ListingObservation {
@@ -248,7 +261,7 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
     }
     const reply = latestReply(db, caseId);
     const readReplyIds = (db.prepare("SELECT id FROM client_reply WHERE case_id = ? AND interpretation IS NOT NULL AND assessed_at IS NULL").all(caseId) as { id: string }[]).map((r) => r.id);
-    const policy = decideTreatment({ stage: m.stage, lastConfirmedAt: c.last_confirmed_at, cashDate: agency.cash_date, listing: listingObservation(db, run, m), reply });
+    const policy = decideTreatment({ stage: m.stage, lastConfirmedAt: c.last_confirmed_at, cashDate: agency.cash_date, listing: listingObservation(db, run, m), reply, companyTrend: companyTrend(db, run.agency_id, c.id) });
     const ev = evidenceFor(db, run.agency_id, m.id, c.id);
     let note: CaseNote | null = null;
     let missingFactsExtra: string | null = null;

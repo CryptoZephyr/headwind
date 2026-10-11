@@ -381,10 +381,16 @@ describe("decision cases (controlled replay of the 10 evaluation cases)", () => 
     expect(openTasks(db, "M-103")).toBe(1);
   });
 
-  it("7. no earlier listing snapshot: claims no removal", async () => {
-    const { db } = await weekly();
+  it("7. no earlier listing snapshot: records only a current baseline and claims no removal", async () => {
+    const { db, agencyId } = await weekly();
     const step = db.prepare("SELECT output FROM review_step WHERE step = 'check_listings'").get() as { output: string };
-    expect(JSON.parse(step.output)["M-102"]).toBe("not_checked");
+    expect(JSON.parse(step.output)["M-102"]).toBe("baseline_absent");
+    const ev = db.prepare("SELECT summary FROM evidence WHERE mandate_id = 'M-102' AND source_type = 'listing_check'").get() as { summary: string };
+    expect(ev.summary).toContain("no earlier listing history");
+    expect(latest(db, "M-102").missing.join(" ")).not.toContain("listing");
+    enqueueRun(db, agencyId);
+    await drain(db, ports(cfo));
+    expect(db.prepare("SELECT COUNT(*) AS n FROM review_run WHERE status = 'complete'").get()).toEqual({ n: 2 });
     expect(latest(db, "M-102").missing.join(" ")).not.toContain("listing");
   });
 
@@ -398,6 +404,10 @@ describe("decision cases (controlled replay of the 10 evaluation cases)", () => 
     expect(openTasks(db, "M-102")).toBe(0);
     expect((db.prepare("SELECT COUNT(*) AS n FROM evidence WHERE source_type = 'company_snapshot' AND summary LIKE '%50 on 2026-07-01%'").get() as { n: number }).n).toBeGreaterThan(0);
     expect(receipts("Reviewed")).toBe(17000);
+    const support = (db.prepare("SELECT support FROM decision WHERE case_id = ? ORDER BY case_version DESC LIMIT 1").get(caseOf(db, "M-102")) as { support: string }).support;
+    expect(support).toContain("on 2026-10-11");
+    expect(support).toContain("fell from 50 on 2026-07-01 to 10 on 2026-10-01");
+    expect(support).toContain("dated confirmation for this role is used");
   });
 
   it("9. a later reply contradicts the earlier decision: reassesses, keeps history, updates the scenario", async () => {
@@ -430,5 +440,24 @@ describe("decision cases (controlled replay of the 10 evaluation cases)", () => 
     expect(cfo.writes - writesBefore).toBe(1);
     expect(receipts("Reviewed")).toBe(12000);
     expect((db.prepare("SELECT COUNT(*) AS n FROM client_reply WHERE case_id = ?").get(id) as { n: number }).n).toBe(1);
+  });
+});
+
+describe("agent inputs exclude gold labels and expected totals", () => {
+  it("passes agency records and client messages to the model, but no fees, probabilities, totals or expected outcomes", async () => {
+    const cfo = new FakeCfo();
+    const seen: string[] = [];
+    const p = ports(cfo);
+    const spy: Ports = { ...p, draftCaseNote: async (i) => { seen.push(JSON.stringify(i)); return p.draftCaseNote(i); } };
+    const { db, agencyId } = setup();
+    enqueueRun(db, agencyId);
+    await drain(db, spy);
+    const caseId = (db.prepare("SELECT id FROM case_record WHERE mandate_id = 'M-102'").get() as { id: string }).id;
+    await recordClientReply(db, { caseId, replyDate: "2026-10-11", source: "email", body: "We have paused this role until February.", isSimulated: true }, async (i) => { seen.push(JSON.stringify(i)); return pauseReader(i); });
+    expect(seen.length).toBeGreaterThan(1);
+    const all = seen.join("\n");
+    expect(all).toContain("Two candidates at final interview");
+    expect(all).toContain("We have paused this role until February.");
+    for (const banned of [/probab/i, /fee/i, /\d+%/, /17,?000/, /12,?000/, /22,?000/, /8,?000/, /13,?000/, /expected_?outcome/i, /gold/i, /receipts/i, /closing cash/i]) expect(all).not.toMatch(banned);
   });
 });
