@@ -17,8 +17,7 @@ CREATE TABLE IF NOT EXISTS agency (
   receivables_cents INTEGER NOT NULL DEFAULT 0,
   recruiter_pay_cents INTEGER NOT NULL,
   other_expenses_cents INTEGER NOT NULL,
-  cfo_scenario_ref TEXT,
-  cfo_table_ref TEXT,
+  cfo_binding TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE TABLE IF NOT EXISTS client (
@@ -46,6 +45,8 @@ CREATE TABLE IF NOT EXISTS mandate (
   expected_trigger_date TEXT NOT NULL,
   payment_terms_days INTEGER NOT NULL,
   candidate_record TEXT,
+  listing_url TEXT,
+  listing_seen_at TEXT,
   PRIMARY KEY (agency_id, id)
 );
 CREATE TABLE IF NOT EXISTS evidence (
@@ -64,8 +65,10 @@ CREATE TABLE IF NOT EXISTS evidence (
 CREATE TABLE IF NOT EXISTS review_run (
   id TEXT PRIMARY KEY,
   agency_id TEXT NOT NULL REFERENCES agency(id),
+  kind TEXT NOT NULL DEFAULT 'weekly',
   status TEXT NOT NULL,
   step TEXT NOT NULL,
+  available_at TEXT,
   input_version TEXT NOT NULL,
   lease_owner TEXT,
   lease_expires_at TEXT,
@@ -93,6 +96,7 @@ CREATE TABLE IF NOT EXISTS case_record (
   state TEXT NOT NULL,
   outcome TEXT,
   paused_until TEXT,
+  summary TEXT,
   version INTEGER NOT NULL DEFAULT 1,
   updated_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE (agency_id, mandate_id)
@@ -131,6 +135,7 @@ CREATE TABLE IF NOT EXISTS client_reply (
   source TEXT NOT NULL,
   body TEXT NOT NULL,
   is_simulated INTEGER NOT NULL DEFAULT 0,
+  interpretation TEXT,
   content_hash TEXT NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE (case_id, content_hash)
