@@ -63,59 +63,67 @@ export default function ImportPage() {
 
   const ready = Boolean(text.clients && text.mandates && text.finance);
   return (
-    <>
+    <div className="import stack">
+      <p className="eyebrow">Step 1 of 3 · then run a review, then answer questions</p>
       <h1>Import agency data</h1>
-      <p>Upload CSV files exported from your ATS or spreadsheet. Money is in whole currency units (USD), probability is a percentage, dates are YYYY-MM-DD. Nothing is saved until you press Import.</p>
-      <p><button type="button" onClick={useSample}>Fill in the sample files</button></p>
-      {FILES.map((f) => (
-        <fieldset key={f.key}>
-          <legend>{f.label}</legend>
-          <small>Columns: {f.columns}</small>
-          <br />
-          <input type="file" accept=".csv,text/csv" onChange={(e) => readFile(f.key, e.target.files?.[0])} />
-          <br />
-          <textarea rows={4} cols={90} value={text[f.key]} onChange={(e) => { setText((t) => ({ ...t, [f.key]: e.target.value })); setPreview(null); }} placeholder={f.required ? "Required" : "Optional"} />
-        </fieldset>
-      ))}
-      <p>
-        <button type="button" onClick={runPreview} disabled={!ready || status.kind === "busy"}>Check rows</button>{" "}
-        <button type="button" onClick={commit} disabled={!preview || preview.errors.length > 0 || status.kind === "busy"}>Import</button>
-      </p>
-      {status.message && <p role={status.kind === "error" ? "alert" : "status"}>{status.message}{status.kind === "done" && <> <Link href="/">Overview</Link></>}</p>}
+      <p className="muted import-intro">Upload CSV files exported from your ATS or spreadsheet. Money is in whole currency units, probability is a percentage, and dates are YYYY-MM-DD. Nothing is saved until you press Import.</p>
+      <p><button type="button" className="btn btn-text" onClick={useSample}>Fill in the labelled sample files</button></p>
+      <div className="import-files">
+        {FILES.map((f) => (
+          <fieldset key={f.key} className="panel">
+            <legend>{f.label}{!f.required && <span className="meta"> (optional)</span>}</legend>
+            <p className="meta">Columns: <span className="mono">{f.columns}</span></p>
+            <label htmlFor={`file-${f.key}`} className="sr-only">Choose {f.label} file</label>
+            <input id={`file-${f.key}`} type="file" accept=".csv,text/csv" onChange={(e) => readFile(f.key, e.target.files?.[0])} />
+            <label htmlFor={`text-${f.key}`} className="small muted">Or paste the CSV</label>
+            <textarea id={`text-${f.key}`} rows={4} className="mono" value={text[f.key]} onChange={(e) => { setText((t) => ({ ...t, [f.key]: e.target.value })); setPreview(null); }} placeholder={f.required ? "Required" : "Optional"} />
+          </fieldset>
+        ))}
+      </div>
+      <div className="btn-row">
+        <button type="button" className="btn btn-secondary" onClick={runPreview} disabled={!ready || status.kind === "busy"}>Check rows</button>
+        <button type="button" className="btn btn-primary" onClick={commit} disabled={!preview || preview.errors.length > 0 || status.kind === "busy"}>Import</button>
+        {!ready && <span className="meta">Add the client, mandate and finance files to check them.</span>}
+      </div>
+      {status.message && <p className={status.kind === "error" ? "banner banner-error" : "banner"} role={status.kind === "error" ? "alert" : "status"}>{status.message}{status.kind === "done" && <> <Link href="/app">Go to the Overview</Link></>}</p>}
       {preview && (
-        <section>
+        <section className="stack">
           <h2>Preview</h2>
           <p>
             {preview.clients.length} clients, {preview.mandates.length} mandates, {preview.updates.length} updates ready
             {preview.finance ? `, finance for ${preview.finance.agencyName}` : ", finance not readable yet"}.
           </p>
           {preview.errors.length === 0 ? (
-            <p>All rows are valid.</p>
+            <p className="banner">All rows are valid. Press Import to save them.</p>
           ) : (
             <>
-              <p role="alert">{preview.errors.length} row problem(s). Fix them in the boxes above and check again; valid rows are kept.</p>
-              <table>
-                <thead><tr><th>File</th><th>Row</th><th>Field</th><th>Problem</th></tr></thead>
-                <tbody>
-                  {preview.errors.map((e, i) => (
-                    <tr key={i}><td>{e.file}</td><td>{e.row}</td><td>{e.field}</td><td>{e.message}</td></tr>
-                  ))}
-                </tbody>
-              </table>
+              <p role="alert" className="banner banner-error">{preview.errors.length} row problem{preview.errors.length === 1 ? "" : "s"}. Fix them in the boxes above and check again. Your text is kept.</p>
+              <div className="table-wrap">
+                <table className="data">
+                  <thead><tr><th>File</th><th>Row</th><th>Field</th><th>Problem</th></tr></thead>
+                  <tbody>
+                    {preview.errors.map((e, i) => (
+                      <tr key={i}><td>{e.file}</td><td>{e.row}</td><td className="mono">{e.field}</td><td>{e.message}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </>
           )}
           {preview.mandates.length > 0 && (
-            <table>
-              <thead><tr><th>Mandate</th><th>Client</th><th>Role</th><th>Stage</th><th>Fee</th><th>Probability</th><th>Fee date</th></tr></thead>
-              <tbody>
-                {preview.mandates.map((m) => (
-                  <tr key={m.id}><td>{m.id}</td><td>{m.clientDomain}</td><td>{m.roleTitle}</td><td>{m.stage}</td><td>{(m.feeCents / 100).toLocaleString()}</td><td>{m.probabilityBps / 100}%</td><td>{m.expectedTriggerDate}</td></tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="table-wrap">
+              <table className="data">
+                <thead><tr><th>Mandate</th><th>Client</th><th>Role</th><th>Stage</th><th className="num">Fee</th><th className="num">Probability</th><th>Fee date</th></tr></thead>
+                <tbody>
+                  {preview.mandates.map((m) => (
+                    <tr key={m.id}><td className="mono">{m.id}</td><td>{m.clientDomain}</td><td>{m.roleTitle}</td><td>{m.stage}</td><td className="num">{(m.feeCents / 100).toLocaleString()}</td><td className="num">{m.probabilityBps / 100}%</td><td>{m.expectedTriggerDate}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </section>
       )}
-    </>
+    </div>
   );
 }

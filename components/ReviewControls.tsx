@@ -38,21 +38,19 @@ export function ReviewControls({ agencyId, active, retryRunId }: { agencyId: str
   }
 
   return (
-    <div>
-      <button onClick={start} disabled={busy || active}>
-        {active ? "Review running…" : busy ? "Starting…" : "Run weekly review"}
-      </button>
-      {retryRunId && !active && (
-        <button onClick={retry} disabled={busy}>
-          {busy ? "Retrying…" : "Retry unfinished steps"}
+    <div className="review-controls">
+      <div className="btn-row">
+        <button className="btn btn-primary" onClick={start} disabled={busy || active}>
+          {active ? "Review running…" : busy ? "Starting…" : "Run weekly review"}
         </button>
-      )}
-      {active && <p>The worker is processing this review. This page refreshes on its own.</p>}
-      {error && (
-        <p role="alert">
-          {error}
-        </p>
-      )}
+        {retryRunId && !active && (
+          <button className="btn btn-secondary" onClick={retry} disabled={busy}>
+            {busy ? "Retrying…" : "Retry unfinished steps"}
+          </button>
+        )}
+      </div>
+      {active && <p className="meta">This page refreshes on its own while the worker runs.</p>}
+      {error && <p role="alert" className="field-error">{error} Nothing was started. Try again.</p>}
     </div>
   );
 }

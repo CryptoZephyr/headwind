@@ -108,10 +108,10 @@ A weekly review has 5 steps: `match_companies → check_listings → assess → 
 
 ## Try it
 
-1. Open https://54-164-50-152.sslip.io and sign in. The app has one team password, so ask the author for access.
-2. Look at **Forecast**: the Original, Reviewed and Downside totals, each marked as verified in cfo.ai.
-3. Look at **Placements**: each role shows its decision, the dated evidence, the decision history and any client replies.
-4. Open an unknown role's task and paste a client reply. Tick "Simulated reply" for test data. Only that role is reassessed.
+1. Open https://54-164-50-152.sslip.io. The public page has a sample review you can click through without signing in, and **Docs** explains every screen.
+2. Sign in (one team password, so ask the author for access). The Overview shows **Reviewed closing cash**, the Original / Reviewed / Downside gap, and whether each scenario is verified in cfo.ai.
+3. **Roles**: open a role to see its decision, the dated evidence, the decision history and any client replies.
+4. In **This week's questions**, paste a client reply. Tick "simulated" for test data. Only that role is reassessed.
 
 No access? The evidence below and the [evaluation report](eval/REPORT.md) show the same runs in full.
 

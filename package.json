@@ -17,7 +17,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "1.2.20",
+    "@radix-ui/react-dialog": "1.1.23",
     "better-sqlite3": "12.4.1",
+    "lucide-react": "1.50.0",
     "neatlogs": "1.1.28",
     "next": "16.0.10",
     "openai": "6.7.0",
