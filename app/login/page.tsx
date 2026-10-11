@@ -1,5 +1,6 @@
 const MESSAGES: Record<string, string> = {
   wrong: "That password isn't right. Try again.",
+  locked: "Too many wrong passwords. Wait 15 minutes, then try again.",
   unset: "No password is set for this Headwind install. Add HEADWIND_PASSWORD to .env.local and restart the app.",
 };
 

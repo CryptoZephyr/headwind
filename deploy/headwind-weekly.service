@@ -1,0 +1,9 @@
+[Unit]
+Description=Queue Headwind weekly reviews
+
+[Service]
+Type=oneshot
+User=headwind
+WorkingDirectory=/opt/headwind
+EnvironmentFile=/etc/headwind/env
+ExecStart=/usr/bin/npm run weekly

@@ -11,6 +11,7 @@
     "build": "next build",
     "start": "next start",
     "worker": "tsx worker/index.ts",
+    "weekly": "tsx scripts/enqueue-weekly.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."

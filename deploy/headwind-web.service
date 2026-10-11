@@ -1,0 +1,13 @@
+[Unit]
+Description=Headwind web app
+After=network-online.target
+
+[Service]
+User=headwind
+WorkingDirectory=/opt/headwind
+EnvironmentFile=/etc/headwind/env
+ExecStart=/usr/bin/npx next start -H 127.0.0.1 -p 3000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
