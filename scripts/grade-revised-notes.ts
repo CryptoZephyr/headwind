@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import { containsUnsupportedClaim, draftCaseNote, evidenceFallbackNote, ModelOutputError, NOTE_ATTEMPTS, withRequiredFacts, type CaseNote, type EvidenceForModel, type RejectedDraft } from "../lib/llm";
-import { decideTreatment, type PolicyInput, type PolicyResult } from "../lib/policy";
+import { coveredEvidenceIds, decideTreatment, type PolicyInput, type PolicyResult } from "../lib/policy";
 import { modelClient, modelName, startTelemetry, stopTelemetry, workflow } from "../lib/telemetry";
 
 type Cohort = "regenerated_original_v3" | "held_out_informed_fix" | "fresh_round1_informed" | "fresh_round2" | "fresh_round3" | "fresh_round4";
@@ -18,6 +18,12 @@ const ev = (id: string, provenance: string, sourceDate: string, summary: string,
   if (sourceType === "agency_update") remarkIds.add(id);
   return { id, provenance, sourceDate, summary };
 };
+const sourceType = (e: EvidenceForModel): string =>
+  remarkIds.has(e.id) ? "agency_update"
+    : /^Client record:/.test(e.summary) ? "client_confirmation"
+      : /^Crustdata: .*company-wide/.test(e.summary) ? "company_snapshot"
+        : /^(Baseline: )?Crustdata('s)? (complete search|still lists|currently lists|lists|listing search)/.test(e.summary) ? "listing_check"
+          : "other";
 const trend = (fromJobs: number, toJobs: number) => ({ fromDate: "2026-07-01", fromJobs, toDate: "2026-10-01", toJobs });
 const replay = (JSON.parse(fs.readFileSync("eval/results/case-notes-2026-10-11T09-44-13-807Z.json", "utf8")) as { cases: { mandateId: string; input: { evidence: EvidenceForModel[] } }[] }).cases;
 const replayEvidence = (id: string) => replay.find((c) => c.mandateId === id)!.input.evidence;
@@ -191,7 +197,7 @@ for (const c of cases) {
     } else {
       row = await workflow("eval.case_note", async (traceId) => {
         try {
-          const r = await draftCaseNote({ roleTitle: c.roleTitle, clientName: c.clientName, stage: c.stage, missing: policy.missing, requiredFacts: policy.caveats, evidence: c.evidence });
+          const r = await draftCaseNote({ roleTitle: c.roleTitle, clientName: c.clientName, stage: c.stage, missing: policy.missing, requiredFacts: policy.caveats, coveredEvidenceIds: coveredEvidenceIds(c.evidence.map((e) => ({ id: e.id, sourceType: sourceType(e) })), policy.coveredSources), evidence: c.evidence });
           return { caseId: c.id, cohort: c.cohort, kind: c.kind, trial, source: "model" as const, writerCalls: r.calls, rejectedDrafts: r.rejected ?? [], traceId, policy, note: withRequiredFacts(r.note, policy.caveats) };
         } catch (e) {
           if (!(e instanceof ModelOutputError)) throw e;

@@ -21,6 +21,7 @@ export interface CompanyTrend {
   fromJobs: number;
   toDate: string;
   toJobs: number;
+  openingsCount?: number | null;
 }
 
 export interface PolicyInput {
@@ -66,7 +67,14 @@ function declined(t: CompanyTrend | null | undefined): t is CompanyTrend {
 }
 
 function companyDecline(t: CompanyTrend): string {
-  return `Crustdata shows company-wide open roles fell from ${t.fromJobs} on ${t.fromDate} to ${t.toJobs} on ${t.toDate}`;
+  return `Crustdata shows company-wide open roles fell from ${t.fromJobs} on ${t.fromDate} to ${t.toJobs} on ${t.toDate}${t.openingsCount != null ? ` (${t.openingsCount} openings reported when retrieved)` : ""}`;
+}
+
+export function coveredEvidenceIds(evidence: { id: string; sourceType: string }[], sources: string[] = []): string[] {
+  return sources.flatMap((s) => {
+    const ofType = evidence.filter((e) => e.sourceType === s).map((e) => e.id);
+    return s === "agency_update" ? ofType : ofType.slice(-1);
+  });
 }
 
 export function decideTreatment(p: PolicyInput): PolicyResult {

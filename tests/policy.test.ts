@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { decideTreatment } from "../lib/policy";
+import { coveredEvidenceIds, decideTreatment } from "../lib/policy";
+import { withoutRepeats, type EvidenceRecord } from "../lib/store";
 
 describe("decideTreatment", () => {
   it("asks for confirmation when the listing check didn't finish, even with a recent confirmation", () => {
@@ -77,3 +78,42 @@ describe("decideTreatment", () => {
   });
 });
 
+
+describe("code-written coverage", () => {
+  it("states the current openings count alongside a company-wide decline", () => {
+    const r = decideTreatment({ stage: "interviewing", lastConfirmedAt: "2026-09-01", cashDate: "2026-10-11", listing: { status: "not_checked" }, reply: null, companyTrend: { fromDate: "2026-06-01", fromJobs: 48, toDate: "2026-09-01", toJobs: 13, openingsCount: 9 } });
+    expect(r.caveats.join(" ")).toContain("fell from 48 on 2026-06-01 to 13 on 2026-09-01 (9 openings reported when retrieved)");
+    expect(r.coveredSources).toContain("company_snapshot");
+  });
+
+  it("leaves company hiring and incomplete checks to the model when no caveat describes them", () => {
+    const r = decideTreatment({ stage: "interviewing", lastConfirmedAt: "2026-09-01", cashDate: "2026-10-11", listing: { status: "incomplete" }, reply: null, companyTrend: { fromDate: "2026-06-01", fromJobs: 10, toDate: "2026-09-01", toJobs: 15 } });
+    expect(r.coveredSources).toEqual(["client_confirmation"]);
+  });
+
+  it("covers only the latest record of a described source, but every repeated remark", () => {
+    const ev = [
+      { id: "l1", sourceType: "listing_check" }, { id: "l2", sourceType: "listing_check" },
+      { id: "c1", sourceType: "client_confirmation" }, { id: "u1", sourceType: "agency_update" }, { id: "u2", sourceType: "agency_update" }, { id: "s1", sourceType: "company_snapshot" },
+    ];
+    expect(coveredEvidenceIds(ev, ["client_confirmation", "listing_check", "agency_update"])).toEqual(["c1", "l2", "u1", "u2"]);
+  });
+});
+
+describe("withoutRepeats", () => {
+  const rec = (id: string, retrieved: string, summary: string, source_type = "listing_check"): EvidenceRecord => ({ id, agency_id: "a", client_id: "c", mandate_id: "m", source_type, provenance: "live", source_date: retrieved.slice(0, 10), retrieved_at: retrieved, summary, payload: "{}", complete: 1 });
+  it("collapses identical checks whose search window moved, keeping the newest", () => {
+    const out = withoutRepeats([
+      rec("w1", "2026-10-11T07:00:00Z", "Crustdata's complete search still finds no listing matching \"X\" at Y added since 2026-09-11. The role hasn't been seen listed since the first check on 2026-10-04."),
+      rec("w2", "2026-10-18T07:00:00Z", "Crustdata's complete search still finds no listing matching \"X\" at Y added since 2026-09-18. The role hasn't been seen listed since the first check on 2026-10-04."),
+    ]);
+    expect(out.map((e) => e.id)).toEqual(["w2"]);
+  });
+  it("keeps checks with different results", () => {
+    const out = withoutRepeats([
+      rec("f1", "2026-10-04T07:00:00Z", "Crustdata still lists \"X\" (added 2026-09-20)."),
+      rec("n1", "2026-10-11T07:00:00Z", "Crustdata's complete search found no listing matching \"X\" at Y added since 2026-08-21. A missing listing is an observation, not a confirmed pause."),
+    ]);
+    expect(out.map((e) => e.id)).toEqual(["f1", "n1"]);
+  });
+});

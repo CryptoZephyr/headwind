@@ -118,7 +118,7 @@ export async function draftCaseNote(input: {
     "Write a short neutral summary of what the evidence shows and one question the account manager should ask the client.",
     "Company-level hiring numbers and a missing public listing are observations only. They never prove a specific role was paused, cancelled or filled, so don't draw conclusions about the role from them.",
     "Make the question a neutral one about the role's current status, without listing possible outcomes.",
-    "Code adds the facts about client confirmation age, listing checks, company-wide hiring and reported remarks after your summary, so don't write about them. Describe only the evidence you are given.",
+    "Code adds sentences after your summary about records you are not shown. Describe only the evidence you are given.",
     "Open questions are for your question only; don't restate them in the summary.",
     "Only cite evidence IDs from the list.",
     'Shape: {"summary": string, "question": string, "evidence_ids": string[]}',

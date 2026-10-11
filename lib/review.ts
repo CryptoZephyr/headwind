@@ -3,7 +3,7 @@ import { fetchCompany, fetchListings, titleMatches, type CompanySnapshot, type L
 import { draftCaseNote, ModelOutputError, evidenceFallbackNote, NOTE_ATTEMPTS, withRequiredFacts, type CaseNote } from "./llm";
 import { faultEnabled } from "./faults";
 import { newId, stableId } from "./ids";
-import { decideTreatment, type CompanyTrend, type ListingObservation, type ReplyReading } from "./policy";
+import { coveredEvidenceIds as coveredIds, decideTreatment, type CompanyTrend, type ListingObservation, type ReplyReading } from "./policy";
 import { addDays, calculateScenarios, type MandateTreatment } from "./scenarios";
 import { agencyInput, clients, evidenceFor, getAgency, inputVersion, insertEvidence, mandateInput, mandates, type CfoBindings, type ClientRecord, type MandateRecord } from "./store";
 import { liveCfo, syncScenario, type CfoPort } from "./sync";
@@ -185,11 +185,12 @@ async function stepMatchCompanies(db: Database.Database, run: RunRow, ports: Por
 function companyTrend(db: Database.Database, agencyId: string, clientId: string): CompanyTrend | null {
   const row = db.prepare("SELECT payload, source_date FROM evidence WHERE agency_id = ? AND client_id = ? AND source_type = 'company_snapshot' AND retired_at IS NULL ORDER BY retrieved_at DESC LIMIT 1").get(agencyId, clientId) as { payload: string; source_date: string | null } | undefined;
   if (!row) return null;
-  const pts = completeMonths((JSON.parse(row.payload) as { timeseries?: CompanySnapshot["timeseries"] }).timeseries ?? [], row.source_date ?? new Date().toISOString().slice(0, 10));
+  const snap = JSON.parse(row.payload) as { timeseries?: CompanySnapshot["timeseries"]; openingsCount?: number | null };
+  const pts = completeMonths(snap.timeseries ?? [], row.source_date ?? new Date().toISOString().slice(0, 10));
   if (pts.length < 2) return null;
   const last = pts[pts.length - 1];
   const prior = pts[Math.max(0, pts.length - 4)];
-  return { fromDate: prior.date, fromJobs: prior.openJobs, toDate: last.date, toJobs: last.openJobs };
+  return { fromDate: prior.date, fromJobs: prior.openJobs, toDate: last.date, toJobs: last.openJobs, openingsCount: snap.openingsCount ?? null };
 }
 
 function completeMonths(pts: CompanySnapshot["timeseries"], asOf: string): CompanySnapshot["timeseries"] {
@@ -280,7 +281,7 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
     let missingFactsExtra: string | null = null;
     if (policy.needsTask) {
       const evidenceInput = ev.map((e) => ({ id: e.id, provenance: e.provenance, sourceDate: e.source_date, summary: e.summary }));
-      const coveredEvidenceIds = ev.filter((e) => policy.coveredSources?.includes(e.source_type)).map((e) => e.id);
+      const coveredEvidenceIds = coveredIds(ev.map((e) => ({ id: e.id, sourceType: e.source_type })), policy.coveredSources);
       const fallback = () => evidenceFallbackNote({ observation: policy.observation, caveats: policy.caveats, evidence: evidenceInput, question: `Is the ${m.role_title} role at ${c.name} still open, and is the expected start date still ${m.expected_trigger_date}?` });
       try {
         if (coveredEvidenceIds.length === ev.length) throw new NothingLeftToDescribe();

@@ -159,7 +159,7 @@ export function evidenceFor(db: Database.Database, agencyId: string, mandateId: 
 export function withoutRepeats(evidence: EvidenceRecord[]): EvidenceRecord[] {
   const latest = new Map<string, EvidenceRecord>();
   for (const e of evidence) {
-    const key = e.source_type === "company_snapshot" ? `company|${e.client_id}` : e.source_type === "listing_check" ? `listing|${e.mandate_id}|${e.summary}` : e.id;
+    const key = e.source_type === "company_snapshot" ? `company|${e.client_id}` : e.source_type === "listing_check" ? `listing|${e.mandate_id}|${e.summary.replace(/added since \d{4}-\d{2}-\d{2}/g, "added since")}` : e.id;
     const seen = latest.get(key);
     if (!seen || e.retrieved_at > seen.retrieved_at) latest.set(key, e);
   }
