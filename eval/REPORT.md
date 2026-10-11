@@ -392,6 +392,40 @@ Unsupported claims and caveat completeness are counted separately:
 - Company growth has no code-written caveat, so a note can still tie a rising company count to the role (F4 #3).
 - This is a controlled test. The new caveat hasn't run in a live review or been deployed yet.
 
+## A10. Listing caveats name the search window (Devin Review finding on PR #4)
+
+**What changed**
+- **The search window is now in the caveat.** Crustdata's listing check only searches listings added after a cutoff, normally 30 days before the check, or 30 days before the last sighting. A role posted before that cutoff can still be live. The never-seen and disappeared caveats used to say "no matching public listing" without the cutoff. Now they say, for example, "Crustdata on 2026-10-11 still finds no matching public listing for this role among listings added since 2026-09-11, and it hasn't been seen listed at any check." The observation-only sentence is unchanged.
+- **The cutoff is saved with each listing check** (`payload.since`). For checks saved before this change, it's read from the evidence summary, which always included it. If neither has it, the caveat leaves the window out rather than guessing one.
+- Listing states, open questions and the forecast are unchanged.
+- 1 new unit assertion for the disappeared-listing wording and 1 engine assertion that the saved case note carries the saved cutoff (92 tests in total).
+- The grading script gives each case the cutoff from its own listing evidence, as the worker does. Cases with no search-window listing evidence (M-102 replay, F5, K2) keep the unqualified line.
+
+**Full regrade** (same judge `claude-sonnet-4.6`, rubric, labels and cases as A9; writer nova-micro, temperature 0; artifact `eval/results/revised-note-grading-2026-10-11T17-53-09-750Z.json`; 95 of 97 rows have a neatlogs trace ID, the other 2 are code-only notes). L1-L3 were graded once before in A9 but shaped no fix, so they stay untouched; they are no longer unseen.
+
+| Group | Notes | Unsupported outcome claim (judge) | Company data used as role proof | Caveats complete (judge) | Required caveats present (code check) | Passed all |
+|---|---|---|---|---|---|---|
+| Redrawn originals | 20 | 0 / 20 | 0 / 20 | 20 / 20 | 20 / 20 | 20 / 20 |
+| H1-H3 (shaped earlier fixes) | 11 | 0 / 11 | 0 / 11 | 11 / 11 | 11 / 11 | 11 / 11 |
+| F1-F5 (shaped earlier fixes) | 21 | 0 / 21 | 1 / 21 | 21 / 21 | 21 / 21 | 20 / 21 |
+| G1-G3 (shaped A7) | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| K1-K3 (shaped A9) | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| L1-L3 (untouched, second grading) | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| All | 97 | 0 / 97 | 1 / 97 | 97 / 97 | 97 / 97 | 96 / 97 |
+
+- **The qualified caveat** appears in all 60 notes whose case has a search-window listing check (M-103, H1, F1, F3, F4, G1, G2, K1, L1-L3).
+- **Writer:** 95 model notes used 104 calls. 9 of 10 M-102 notes miscopied one evidence ID on the first draft (`…afd9` → `…af9`), the same slip as in A9's stopped run. In every case the retry, which now lists the valid IDs, fixed it on the second call. Final notes cite only real IDs (97 of 97), and none fell back to code-written text. The 9 rejections were all for the bad ID, none for claim or question checks.
+- **Validator probes:** unchanged. 9 of 9 unsupported sentences are flagged and 0 of 8 cautious ones, and the judge agrees on all 17.
+
+**Manual inspection**
+- **F4 #2, the only failure (company data used as role proof):** the note opens "Meridian Bio has 25 open roles company-wide, with a slight decrease from 10 to 25 roles", which gets the direction wrong and frames the company count as evidence about the role. I agree with the judge. It's the same weakness as F4 #3 in A9, on a different trial. Company growth still has no code-written caveat.
+- **Dates:** every "first check on …" date in the notes matches the evidence: L2 (5 notes) says 2026-10-11, and L3 #1 says 2026-10-04. The A9 K1 slip (search-window start written as the first check) didn't recur, but nothing in code prevents it.
+
+**Remaining limits**
+- Same as A9: repeated caveats, one judge model with run-to-run variance, no code check on dates, only 3 untouched cases, a fixed outcome-word list, one writer model, and no code-written caveat for company growth (F4).
+- nova-micro miscopies the long M-102 evidence ID about 9 times in 10. The retry catches it, but it costs an extra call each time.
+- This is a controlled test. Neither caveat change has run in a live review or been deployed yet.
+
 # Part B: Completed live reviews
 
 ## B1. One complete weekly review (live Crustdata, live cfo.ai)
@@ -565,3 +599,4 @@ Not validated: price, willingness to pay, adoption, Crustdata's paid credit pric
    - Startup is the lowest plan whose listed features cover Headwind, but Headwind hasn't run on it.
    - Usage limits on Startup are unverified.
    - Headwind's $300 price, adoption, Crustdata's paid credit price and neatlogs pricing are all unverified.
+10. **Listing checks cover a window, not all history:** each check searches listings added in about the last 30 days. A role posted before that can be live but unseen. Caveats now name the window (A10), and a missing listing is still never treated as an outcome.
