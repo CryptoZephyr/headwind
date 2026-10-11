@@ -150,6 +150,6 @@ export function inputVersion(db: Database.Database, agencyId: string): string {
   const a = getAgency(db, agencyId);
   const ms = mandates(db, agencyId);
   const cs = clients(db, agencyId).map((c) => ({ ...c, match_status: undefined, company_id: undefined, matched_name: undefined }));
-  const { cfo_binding: _binding, ...agencyFields } = a;
+  const agencyFields = { ...a, cfo_binding: undefined };
   return sha256({ agencyFields, ms, cs }).slice(0, 16);
 }
