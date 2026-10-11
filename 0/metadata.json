@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4M8H5SX7TES07A58DJEH25Z",
+  "session_id": "a6dffb0c-7df6-4053-a4cf-5d25fe156474",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T01:16:42.870299434Z",
+  "branch": "devin/1791680363-review-build",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "app/api/import/commit/route.ts",
+    "app/api/import/preview/route.ts",
+    "app/api/import/sample/route.ts",
+    "app/api/replies/route.ts",
+    "app/api/reviews/route.ts",
+    "app/import/page.tsx",
+    "app/layout.tsx",
+    "app/page.tsx",
+    "components/LoadSample.tsx",
+    "components/ReplyForm.tsx",
+    "components/ReviewControls.tsx",
+    "lib/format.ts",
+    "lib/http.ts",
+    "lib/views.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-4.6",
+  "turn_id": "b1ae8918b303",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 31,
+    "cache_creation_tokens": 59450,
+    "cache_read_tokens": 1464969,
+    "output_tokens": 7717,
+    "api_call_count": 29
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-11T01:16:42.853036406Z",
+    "agent_lines": 642,
+    "agent_removed": 0,
+    "human_added": 11,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 653,
+    "total_lines_changed": 654,
+    "agent_percentage": 98.1651376146789,
+    "metric_version": 2
+  }
+}

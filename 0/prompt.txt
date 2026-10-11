@@ -1,0 +1,16 @@
+Fix a real failure in Headwind's case-note step. Keep the change small and in the existing style (no new dependencies, no comments explaining the diff).
+
+What happened: the first live weekly review (worker run run_7cd5b87fd4544ef1, neatlogs trace 2f6c2b730878272bd73d83e0268405f3) failed at step "assess" with
+"The model's summary claimed an outcome the evidence doesn't confirm." and the run went to retrying. Retrying re-spends model budget and after 3 attempts the review ends partial, so one wordy model summary blocks the owner's whole weekly forecast.
+
+Root cause, from re-running draftCaseNote (lib/llm.ts) on the same evidence with nova-micro:
+1. The CLAIM_WORDS guard is a single regex over the whole summary. nova-micro writes hedged sentences such as "it does not confirm whether the role was paused" or repeats the evidence text "a missing listing is an observation, not a confirmed pause". Those are not claims, but the regex rejects them. Meanwhile "pause" alone isn't matched, so the guard is both too strict and too loose.
+2. A rejected note throws out of stepAssess (lib/review.ts) and fails the whole step, even though lib/policy.ts already produced a deterministic observation and the task question could be written without the model.
+3. The rejected model text is thrown away, so nobody can see what the model actually wrote.
+
+Required behaviour:
+- In lib/llm.ts, judge claims per sentence: a sentence is an unsupported claim only if it contains an outcome word (pause/paused/pausing, freeze/frozen, cancel/cancelled/canceled, on hold, filled, lost) AND does not contain a hedge or negation (not, no, unconfirmed, whether, if, may, might, could, unclear, observation, proof, confirm). Keep the existing exemption when agency-supplied evidence itself states the outcome. Export the checker so it can be unit-tested.
+- In draftCaseNote, if the first answer is rejected for a claim, unknown evidence IDs, or bad JSON, ask once more and include the rejection reason in the user message. At most 2 model calls per note. If the second answer is also rejected, throw ModelOutputError carrying the last raw text.
+- In lib/review.ts stepAssess, catch ModelOutputError from draftCaseNote and fall back to a deterministic note: summary = policy.observation, question = `Is the ${role title} role at ${client name} still open, and is the expected start date still ${expected_trigger_date}?`, evidence_ids = all evidence IDs for the case. The decision and task are still written. Record that the fallback was used and the rejected raw text in the decision's missing_facts JSON (e.g. append an entry "Model note rejected: <reason>") so it stays visible. Charge model usage for every model call actually made (the draft function should report how many calls it made). Non-ModelOutputError errors (network, auth) must still propagate so the run retries.
+- Add tests: a unit test for the sentence checker (hedged sentences pass, "The role was paused last week." is rejected, exemption works), and an engine test in tests/engine.test.ts where draftCaseNote always throws ModelOutputError: the run must complete, both unknown cases get tasks, and the decisions' missing_facts mention the rejection.
+- Run `npx tsc --noEmit` and `npx vitest run` and make sure both pass. Do not modify existing tests' expectations. Do not commit; leave changes in the working tree.

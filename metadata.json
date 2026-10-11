@@ -1,0 +1,39 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4M8H5SX7TES07A58DJEH25Z",
+  "strategy": "manual-commit",
+  "branch": "devin/1791680363-review-build",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "app/api/import/commit/route.ts",
+    "app/api/import/preview/route.ts",
+    "app/api/import/sample/route.ts",
+    "app/api/replies/route.ts",
+    "app/api/reviews/route.ts",
+    "app/import/page.tsx",
+    "app/layout.tsx",
+    "app/page.tsx",
+    "components/LoadSample.tsx",
+    "components/ReplyForm.tsx",
+    "components/ReviewControls.tsx",
+    "lib/format.ts",
+    "lib/http.ts",
+    "lib/views.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 31,
+    "cache_creation_tokens": 59450,
+    "cache_read_tokens": 1464969,
+    "output_tokens": 7717,
+    "api_call_count": 29
+  }
+}
