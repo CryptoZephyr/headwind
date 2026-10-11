@@ -234,4 +234,20 @@ describe("review engine", () => {
     await expect(processRun(db, run, "w1", stealing)).rejects.toBeInstanceOf(LeaseLostError);
     expect(cfo.writes).toBe(0);
   });
+
+  it("a reply reassesses only its own case", async () => {
+    const { db, agencyId } = setup();
+    enqueueRun(db, agencyId);
+    await drain(db, ports(cfo));
+    const before = db.prepare("SELECT mandate_id, version FROM case_record ORDER BY mandate_id").all();
+    const tasksBefore = db.prepare("SELECT id, status FROM task WHERE case_id NOT IN (SELECT id FROM case_record WHERE mandate_id = 'M-102') ORDER BY id").all();
+    const caseId = (db.prepare("SELECT id FROM case_record WHERE mandate_id = 'M-102'").get() as { id: string }).id;
+    const r = await recordClientReply(db, { caseId, replyDate: "2026-10-12", source: "Client email (simulated)", body: read("reply-M-102.txt"), isSimulated: true }, pauseReader);
+    await drain(db, ports(cfo));
+    expect(getRun(db, r.runId!).status).toBe("complete");
+    expect(db.prepare("SELECT mandate_id, version FROM case_record ORDER BY mandate_id").all()).toEqual(
+      (before as { mandate_id: string; version: number }[]).map((c) => (c.mandate_id === "M-102" ? { ...c, version: c.version + 1 } : c))
+    );
+    expect(db.prepare("SELECT id, status FROM task WHERE case_id NOT IN (SELECT id FROM case_record WHERE mandate_id = 'M-102') ORDER BY id").all()).toEqual(tasksBefore);
+  });
 });

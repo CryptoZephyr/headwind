@@ -231,6 +231,10 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
     db.prepare("INSERT OR IGNORE INTO case_record (id, agency_id, mandate_id, observation, state, version) VALUES (?,?,?,?,?,0)").run(caseId, run.agency_id, m.id, "", "open");
     const already = db.prepare("SELECT 1 FROM decision WHERE case_id = ? AND run_id = ?").get(caseId, run.id);
     if (already) { out[m.id] = "kept"; continue; }
+    if (run.kind === "reassess" && !db.prepare("SELECT 1 FROM client_reply WHERE case_id = ? AND interpretation IS NOT NULL AND assessed_at IS NULL").get(caseId)) {
+      out[m.id] = "no new reply";
+      continue;
+    }
     const reply = latestReply(db, caseId);
     const policy = decideTreatment({ stage: m.stage, lastConfirmedAt: c.last_confirmed_at, cashDate: agency.cash_date, listing: listingObservation(db, run, m), reply });
     const ev = evidenceFor(db, run.agency_id, m.id, c.id);
@@ -265,6 +269,7 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
         JSON.stringify(note?.evidence_ids ?? ev.map((e) => e.id)), assumptionChange(policy.outcome, reply?.pausedUntil ?? null)
       );
       db.prepare("UPDATE task SET status = 'superseded' WHERE case_id = ? AND status = 'open' AND case_version < ?").run(caseId, version);
+      db.prepare("UPDATE client_reply SET assessed_at = datetime('now') WHERE case_id = ? AND interpretation IS NOT NULL AND assessed_at IS NULL").run(caseId);
       if (policy.needsTask && note) {
         db.prepare("INSERT OR IGNORE INTO task (id, case_id, case_version, question, assignee, priority_reason, due_date) VALUES (?,?,?,?,?,?,?)").run(
           stableId("task", caseId, version), caseId, version, note.question, c.account_manager, `USD ${(m.fee_cents / 100).toLocaleString("en-US")} fee at ${m.probability_bps / 100}% is unconfirmed: ${policy.missing.join(" ")}`, addDays(agency.cash_date, 3)

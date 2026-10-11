@@ -165,9 +165,11 @@ CREATE TABLE IF NOT EXISTS external_operation (
 
 let instance: Database.Database | null = null;
 
-function addColumn(db: Database.Database, table: string, column: string, type: string): void {
+function addColumn(db: Database.Database, table: string, column: string, type: string): boolean {
   const cols = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
-  if (!cols.some((c) => c.name === column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+  if (cols.some((c) => c.name === column)) return false;
+  db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+  return true;
 }
 
 export function dbPath(): string {
@@ -183,6 +185,7 @@ export function getDb(): Database.Database {
   instance.exec(SCHEMA);
   addColumn(instance, "client", "retired_at", "TEXT");
   addColumn(instance, "evidence", "retired_at", "TEXT");
+  if (addColumn(instance, "client_reply", "assessed_at", "TEXT")) instance.exec("UPDATE client_reply SET assessed_at = created_at");
   return instance;
 }
 
