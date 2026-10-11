@@ -1,6 +1,6 @@
 import type Database from "better-sqlite3";
 import { fetchCompany, fetchListings, titleMatches, type CompanySnapshot, type ListingSnapshot } from "./crustdata";
-import { draftCaseNote, type CaseNote } from "./llm";
+import { draftCaseNote, ModelOutputError, type CaseNote } from "./llm";
 import { faultEnabled } from "./faults";
 import { newId, stableId } from "./ids";
 import { decideTreatment, type ListingObservation, type ReplyReading } from "./policy";
@@ -196,11 +196,23 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
     const policy = decideTreatment({ stage: m.stage, lastConfirmedAt: c.last_confirmed_at, cashDate: agency.cash_date, listing: listingObservation(db, run, m), reply });
     const ev = evidenceFor(db, run.agency_id, m.id, c.id);
     let note: CaseNote | null = null;
+    let missingFactsExtra: string | null = null;
     if (policy.needsTask) {
-      chargeUsage(db, run, { modelCalls: 1 });
-      const r = await ports.draftCaseNote({ roleTitle: m.role_title, clientName: c.name, stage: m.stage, missing: policy.missing, evidence: ev.map((e) => ({ id: e.id, provenance: e.provenance, sourceDate: e.source_date, summary: e.summary })) });
-      chargeUsage(db, run, { modelTokens: r.tokens });
-      note = r.note;
+      const evidenceInput = ev.map((e) => ({ id: e.id, provenance: e.provenance, sourceDate: e.source_date, summary: e.summary }));
+      try {
+        const r = await ports.draftCaseNote({ roleTitle: m.role_title, clientName: c.name, stage: m.stage, missing: policy.missing, evidence: evidenceInput });
+        chargeUsage(db, run, { modelCalls: r.calls, modelTokens: r.tokens });
+        note = r.note;
+      } catch (e) {
+        if (!(e instanceof ModelOutputError)) throw e;
+        chargeUsage(db, run, { modelCalls: 2 });
+        missingFactsExtra = `Model note rejected: ${e.message} Model wrote: ${e.raw.slice(0, 300)}`;
+        note = {
+          summary: policy.observation,
+          question: `Is the ${m.role_title} role at ${c.name} still open, and is the expected start date still ${m.expected_trigger_date}?`,
+          evidence_ids: ev.map((e) => e.id),
+        };
+      }
     }
     const prev = db.prepare("SELECT version FROM case_record WHERE id = ?").get(caseId) as { version: number };
     const version = prev.version + 1;
@@ -208,8 +220,9 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
       db.prepare("UPDATE case_record SET observation = ?, state = ?, outcome = ?, paused_until = ?, summary = ?, version = ?, updated_at = datetime('now') WHERE id = ?").run(
         policy.observation, policy.needsTask ? "awaiting_confirmation" : "resolved", policy.outcome, reply?.pausedUntil ?? null, note?.summary ?? policy.observation, version, caseId
       );
+      const missingFacts = missingFactsExtra ? [...policy.missing, missingFactsExtra] : policy.missing;
       db.prepare("INSERT INTO decision (id, case_id, run_id, case_version, outcomes_considered, selected_outcome, support, missing_facts, evidence_ids, assumption_change) VALUES (?,?,?,?,?,?,?,?,?,?)").run(
-        stableId("dec", caseId, version), caseId, run.id, version, JSON.stringify(policy.considered), policy.outcome, note?.summary ?? policy.observation, JSON.stringify(policy.missing),
+        stableId("dec", caseId, version), caseId, run.id, version, JSON.stringify(policy.considered), policy.outcome, note?.summary ?? policy.observation, JSON.stringify(missingFacts),
         JSON.stringify(note?.evidence_ids ?? ev.map((e) => e.id)), assumptionChange(policy.outcome, reply?.pausedUntil ?? null)
       );
       db.prepare("UPDATE task SET status = 'superseded' WHERE case_id = ? AND status = 'open' AND case_version < ?").run(caseId, version);

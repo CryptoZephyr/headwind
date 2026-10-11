@@ -5,6 +5,7 @@ import { CfoError, type CashInputs, type CfoBinding, type CfoTableRead } from ".
 import { closeDb, getDb } from "../lib/db";
 import { previewImport } from "../lib/importer";
 import { recordClientReply, type ReplyReader } from "../lib/reply";
+import { ModelOutputError } from "../lib/llm";
 import { claimRun, enqueueRun, getRun, processRun, SimulatedCrash, type Ports } from "../lib/review";
 import { commitImport } from "../lib/store";
 
@@ -39,7 +40,7 @@ function ports(cfo: FakeCfo): Ports {
   return {
     fetchCompany: async (domain) => ({ candidates: [{ companyId: `co-${domain}`, name: domain, primaryDomain: domain, confidence: 1 }], openingsCount: 5, recentTitles: [], timeseries: [], raw: {}, credits: 2 }),
     fetchListings: async () => ({ listings: [], totalCount: 0, complete: true, filters: {}, credits: 0 }),
-    draftCaseNote: async (i) => ({ note: { summary: `Needs confirmation: ${i.missing.join(" ")}`, question: `Is the ${i.roleTitle} role still open?`, evidence_ids: [i.evidence[0].id] }, tokens: 10 }),
+    draftCaseNote: async (i) => ({ note: { summary: `Needs confirmation: ${i.missing.join(" ")}`, question: `Is the ${i.roleTitle} role still open?`, evidence_ids: [i.evidence[0].id] }, tokens: 10, calls: 1 }),
     cfo,
   };
 }
@@ -128,6 +129,23 @@ describe("review engine", () => {
     const ops = db.prepare("SELECT status, reconciliation FROM external_operation ORDER BY id").all() as { status: string; reconciliation: string }[];
     expect(ops.every((o) => o.status === "verified")).toBe(true);
     expect(ops.some((o) => o.reconciliation.includes("not resent"))).toBe(true);
+  });
+
+  it("falls back to deterministic note when draftCaseNote always throws ModelOutputError", async () => {
+    const { db, agencyId } = setup();
+    const rejectedText = "The role was paused last week.";
+    const failingPorts: Ports = {
+      ...ports(cfo),
+      draftCaseNote: async () => { throw new ModelOutputError("The model's summary claimed an outcome the evidence doesn't confirm.", rejectedText); },
+    };
+    const runId = enqueueRun(db, agencyId);
+    await drain(db, failingPorts);
+    expect(getRun(db, runId).status).toBe("complete");
+    const tasks = db.prepare("SELECT COUNT(*) AS n FROM task WHERE status = 'open'").get() as { n: number };
+    expect(tasks.n).toBe(2);
+    const decisions = db.prepare("SELECT missing_facts FROM decision").all() as { missing_facts: string }[];
+    const withRejection = decisions.filter((d) => d.missing_facts.includes("Model note rejected:"));
+    expect(withRejection.length).toBeGreaterThanOrEqual(2);
   });
 
   it("blocks ambiguous company matches and gives up after bounded retries", async () => {

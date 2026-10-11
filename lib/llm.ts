@@ -8,7 +8,14 @@ export interface EvidenceForModel {
   summary: string;
 }
 
-const CLAIM_WORDS = /\b(paused|frozen|freeze|cancell?ed|on hold|lost|filled)\b/i;
+const OUTCOME_WORDS = /\b(pause[sd]?|pausing|freeze|frozen|cancel(?:led|ed)|on hold|filled|lost)\b/i;
+const HEDGE_WORDS = /\b(not|no|unconfirmed|whether|if\b|may\b|might|could|unclear|observation|proof|confirm)\b/i;
+
+export function containsUnsupportedClaim(text: string, agencySuppliedStates: boolean): boolean {
+  if (agencySuppliedStates) return false;
+  const sentences = text.match(/[^.!?]*[.!?]*/g) ?? [text];
+  return sentences.some((s) => OUTCOME_WORDS.test(s) && !HEDGE_WORDS.test(s));
+}
 
 async function askJson<T>(system: string, user: string, schema: z.ZodType<T>): Promise<{ value: T; tokens: number }> {
   const res = await modelClient().chat.completions.create({
@@ -55,7 +62,7 @@ export async function draftCaseNote(input: {
   stage: string;
   missing: string[];
   evidence: EvidenceForModel[];
-}): Promise<{ note: CaseNote; tokens: number }> {
+}): Promise<{ note: CaseNote; tokens: number; calls: number }> {
   const system = [
     "You help a recruitment agency owner review placement fees in a cash forecast.",
     "Write a short neutral summary of what the evidence shows and one question the account manager should ask the client.",
@@ -63,16 +70,33 @@ export async function draftCaseNote(input: {
     "Only cite evidence IDs from the list.",
     'Shape: {"summary": string, "question": string, "evidence_ids": string[]}',
   ].join("\n");
-  const user = JSON.stringify({ role: input.roleTitle, client: input.clientName, stage: input.stage, open_questions: input.missing, evidence: input.evidence });
-  const { value, tokens } = await askJson(system, user, CaseNoteSchema);
   const allowed = new Set(input.evidence.map((e) => e.id));
-  const unknownIds = value.evidence_ids.filter((id) => !allowed.has(id));
-  if (unknownIds.length) throw new ModelOutputError(`The model cited evidence that doesn't exist: ${unknownIds.join(", ")}`, JSON.stringify(value));
-  const hasClientConfirmation = input.evidence.some((e) => e.provenance === "agency_supplied" && CLAIM_WORDS.test(e.summary));
-  if (!hasClientConfirmation && CLAIM_WORDS.test(value.summary)) {
-    throw new ModelOutputError("The model's summary claimed an outcome the evidence doesn't confirm.", value.summary);
+  const agencySuppliedStates = input.evidence.some((e) => e.provenance === "agency_supplied" && OUTCOME_WORDS.test(e.summary));
+
+  function validate(value: CaseNote): string | null {
+    const unknownIds = value.evidence_ids.filter((id) => !allowed.has(id));
+    if (unknownIds.length) return `The model cited evidence that doesn't exist: ${unknownIds.join(", ")}`;
+    if (containsUnsupportedClaim(value.summary, agencySuppliedStates)) return "The model's summary claimed an outcome the evidence doesn't confirm.";
+    return null;
   }
-  return { note: value, tokens };
+
+  const baseUser = JSON.stringify({ role: input.roleTitle, client: input.clientName, stage: input.stage, open_questions: input.missing, evidence: input.evidence });
+  let tokens = 0;
+  let rejection: ModelOutputError | null = null;
+  for (let calls = 1; calls <= 2; calls++) {
+    const user: string = rejection ? `${baseUser}\n\nYour previous answer was rejected: ${rejection.message} Answer again.` : baseUser;
+    try {
+      const r: { value: CaseNote; tokens: number } = await askJson(system, user, CaseNoteSchema);
+      tokens += r.tokens;
+      const problem = validate(r.value);
+      if (!problem) return { note: r.value, tokens, calls };
+      rejection = new ModelOutputError(problem, JSON.stringify(r.value));
+    } catch (e) {
+      if (!(e instanceof ModelOutputError)) throw e;
+      rejection = e;
+    }
+  }
+  throw rejection!;
 }
 
 const ReplySchema = z.object({
