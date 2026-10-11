@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { publicUrl, SESSION_COOKIE, sameText, sessionToken } from "@/lib/auth";
+import { getDb } from "@/lib/db";
 import { clearFailures, clientKey, isLockedOut, recordFailure } from "@/lib/login-limit";
 
 export const runtime = "nodejs";
@@ -11,13 +12,14 @@ export async function POST(req: Request) {
   const given = String(form.get("password") ?? "");
   const back = (error: string) => NextResponse.redirect(publicUrl(req, `/login?error=${error}`), 303);
   if (!password) return back("unset");
+  const db = getDb();
   const key = clientKey(req);
-  if (isLockedOut(key)) return back("locked");
+  if (isLockedOut(db, key)) return back("locked");
   if (!sameText(await sessionToken(given), await sessionToken(password))) {
-    recordFailure(key);
-    return back(isLockedOut(key) ? "locked" : "wrong");
+    recordFailure(db, key);
+    return back(isLockedOut(db, key) ? "locked" : "wrong");
   }
-  clearFailures(key);
+  clearFailures(db, key);
   const res = NextResponse.redirect(publicUrl(req, "/"), 303);
   res.cookies.set(SESSION_COOKIE, await sessionToken(password), {
     httpOnly: true,

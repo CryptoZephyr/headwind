@@ -62,6 +62,11 @@ CREATE TABLE IF NOT EXISTS evidence (
   payload TEXT NOT NULL,
   complete INTEGER NOT NULL DEFAULT 1
 );
+CREATE TABLE IF NOT EXISTS login_failure (
+  client_key TEXT NOT NULL,
+  failed_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS login_failure_key ON login_failure (client_key, failed_at);
 CREATE TABLE IF NOT EXISTS review_run (
   id TEXT PRIMARY KEY,
   agency_id TEXT NOT NULL REFERENCES agency(id),

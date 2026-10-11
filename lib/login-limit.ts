@@ -1,27 +1,22 @@
+import type Database from "better-sqlite3";
+
 const MAX_FAILURES = 5;
 const WINDOW_MS = 15 * 60 * 1000;
 
-const failures = new Map<string, number[]>();
-
-function recent(key: string, now: number): number[] {
-  const kept = (failures.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (kept.length) failures.set(key, kept);
-  else failures.delete(key);
-  return kept;
+export function isLockedOut(db: Database.Database, key: string, now = Date.now()): boolean {
+  db.prepare("DELETE FROM login_failure WHERE failed_at <= ?").run(now - WINDOW_MS);
+  const { n } = db.prepare("SELECT COUNT(*) AS n FROM login_failure WHERE client_key = ? AND failed_at > ?").get(key, now - WINDOW_MS) as { n: number };
+  return n >= MAX_FAILURES;
 }
 
-export function isLockedOut(key: string, now = Date.now()): boolean {
-  return recent(key, now).length >= MAX_FAILURES;
+export function recordFailure(db: Database.Database, key: string, now = Date.now()): void {
+  db.prepare("INSERT INTO login_failure (client_key, failed_at) VALUES (?, ?)").run(key, now);
 }
 
-export function recordFailure(key: string, now = Date.now()): void {
-  failures.set(key, [...recent(key, now), now]);
-}
-
-export function clearFailures(key: string): void {
-  failures.delete(key);
+export function clearFailures(db: Database.Database, key: string): void {
+  db.prepare("DELETE FROM login_failure WHERE client_key = ?").run(key);
 }
 
 export function clientKey(req: Request): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
+  return req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() || "local";
 }

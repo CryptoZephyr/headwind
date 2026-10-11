@@ -5,7 +5,7 @@ if ! swapon --show | grep -q /swapfile; then
   fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
   echo "/swapfile none swap sw 0 0" >> /etc/fstab
 fi
-if ! command -v node >/dev/null; then
+if ! node -e 'process.exit(+process.versions.node.split(".")[0] >= 22 ? 0 : 1)' 2>/dev/null; then
   curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
   apt-get install -y nodejs build-essential
 fi
@@ -15,6 +15,7 @@ if ! command -v caddy >/dev/null; then
   curl -1sLf https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt > /etc/apt/sources.list.d/caddy-stable.list
   apt-get update && apt-get install -y caddy
 fi
+command -v npm >/dev/null && command -v npx >/dev/null
 id headwind >/dev/null 2>&1 || useradd --system --home /var/lib/headwind --create-home headwind
 mkdir -p /var/lib/headwind
 chown -R headwind:headwind /opt/headwind /var/lib/headwind
