@@ -1,0 +1,1741 @@
+{
+  "ranAt": "2026-10-11T22:42:39.141Z",
+  "listingsSince": "2026-09-11",
+  "creditsBefore": 135.31,
+  "creditsAfter": 44.08,
+  "results": [
+    {
+      "slug": "harbourvale",
+      "agency": "Harbour & Vale (sample agency)",
+      "companies": [
+        {
+          "name": "GoCardless",
+          "domain": "gocardless.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "663456",
+              "name": "GoCardless",
+              "primaryDomain": "gocardless.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 29,
+          "completeMonths": 29,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 1
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-101",
+              "roleTitle": "Account Executive",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-102",
+              "roleTitle": "Marketing Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-103",
+              "roleTitle": "Partnerships Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Paddle",
+          "domain": "paddle.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "662388",
+              "name": "Paddle",
+              "primaryDomain": "paddle.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 3,
+          "timeseriesPoints": 32,
+          "completeMonths": 32,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 3
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-104",
+              "roleTitle": "Sales Development Representative",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-105",
+              "roleTitle": "Customer Success Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Tide",
+          "domain": "tide.co",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "662394",
+              "name": "Tide",
+              "primaryDomain": "tide.co",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-106",
+              "roleTitle": "Marketing Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-107",
+              "roleTitle": "Partnerships Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Cleo",
+          "domain": "meetcleo.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "738897",
+              "name": "Cleo",
+              "primaryDomain": "meetcleo.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 3,
+          "timeseriesPoints": 29,
+          "completeMonths": 29,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 10
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-108",
+              "roleTitle": "Customer Success Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-109",
+              "roleTitle": "Content Marketing Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-110",
+              "roleTitle": "Sales Development Representative",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Thought Machine",
+          "domain": "thoughtmachine.net",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "662540",
+              "name": "Thought Machine",
+              "primaryDomain": "thoughtmachine.net",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 4,
+          "timeseriesPoints": 26,
+          "completeMonths": 26,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 5
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-111",
+              "roleTitle": "Partnerships Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-112",
+              "roleTitle": "Account Executive",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Multiverse",
+          "domain": "multiverse.io",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "691502",
+              "name": "Multiverse",
+              "primaryDomain": "multiverse.io",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-113",
+              "roleTitle": "Content Marketing Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-114",
+              "roleTitle": "Sales Development Representative",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Beamery",
+          "domain": "beamery.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "664306",
+              "name": "Beamery",
+              "primaryDomain": "beamery.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-115",
+              "roleTitle": "Account Executive",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-116",
+              "roleTitle": "Marketing Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-117",
+              "roleTitle": "Partnerships Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Peak",
+          "domain": "peak.ai",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "664400",
+              "name": "Peak",
+              "primaryDomain": "peak.ai",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-118",
+              "roleTitle": "Sales Development Representative",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-119",
+              "roleTitle": "Customer Success Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Onfido",
+          "domain": "onfido.com",
+          "match": "ambiguous",
+          "candidates": [
+            {
+              "companyId": "4641731",
+              "name": "Qonfido",
+              "primaryDomain": "qonfido.com",
+              "confidence": 1
+            },
+            {
+              "companyId": "6391615",
+              "name": "Aviata",
+              "primaryDomain": "",
+              "confidence": 1
+            },
+            {
+              "companyId": "22373276",
+              "name": "Konfido Dış Ticaret Ltd. Şti.",
+              "primaryDomain": "konfido.com.tr",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 6,
+          "roles": [
+            {
+              "mandateId": "HA-120",
+              "roleTitle": "Marketing Manager",
+              "listing": "blocked_by_match"
+            },
+            {
+              "mandateId": "HA-121",
+              "roleTitle": "Partnerships Manager",
+              "listing": "blocked_by_match"
+            }
+          ]
+        },
+        {
+          "name": "Bloom & Wild",
+          "domain": "bloomandwild.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "666430",
+              "name": "Bloom & Wild",
+              "primaryDomain": "bloomandwild.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "HA-122",
+              "roleTitle": "Customer Success Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-123",
+              "roleTitle": "Content Marketing Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "HA-124",
+              "roleTitle": "Sales Development Representative",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "ironbridge",
+      "agency": "Ironbridge Engineering Recruitment (sample agency)",
+      "companies": [
+        {
+          "name": "Protolabs",
+          "domain": "protolabs.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "682573",
+              "name": "Protolabs",
+              "primaryDomain": "protolabs.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 3,
+          "timeseriesPoints": 28,
+          "completeMonths": 28,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 3
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-101",
+              "roleTitle": "Manufacturing Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-102",
+              "roleTitle": "Mechanical Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-103",
+              "roleTitle": "Field Service Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Xometry",
+          "domain": "xometry.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631482",
+              "name": "Xometry",
+              "primaryDomain": "xometry.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 6,
+          "timeseriesPoints": 35,
+          "completeMonths": 35,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 19
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-104",
+              "roleTitle": "Quality Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-105",
+              "roleTitle": "Process Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Formlabs",
+          "domain": "formlabs.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631843",
+              "name": "Formlabs",
+              "primaryDomain": "formlabs.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 3,
+          "timeseriesPoints": 33,
+          "completeMonths": 33,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 31
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-106",
+              "roleTitle": "Mechanical Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Mechanical Engineer",
+                "url": "https://www.indeed.com/viewjob?jk=8b7f3e4625d20846",
+                "location": "Boston, MA",
+                "dateAdded": "2026-09-29T22:22:10"
+              },
+              "returned": 9,
+              "credits": 0.27
+            },
+            {
+              "mandateId": "IR-107",
+              "roleTitle": "Field Service Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Field Service Engineer - Remote",
+                "url": "https://de.indeed.com/viewjob?jk=f84427f235a124f6",
+                "location": "München",
+                "dateAdded": "2026-10-09T08:22:04"
+              },
+              "returned": 4,
+              "credits": 0.12
+            }
+          ]
+        },
+        {
+          "name": "Markforged",
+          "domain": "markforged.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "628975",
+              "name": "Markforged",
+              "primaryDomain": "markforged.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-108",
+              "roleTitle": "Process Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-109",
+              "roleTitle": "Production Supervisor",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-110",
+              "roleTitle": "Quality Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "MachineMetrics",
+          "domain": "machinemetrics.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "634662",
+              "name": "MachineMetrics",
+              "primaryDomain": "machinemetrics.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 4,
+          "completeMonths": 4,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 1
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-111",
+              "roleTitle": "Field Service Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-112",
+              "roleTitle": "Manufacturing Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Hadrian",
+          "domain": "hadrian.co",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "635280",
+              "name": "Hadrian",
+              "primaryDomain": "hadrian.co",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 2,
+          "timeseriesPoints": 31,
+          "completeMonths": 30,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 1
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-113",
+              "roleTitle": "Production Supervisor",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-114",
+              "roleTitle": "Quality Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Re:Build Manufacturing",
+          "domain": "rebuildmanufacturing.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "868583",
+              "name": "Re:Build Manufacturing",
+              "primaryDomain": "rebuildmanufacturing.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 29,
+          "completeMonths": 29,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 33
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-115",
+              "roleTitle": "Manufacturing Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Manufacturing Engineer",
+                "url": "https://www.indeed.com/viewjob?jk=5ee41ffc29e4f8f9",
+                "location": "New Kensington, PA",
+                "dateAdded": "2026-09-17T22:37:14"
+              },
+              "returned": 2,
+              "credits": 0.06
+            },
+            {
+              "mandateId": "IR-116",
+              "roleTitle": "Mechanical Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Mechanical Design Engineer",
+                "url": "https://www.indeed.com/viewjob?jk=da66831d81cb4942",
+                "location": "Kalamazoo, MI 49008",
+                "dateAdded": "2026-10-08T22:33:22"
+              },
+              "returned": 3,
+              "credits": 0.09
+            },
+            {
+              "mandateId": "IR-117",
+              "roleTitle": "Field Service Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Divergent",
+          "domain": "divergent3d.com",
+          "match": "ambiguous",
+          "candidates": [
+            {
+              "companyId": "634361",
+              "name": "Divergent",
+              "primaryDomain": "divergent.us",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 7,
+          "timeseriesPoints": 31,
+          "completeMonths": 30,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 1
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-118",
+              "roleTitle": "Quality Engineer",
+              "listing": "blocked_by_match"
+            },
+            {
+              "mandateId": "IR-119",
+              "roleTitle": "Process Engineer",
+              "listing": "blocked_by_match"
+            }
+          ]
+        },
+        {
+          "name": "VulcanForms",
+          "domain": "vulcanforms.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "691497",
+              "name": "VulcanForms Inc.",
+              "primaryDomain": "vulcanforms.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-120",
+              "roleTitle": "Mechanical Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-121",
+              "roleTitle": "Field Service Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Bright Machines",
+          "domain": "brightmachines.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "628923",
+              "name": "Bright Machines",
+              "primaryDomain": "brightmachines.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 28,
+          "completeMonths": 28,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 2
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "IR-122",
+              "roleTitle": "Process Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-123",
+              "roleTitle": "Production Supervisor",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "IR-124",
+              "roleTitle": "Quality Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "ledgerline",
+      "agency": "Ledgerline Search (sample agency)",
+      "companies": [
+        {
+          "name": "Ramp",
+          "domain": "ramp.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "689494",
+              "name": "Ramp",
+              "primaryDomain": "ramp.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 7,
+          "timeseriesPoints": 33,
+          "completeMonths": 33,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 10
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "LE-101",
+              "roleTitle": "Software Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Software Engineer, International",
+                "url": "https://www.linkedin.com/jobs/view/4468349649",
+                "location": "London, England, United Kingdom",
+                "dateAdded": "2026-09-17T02:25:44"
+              },
+              "returned": 3,
+              "credits": 0.09
+            },
+            {
+              "mandateId": "LE-102",
+              "roleTitle": "Data Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-103",
+              "roleTitle": "Product Designer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Brex",
+          "domain": "brex.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631361",
+              "name": "Brex",
+              "primaryDomain": "brex.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 5,
+          "timeseriesPoints": 35,
+          "completeMonths": 35,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 43
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "LE-104",
+              "roleTitle": "Backend Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Software Engineer II, Backend",
+                "url": "https://www.linkedin.com/jobs/view/4467182038",
+                "location": "Vancouver, British Columbia, Canada",
+                "dateAdded": "2026-09-17T03:57:13"
+              },
+              "returned": 3,
+              "credits": 0.09
+            },
+            {
+              "mandateId": "LE-105",
+              "roleTitle": "Security Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Mercury",
+          "domain": "mercury.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631990",
+              "name": "Mercury",
+              "primaryDomain": "mercury.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 34,
+          "completeMonths": 33,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 1
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "LE-106",
+              "roleTitle": "Data Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-107",
+              "roleTitle": "Product Designer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Plaid",
+          "domain": "plaid.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "633428",
+              "name": "Plaid",
+              "primaryDomain": "plaid.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 48,
+          "timeseriesPoints": 34,
+          "completeMonths": 33,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 7
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "LE-108",
+              "roleTitle": "Security Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Security Engineer - Platform Security",
+                "url": "https://www.linkedin.com/jobs/view/4469290935",
+                "location": "New York City Metropolitan Area",
+                "dateAdded": "2026-09-19T05:20:40"
+              },
+              "returned": 4,
+              "credits": 0.12
+            },
+            {
+              "mandateId": "LE-109",
+              "roleTitle": "Engineering Manager",
+              "listing": "found",
+              "hit": {
+                "title": "Engineering Manager",
+                "url": "https://jobs.ashbyhq.com/plaid/21d70dd3-3884-4c90-915d-ace885ddb245",
+                "location": "New York City Office",
+                "dateAdded": "2026-09-30T00:00:00"
+              },
+              "returned": 1,
+              "credits": 0.03
+            },
+            {
+              "mandateId": "LE-110",
+              "roleTitle": "Backend Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Chime",
+          "domain": "chime.com",
+          "match": "ambiguous",
+          "candidates": [
+            {
+              "companyId": "633406",
+              "name": "Chime",
+              "primaryDomain": "chime.com",
+              "confidence": 1
+            },
+            {
+              "companyId": "6553833",
+              "name": "Chime Workplace",
+              "primaryDomain": "chime.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 3,
+          "timeseriesPoints": 33,
+          "completeMonths": 32,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 2
+          },
+          "credits": 4,
+          "roles": [
+            {
+              "mandateId": "LE-111",
+              "roleTitle": "Product Designer",
+              "listing": "blocked_by_match"
+            },
+            {
+              "mandateId": "LE-112",
+              "roleTitle": "Software Engineer",
+              "listing": "blocked_by_match"
+            }
+          ]
+        },
+        {
+          "name": "Marqeta",
+          "domain": "marqeta.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631272",
+              "name": "Marqeta",
+              "primaryDomain": "marqeta.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 3,
+          "timeseriesPoints": 36,
+          "completeMonths": 35,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 1
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "LE-113",
+              "roleTitle": "Engineering Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-114",
+              "roleTitle": "Backend Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Modern Treasury",
+          "domain": "moderntreasury.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "637354",
+              "name": "Modern Treasury",
+              "primaryDomain": "moderntreasury.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "LE-115",
+              "roleTitle": "Software Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-116",
+              "roleTitle": "Data Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-117",
+              "roleTitle": "Product Designer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Alloy",
+          "domain": "alloy.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631595",
+              "name": "Alloy",
+              "primaryDomain": "alloy.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "LE-118",
+              "roleTitle": "Backend Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-119",
+              "roleTitle": "Security Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Unit",
+          "domain": "unit.co",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "634939",
+              "name": "Unit",
+              "primaryDomain": "unit.co",
+              "confidence": 1
+            },
+            {
+              "companyId": "1894761",
+              "name": "Unit Corporation",
+              "primaryDomain": "unitcorp.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 4,
+          "roles": [
+            {
+              "mandateId": "LE-120",
+              "roleTitle": "Data Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-121",
+              "roleTitle": "Product Designer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Lithic",
+          "domain": "lithic.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "632247",
+              "name": "Lithic",
+              "primaryDomain": "lithic.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 27,
+          "completeMonths": 27,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 6
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "LE-122",
+              "roleTitle": "Security Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-123",
+              "roleTitle": "Engineering Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "LE-124",
+              "roleTitle": "Backend Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "meridian",
+      "agency": "Meridian Health Talent (sample agency)",
+      "companies": [
+        {
+          "name": "Tempus",
+          "domain": "tempus.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631550",
+              "name": "Tempus AI",
+              "primaryDomain": "tempus.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 37,
+          "completeMonths": 37,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 27
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-101",
+              "roleTitle": "Clinical Research Associate",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "ME-102",
+              "roleTitle": "Software Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Senior Software Engineer II, RPM Growth & Ops",
+                "url": "https://www.indeed.com/viewjob?jk=ba9f44031f20027f",
+                "location": "New York, NY",
+                "dateAdded": "2026-10-05T22:01:58"
+              },
+              "returned": 3,
+              "credits": 0.09
+            },
+            {
+              "mandateId": "ME-103",
+              "roleTitle": "Quality Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Flatiron Health",
+          "domain": "flatiron.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631338",
+              "name": "Flatiron Health",
+              "primaryDomain": "flatiron.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 30,
+          "completeMonths": 30,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 3
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-104",
+              "roleTitle": "Data Scientist",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "ME-105",
+              "roleTitle": "Product Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Ginkgo Bioworks",
+          "domain": "ginkgobioworks.com",
+          "match": "ambiguous",
+          "candidates": [
+            {
+              "companyId": "631424",
+              "name": "Ginkgo Bioworks",
+              "primaryDomain": "ginkgo.bio",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 15,
+          "completeMonths": 15,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 2
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-106",
+              "roleTitle": "Software Engineer",
+              "listing": "blocked_by_match"
+            },
+            {
+              "mandateId": "ME-107",
+              "roleTitle": "Quality Engineer",
+              "listing": "blocked_by_match"
+            }
+          ]
+        },
+        {
+          "name": "Recursion",
+          "domain": "recursion.com",
+          "match": "ambiguous",
+          "candidates": [
+            {
+              "companyId": "640404",
+              "name": "Recursion",
+              "primaryDomain": "recursion.com",
+              "confidence": 1
+            },
+            {
+              "companyId": "662564",
+              "name": "Exscientia",
+              "primaryDomain": "recursion.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 32,
+          "completeMonths": 31,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 1
+          },
+          "credits": 4,
+          "roles": [
+            {
+              "mandateId": "ME-108",
+              "roleTitle": "Product Manager",
+              "listing": "blocked_by_match"
+            },
+            {
+              "mandateId": "ME-109",
+              "roleTitle": "Research Scientist",
+              "listing": "blocked_by_match"
+            },
+            {
+              "mandateId": "ME-110",
+              "roleTitle": "Data Scientist",
+              "listing": "blocked_by_match"
+            }
+          ]
+        },
+        {
+          "name": "Hinge Health",
+          "domain": "hingehealth.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631606",
+              "name": "Hinge Health",
+              "primaryDomain": "hingehealth.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 5,
+          "timeseriesPoints": 32,
+          "completeMonths": 32,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 9
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-111",
+              "roleTitle": "Quality Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "ME-112",
+              "roleTitle": "Clinical Research Associate",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Omada Health",
+          "domain": "omadahealth.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631896",
+              "name": "Omada Health",
+              "primaryDomain": "omadahealth.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 6,
+          "timeseriesPoints": 34,
+          "completeMonths": 33,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 1
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-113",
+              "roleTitle": "Research Scientist",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "ME-114",
+              "roleTitle": "Data Scientist",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Color Health",
+          "domain": "color.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "2135953",
+              "name": "Color",
+              "primaryDomain": "color.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 2,
+          "timeseriesPoints": 24,
+          "completeMonths": 23,
+          "latestPoint": {
+            "date": "2026-10-01",
+            "openJobs": 1
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-115",
+              "roleTitle": "Clinical Research Associate",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "ME-116",
+              "roleTitle": "Software Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Senior Software Engineer, AI Platform ",
+                "url": "https://jobs.ashbyhq.com/color-health/95471eaa-cf5d-4225-9971-c8eef10d7af3",
+                "location": "South San Francisco, California",
+                "dateAdded": "2026-09-25T00:00:00"
+              },
+              "returned": 1,
+              "credits": 0.03
+            },
+            {
+              "mandateId": "ME-117",
+              "roleTitle": "Quality Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Benchling",
+          "domain": "benchling.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631518",
+              "name": "Benchling",
+              "primaryDomain": "benchling.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 3,
+          "timeseriesPoints": 34,
+          "completeMonths": 34,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 10
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-118",
+              "roleTitle": "Data Scientist",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "ME-119",
+              "roleTitle": "Product Manager",
+              "listing": "found",
+              "hit": {
+                "title": "Product Manager, Platform",
+                "url": "https://www.linkedin.com/jobs/view/4469291851",
+                "location": "San Francisco, California, United States",
+                "dateAdded": "2026-09-19T04:35:16"
+              },
+              "returned": 2,
+              "credits": 0.06
+            }
+          ]
+        },
+        {
+          "name": "Zocdoc",
+          "domain": "zocdoc.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "631872",
+              "name": "Zocdoc",
+              "primaryDomain": "zocdoc.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": 1,
+          "timeseriesPoints": 30,
+          "completeMonths": 30,
+          "latestPoint": {
+            "date": "2026-09-01",
+            "openJobs": 8
+          },
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-120",
+              "roleTitle": "Software Engineer",
+              "listing": "found",
+              "hit": {
+                "title": "Staff Software Engineer, Provider Engagement",
+                "url": "https://www.linkedin.com/jobs/view/4471920958",
+                "location": "New York, New York, United States",
+                "dateAdded": "2026-09-29T17:50:07"
+              },
+              "returned": 6,
+              "credits": 0.18
+            },
+            {
+              "mandateId": "ME-121",
+              "roleTitle": "Quality Engineer",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        },
+        {
+          "name": "Carbon Health",
+          "domain": "carbonhealth.com",
+          "match": "matched",
+          "candidates": [
+            {
+              "companyId": "636912",
+              "name": "Carbon Health",
+              "primaryDomain": "carbonhealth.com",
+              "confidence": 1
+            }
+          ],
+          "openingsCount": null,
+          "timeseriesPoints": 0,
+          "completeMonths": 0,
+          "latestPoint": null,
+          "credits": 2,
+          "roles": [
+            {
+              "mandateId": "ME-122",
+              "roleTitle": "Product Manager",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "ME-123",
+              "roleTitle": "Research Scientist",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            },
+            {
+              "mandateId": "ME-124",
+              "roleTitle": "Data Scientist",
+              "listing": "not_found",
+              "hit": null,
+              "returned": 0,
+              "credits": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
