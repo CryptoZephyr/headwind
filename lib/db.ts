@@ -172,6 +172,15 @@ function addColumn(db: Database.Database, table: string, column: string, type: s
   return true;
 }
 
+export function migrate(db: Database.Database): void {
+  db.exec(SCHEMA);
+  addColumn(db, "client", "retired_at", "TEXT");
+  addColumn(db, "evidence", "retired_at", "TEXT");
+  if (addColumn(db, "client_reply", "assessed_at", "TEXT")) {
+    db.exec("UPDATE client_reply SET assessed_at = created_at WHERE created_at <= (SELECT MAX(d.created_at) FROM decision d WHERE d.case_id = client_reply.case_id)");
+  }
+}
+
 export function dbPath(): string {
   return process.env.HEADWIND_DB ?? path.join(process.cwd(), "data", "headwind.db");
 }
@@ -182,10 +191,7 @@ export function getDb(): Database.Database {
   if (file !== ":memory:") fs.mkdirSync(path.dirname(file), { recursive: true });
   instance = new Database(file);
   instance.pragma("busy_timeout = 5000");
-  instance.exec(SCHEMA);
-  addColumn(instance, "client", "retired_at", "TEXT");
-  addColumn(instance, "evidence", "retired_at", "TEXT");
-  if (addColumn(instance, "client_reply", "assessed_at", "TEXT")) instance.exec("UPDATE client_reply SET assessed_at = created_at");
+  migrate(instance);
   return instance;
 }
 

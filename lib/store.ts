@@ -123,7 +123,7 @@ export function insertEvidence(db: Database.Database, e: EvidenceRecord): void {
   db.prepare(
     `INSERT INTO evidence (id, agency_id, client_id, mandate_id, source_type, provenance, source_date, retrieved_at, summary, payload, complete)
      VALUES (@id,@agency_id,@client_id,@mandate_id,@source_type,@provenance,@source_date,@retrieved_at,@summary,@payload,@complete)
-     ON CONFLICT(id) DO UPDATE SET retired_at = NULL`
+     ON CONFLICT(id) DO UPDATE SET summary = excluded.summary, payload = excluded.payload, source_date = excluded.source_date, complete = excluded.complete, retired_at = NULL`
   ).run(e);
 }
 

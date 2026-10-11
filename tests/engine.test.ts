@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 import { CfoError, type CashInputs, type CfoBinding, type CfoTableRead } from "../lib/cfo";
-import { closeDb, getDb } from "../lib/db";
+import { closeDb, getDb, migrate } from "../lib/db";
 import { previewImport } from "../lib/importer";
 import { recordClientReply, type ReplyReader } from "../lib/reply";
 import { ModelOutputError } from "../lib/llm";
@@ -249,5 +249,49 @@ describe("review engine", () => {
       (before as { mandate_id: string; version: number }[]).map((c) => (c.mandate_id === "M-102" ? { ...c, version: c.version + 1 } : c))
     );
     expect(db.prepare("SELECT id, status FROM task WHERE case_id NOT IN (SELECT id FROM case_record WHERE mandate_id = 'M-102') ORDER BY id").all()).toEqual(tasksBefore);
+  });
+
+  it("a reply that arrives while its case is being assessed is picked up by the next reassessment", async () => {
+    const { db, agencyId } = setup();
+    enqueueRun(db, agencyId);
+    let sent = false;
+    const p = ports(cfo);
+    const racing: Ports = {
+      ...p,
+      draftCaseNote: async (input) => {
+        if (!sent && input.roleTitle.startsWith("Product Engineer")) {
+          sent = true;
+          const id = (db.prepare("SELECT id FROM case_record WHERE mandate_id = 'M-102'").get() as { id: string }).id;
+          await recordClientReply(db, { caseId: id, replyDate: "2026-10-12", source: "Client email (simulated)", body: read("reply-M-102.txt"), isSimulated: true }, pauseReader);
+        }
+        return p.draftCaseNote(input);
+      },
+    };
+    await drain(db, racing);
+    expect(sent).toBe(true);
+    expect((db.prepare("SELECT outcome FROM case_record WHERE mandate_id = 'M-102'").get() as { outcome: string }).outcome).toBe("client_pause");
+    expect(cfo.tables.get("S Reviewed")?.["Expected Receipts"]).toBe(12000);
+  });
+
+  it("migration leaves a reply that no decision has used yet pending", async () => {
+    const { db, agencyId } = setup();
+    enqueueRun(db, agencyId);
+    await drain(db, ports(cfo));
+    const caseId = (db.prepare("SELECT id FROM case_record WHERE mandate_id = 'M-102'").get() as { id: string }).id;
+    await recordClientReply(db, { caseId, replyDate: "2026-10-12", source: "Client email (simulated)", body: read("reply-M-102.txt"), isSimulated: true }, pauseReader);
+    db.prepare("UPDATE client_reply SET created_at = datetime('now', '+1 minute')").run();
+    db.exec("ALTER TABLE client_reply DROP COLUMN assessed_at");
+    migrate(db);
+    expect(db.prepare("SELECT assessed_at FROM client_reply").get()).toEqual({ assessed_at: null });
+    await drain(db, ports(cfo));
+    expect((db.prepare("SELECT outcome FROM case_record WHERE id = ?").get(caseId) as { outcome: string }).outcome).toBe("client_pause");
+  });
+
+  it("re-importing an unchanged note under a new stage refreshes the evidence", () => {
+    const { db } = setup();
+    const mandatesCsv = read("mandates.csv").replace(",final_interview,50%", ",offer_accepted,50%");
+    commitImport(db, previewImport({ clients: read("clients.csv"), mandates: mandatesCsv, finance: read("finance.csv"), updates: "" }), { isSample: true });
+    const notes = db.prepare("SELECT summary FROM evidence WHERE mandate_id = 'M-102' AND source_type = 'candidate_record' AND retired_at IS NULL").all();
+    expect(notes).toEqual([{ summary: "Agency record (offer_accepted): Two candidates at final interview (sample)" }]);
   });
 });

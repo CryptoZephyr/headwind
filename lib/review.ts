@@ -236,6 +236,7 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
       continue;
     }
     const reply = latestReply(db, caseId);
+    const readReplyIds = (db.prepare("SELECT id FROM client_reply WHERE case_id = ? AND interpretation IS NOT NULL AND assessed_at IS NULL").all(caseId) as { id: string }[]).map((r) => r.id);
     const policy = decideTreatment({ stage: m.stage, lastConfirmedAt: c.last_confirmed_at, cashDate: agency.cash_date, listing: listingObservation(db, run, m), reply });
     const ev = evidenceFor(db, run.agency_id, m.id, c.id);
     let note: CaseNote | null = null;
@@ -269,7 +270,7 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
         JSON.stringify(note?.evidence_ids ?? ev.map((e) => e.id)), assumptionChange(policy.outcome, reply?.pausedUntil ?? null)
       );
       db.prepare("UPDATE task SET status = 'superseded' WHERE case_id = ? AND status = 'open' AND case_version < ?").run(caseId, version);
-      db.prepare("UPDATE client_reply SET assessed_at = datetime('now') WHERE case_id = ? AND interpretation IS NOT NULL AND assessed_at IS NULL").run(caseId);
+      db.prepare("UPDATE client_reply SET assessed_at = datetime('now') WHERE id IN (SELECT value FROM json_each(?))").run(JSON.stringify(readReplyIds));
       if (policy.needsTask && note) {
         db.prepare("INSERT OR IGNORE INTO task (id, case_id, case_version, question, assignee, priority_reason, due_date) VALUES (?,?,?,?,?,?,?)").run(
           stableId("task", caseId, version), caseId, version, note.question, c.account_manager, `USD ${(m.fee_cents / 100).toLocaleString("en-US")} fee at ${m.probability_bps / 100}% is unconfirmed: ${policy.missing.join(" ")}`, addDays(agency.cash_date, 3)
