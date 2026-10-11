@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { SESSION_COOKIE, sameText, sessionToken } from "@/lib/auth";
+import { publicUrl, SESSION_COOKIE, sameText, sessionToken } from "@/lib/auth";
 import { clearFailures, clientKey, isLockedOut, recordFailure } from "@/lib/login-limit";
 
 export const runtime = "nodejs";
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const password = process.env.HEADWIND_PASSWORD;
   const form = await req.formData();
   const given = String(form.get("password") ?? "");
-  const back = (error: string) => NextResponse.redirect(new URL(`/login?error=${error}`, req.url), 303);
+  const back = (error: string) => NextResponse.redirect(publicUrl(req, `/login?error=${error}`), 303);
   if (!password) return back("unset");
   const key = clientKey(req);
   if (isLockedOut(key)) return back("locked");
@@ -18,11 +18,11 @@ export async function POST(req: Request) {
     return back(isLockedOut(key) ? "locked" : "wrong");
   }
   clearFailures(key);
-  const res = NextResponse.redirect(new URL("/", req.url), 303);
+  const res = NextResponse.redirect(publicUrl(req, "/"), 303);
   res.cookies.set(SESSION_COOKIE, await sessionToken(password), {
     httpOnly: true,
     sameSite: "lax",
-    secure: new URL(req.url).protocol === "https:",
+    secure: publicUrl(req, "/").protocol === "https:",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });

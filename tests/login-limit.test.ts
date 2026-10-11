@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { publicUrl } from "../lib/auth";
 import { clearFailures, isLockedOut, recordFailure } from "../lib/login-limit";
 
 describe("login attempt limit", () => {
@@ -16,5 +17,12 @@ describe("login attempt limit", () => {
     for (let i = 0; i < 5; i++) recordFailure("c");
     clearFailures("c");
     expect(isLockedOut("c")).toBe(false);
+  });
+});
+
+describe("publicUrl", () => {
+  it("uses the forwarded host and scheme from the HTTPS proxy", () => {
+    const req = new Request("http://localhost:3000/api/login", { headers: { host: "localhost:3000", "x-forwarded-host": "headwind.example", "x-forwarded-proto": "https" } });
+    expect(publicUrl(req, "/login").href).toBe("https://headwind.example/login");
   });
 });
