@@ -45,12 +45,14 @@ const OUTCOME_ROOTS: [RegExp, RegExp][] = [
   [/paus|on hold/i, /paus|on hold|hold/i],
   [/cancel|scrap|withdrawn|shelved|halted|not going ahead/i, /cancel|scrap|withdr|shelv|halt|not going ahead/i],
   [/filled|lost|closed/i, /fill|lost|close|hired|placed/i],
-  [/freez|frozen|stopped hiring/i, /freez|frozen|stopped hiring|slow/i],
+  [/freez|frozen|stopped hiring/i, /freez|frozen|stopped hiring/i],
   [/no longer/i, /no longer/i],
 ];
 
-export function questionRaisesUnsupportedOutcome(question: string, agencyText: string): boolean {
-  return [...question.matchAll(new RegExp(OUTCOME_WORDS.source, "gi"))].some((m) => {
+export function questionRaisesUnsupportedOutcome(question: string, agencyText: string, roleTitle = ""): boolean {
+  const title = roleTitle.trim();
+  const asked = title ? question.replace(new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), " ") : question;
+  return [...asked.matchAll(new RegExp(OUTCOME_WORDS.source, "gi"))].some((m) => {
     const root = OUTCOME_ROOTS.find(([q]) => q.test(m[0]));
     return !(root ? root[1] : new RegExp(m[0], "i")).test(agencyText);
   });
@@ -127,7 +129,7 @@ export async function draftCaseNote(input: {
     const unknownIds = value.evidence_ids.filter((id) => !allowed.has(id));
     if (unknownIds.length) return `The model cited evidence that doesn't exist: ${unknownIds.join(", ")}`;
     if (containsUnsupportedClaim(value.summary, agencySuppliedStates)) return "The model's summary claimed an outcome the evidence doesn't confirm.";
-    if (questionRaisesUnsupportedOutcome(value.question, agencyText)) return "The model's question raised an outcome (paused, cancelled, filled...) that no agency record mentions; ask about the role's status neutrally.";
+    if (questionRaisesUnsupportedOutcome(value.question, agencyText, input.roleTitle)) return "The model's question raised an outcome (paused, cancelled, filled...) that no agency record mentions; ask about the role's status neutrally.";
     return null;
   }
 

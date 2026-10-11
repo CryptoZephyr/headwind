@@ -1,7 +1,7 @@
 # Headwind evaluation report (2026-10-11)
 
 What this covers, in two separate parts:
-- **Part A, controlled tests:** the 10 decision cases, what the model is allowed to see, the case-note fix, an independent grade of case notes, and the regrades after the caveat and checker fixes (A5-A7). Inputs are fixed or stubbed.
+- **Part A, controlled tests:** the 10 decision cases, what the model is allowed to see, the case-note fix, an independent grade of case notes, and the regrades after the caveat and checker fixes (A5-A8). Inputs are fixed or stubbed.
 - **Part B, completed live reviews:** one full weekly review and one recovery test, both against live Crustdata and live cfo.ai. Each ran once.
 
 Then Part C covers cfo.ai's plan and cost, and Part D lists what is still not shown.
@@ -318,6 +318,36 @@ Unsupported claims and caveat completeness are counted separately:
 - **K1-K3 are 3 hand-written cases, 5 notes each.** That's evidence the fix generalises to new cases of these kinds, not a measure of real agency traffic.
 - **The checks are pattern-based.** They match the outcome words we listed (paused, cancelled, filled, frozen, on hold, closed, withdrawn and similar). A claim phrased in words outside that list ("the client has moved on") wouldn't be caught by code. Only the judge would catch it.
 - **Every case uses Nova Micro at temperature 0.** Another writer model hasn't been regraded.
+
+## A8. Question-check fixes from Devin Review, full regrade (PR #3, fourth round)
+
+**What changed** (question check only; the summary check, caveats and prompt are unchanged)
+- **"Slowing down" no longer counts as a freeze.** A recruiter note like "hiring is probably slowing down, nothing decided yet" used to let a question such as "Has the role been frozen?" pass. Now only an agency record that itself mentions a freeze or "stopped hiring" allows that word.
+- **Role names are ignored when checking questions.** "Is the Closed Loop Engineer role still open?" was rejected because the role name contains "Closed". The role title is now removed from the question before it's checked, so outcome words in the rest of the question are still caught ("Has the Closed Loop Engineer role been filled?" is still rejected).
+- Both have unit tests, bringing the suite to 90 tests.
+
+**Full regrade** (same judge, rubric, cases and labels as A7; artifact `eval/results/revised-note-grading-2026-10-11T13-16-31-806Z.json`; 80 of 82 rows have a neatlogs trace ID, and the other 2 are code-only notes)
+
+| Group | Notes | Unsupported outcome claim (judge) | Company data used as role proof | Caveats complete (judge) | Required caveats present (code check) | Passed all |
+|---|---|---|---|---|---|---|
+| Redrawn originals | 20 | 0 / 20 | 0 / 20 | 20 / 20 | 20 / 20 | 20 / 20 |
+| H1-H3 (shaped earlier fixes) | 11 | 0 / 11 | 0 / 11 | 11 / 11 | 11 / 11 | 11 / 11 |
+| F1-F5 (shaped earlier fixes) | 21 | 0 / 21 | 0 / 21 | 20 / 21 | 21 / 21 | 20 / 21 |
+| G1-G3 (shaped A7) | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| **K1-K3 (fresh in A7, untouched since)** | **15** | **0 / 15** | **2 / 15** | **14 / 15** | **15 / 15** | **13 / 15** |
+| All | 82 | 0 / 82 | 2 / 82 | 80 / 82 | 82 / 82 | 79 / 82 |
+
+- **Unsupported outcome claims: 0 of 82** (A7: 1 of 82). Every note cited only real evidence IDs, and no note fell back to the code-written text (0 of 82). The writer used 80 calls for 80 model notes, and no draft was rejected (A7: 1).
+- **Questions:** 80 of 80 model questions ask neutrally about the role's status. None contains an outcome word, so the narrower question check rejected nothing.
+- **Validator probes:** unchanged. 9 of 9 unsupported sentences are flagged and 0 of 8 cautious ones, and the judge agrees on all 17.
+- **By case:** everything passed 5 of 5 (or 10 of 10, or 1 of 1) except F5 0 of 1 and K1 3 of 5.
+
+**Manual inspection of the 3 failures**
+- **F5 #1 (code-written note, no model call), judged incomplete:** the judge says the reply date isn't named as a source. The note says "the client's reply dated 2026-10-10 says this role is still active" and gives both company-count dates. This is the same code-written text that passed in A7, so I read it as the judge being inconsistent, not a real gap.
+- **K1 #2 and #5, judged as company data used as role proof:** both notes say outright that the company count doesn't prove anything about this role. Both then say "no public listing for the role has been found since 2026-09-11" without saying that proves nothing either. That's the same borderline pattern as K1 #3 in A7. K1 went from 4 of 5 to 3 of 5 with no change to anything the summary sees, which suggests the writer and the judge vary from run to run, even at temperature 0.
+- **Real gap behind K1:** the never-seen-listing state (`still_absent`) still has no code-written "this proves nothing about the role" sentence, unlike a listing that disappeared (`not_found`). Adding one would probably clear K1. It would also mean K1 had shaped a fix, so K1-K3 would no longer count as fresh, and new cases would be needed.
+
+**Remaining limits:** same as A7. Notes repeat themselves, the judge is inconsistent (now F5 #1 as well), there are only 3 fresh cases, the checks match a fixed list of outcome words, and only one writer model has been tested. One more limit: the never-seen-listing state has no code-written caveat.
 
 # Part B: Completed live reviews
 

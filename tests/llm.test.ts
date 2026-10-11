@@ -97,4 +97,11 @@ describe("questionRaisesUnsupportedOutcome", () => {
   it("passes a question about an outcome an agency record raised", () => {
     expect(questionRaisesUnsupportedOutcome("You said the role is not cancelled; is it still going ahead this quarter?", "the hiring manager said the role is 'not cancelled, approvals are just slower'")).toBe(false);
   });
+  it("doesn't treat a reported slowdown as backing a freeze question", () => {
+    expect(questionRaisesUnsupportedOutcome("Has the role been frozen?", "Recruiter note: hiring is probably slowing down, nothing decided yet.")).toBe(true);
+  });
+  it("ignores outcome words inside the role title", () => {
+    expect(questionRaisesUnsupportedOutcome("Is the Closed Loop Engineer role still open?", "Two candidates interviewing.", "Closed Loop Engineer")).toBe(false);
+    expect(questionRaisesUnsupportedOutcome("Has the Closed Loop Engineer role been filled?", "Two candidates interviewing.", "Closed Loop Engineer")).toBe(true);
+  });
 });
