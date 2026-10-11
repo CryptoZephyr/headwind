@@ -23,6 +23,15 @@ npm run worker                   # processes queued reviews
 
 `npx tsx scripts/cfo-setup.ts` creates the sample agency's Reviewed and Downside scenarios in cfo.ai (synthetic scenarios, never Main).
 
+## Deploy on one server
+
+`deploy/` runs Headwind on one Ubuntu 24.04 server: the web app and worker as systemd services, a Monday 07:00 UTC timer that queues the weekly review (`npm run weekly`), and Caddy for HTTPS.
+
+1. Copy the repo to `/opt/headwind`, put the same keys as `.env.local` in `/etc/headwind/env` (set `HEADWIND_DB=/var/lib/headwind/headwind.db` and `CFO_TOKEN_FILE=/var/lib/headwind/cfo-token.json`), and `HEADWIND_HOST=<your domain>` in `/etc/headwind/caddy.env`.
+2. Run `sudo /opt/headwind/deploy/install.sh`.
+
+After five wrong passwords, sign-in from that address is locked for 15 minutes.
+
 ## Checks
 
 ```bash

@@ -1,0 +1,14 @@
+[Unit]
+Description=Headwind review worker
+After=network-online.target
+
+[Service]
+User=headwind
+WorkingDirectory=/opt/headwind
+EnvironmentFile=/etc/headwind/env
+ExecStart=/usr/bin/npm run worker
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

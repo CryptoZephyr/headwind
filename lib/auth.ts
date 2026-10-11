@@ -19,3 +19,10 @@ export async function isSignedIn(cookie: string | undefined): Promise<boolean> {
   if (!password || !cookie) return false;
   return sameText(cookie, await sessionToken(password));
 }
+
+export function publicUrl(req: Request, pathname: string): URL {
+  const own = new URL(req.url);
+  const proto = req.headers.get("x-forwarded-proto")?.split(",")[0].trim() || own.protocol.replace(":", "");
+  const host = req.headers.get("x-forwarded-host")?.split(",")[0].trim() || req.headers.get("host") || own.host;
+  return new URL(pathname, `${proto}://${host}`);
+}

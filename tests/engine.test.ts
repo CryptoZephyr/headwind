@@ -6,7 +6,7 @@ import { closeDb, getDb, migrate } from "../lib/db";
 import { previewImport } from "../lib/importer";
 import { recordClientReply, type ReplyReader } from "../lib/reply";
 import { ModelOutputError } from "../lib/llm";
-import { claimRun, enqueueRun, getRun, LeaseLostError, processRun, RetryBlockedError, retryRun, SimulatedCrash, type Ports } from "../lib/review";
+import { claimRun, enqueueRun, scheduleWeekly, getRun, LeaseLostError, processRun, RetryBlockedError, retryRun, SimulatedCrash, type Ports } from "../lib/review";
 import { commitImport } from "../lib/store";
 
 delete process.env.NEATLOGS_API_KEY;
@@ -293,5 +293,21 @@ describe("review engine", () => {
     commitImport(db, previewImport({ clients: read("clients.csv"), mandates: mandatesCsv, finance: read("finance.csv"), updates: "" }), { isSample: true });
     const notes = db.prepare("SELECT summary FROM evidence WHERE mandate_id = 'M-102' AND source_type = 'candidate_record' AND retired_at IS NULL").all();
     expect(notes).toEqual([{ summary: "Agency record (offer_accepted): Two candidates at final interview (sample)" }]);
+  });
+
+  it("the weekly timer queues a weekly review behind a waiting reassessment", () => {
+    const { db, agencyId } = setup();
+    const reassess = enqueueRun(db, agencyId, "reassess");
+    const [r] = scheduleWeekly(db, "2026-10-12");
+    expect(r.runId).not.toBe(reassess);
+    expect(getRun(db, r.runId!)?.kind).toBe("weekly");
+  });
+
+  it("the weekly timer skips an agency whose finance period has ended", () => {
+    const { db, agencyId } = setup();
+    const [r] = scheduleWeekly(db, "2026-12-07");
+    expect(r).toMatchObject({ agencyId, runId: null });
+    expect(r.skipped).toContain("2026-11-30");
+    expect(db.prepare("SELECT COUNT(*) AS n FROM review_run").get()).toEqual({ n: 0 });
   });
 });

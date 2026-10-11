@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { SESSION_COOKIE } from "@/lib/auth";
+import { publicUrl, SESSION_COOKIE } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  const res = NextResponse.redirect(new URL("/login", req.url), 303);
+  const res = NextResponse.redirect(publicUrl(req, "/login"), 303);
   res.cookies.delete(SESSION_COOKIE);
   return res;
 }

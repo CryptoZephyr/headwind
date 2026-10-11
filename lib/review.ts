@@ -56,7 +56,7 @@ export const livePorts: Ports = { fetchCompany, fetchListings: (c, t, s) => fetc
 export function enqueueRun(db: Database.Database, agencyId: string, kind: RunKind = "weekly", budget: Budget = { crustdataCredits: 10, modelCalls: 20 }): string {
   const active =
     kind === "weekly"
-      ? (db.prepare("SELECT id FROM review_run WHERE agency_id = ? AND status IN ('queued','running','retrying')").get(agencyId) as { id: string } | undefined)
+      ? (db.prepare("SELECT id FROM review_run WHERE agency_id = ? AND kind = 'weekly' AND status IN ('queued','running','retrying')").get(agencyId) as { id: string } | undefined)
       : (db
           .prepare(
             `SELECT r.id FROM review_run r WHERE r.agency_id = ? AND r.status = 'queued' AND r.attempts = 0
@@ -69,6 +69,17 @@ export function enqueueRun(db: Database.Database, agencyId: string, kind: RunKin
   const id = newId("run");
   db.prepare("INSERT INTO review_run (id, agency_id, kind, status, step, input_version, budget) VALUES (?,?,?,?,?,?,?)").run(id, agencyId, kind, "queued", STEPS[kind][0], inputVersion(db, agencyId), JSON.stringify(budget));
   return id;
+}
+
+export type WeeklySchedule = { agencyId: string; runId: string | null; skipped?: string };
+
+export function scheduleWeekly(db: Database.Database, today: string): WeeklySchedule[] {
+  const agencies = db.prepare("SELECT id, horizon_end FROM agency ORDER BY id").all() as { id: string; horizon_end: string }[];
+  return agencies.map((a) =>
+    a.horizon_end < today
+      ? { agencyId: a.id, runId: null, skipped: `Finance figures only cover up to ${a.horizon_end}. Import current figures to resume weekly reviews.` }
+      : { agencyId: a.id, runId: enqueueRun(db, a.id) }
+  );
 }
 
 export class RetryBlockedError extends Error {}
