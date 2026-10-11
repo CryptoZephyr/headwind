@@ -227,7 +227,7 @@ async function stepCheckListings(db: Database.Database, run: RunRow, ports: Port
           : status === "still_absent" ? `Crustdata's complete search still finds no listing matching "${m.role_title}" at ${c.matched_name} added since ${since}. The role hasn't been seen listed since the first check${baseline ? ` on ${baseline}` : ""}, so no removal can be inferred.`
           : status === "not_found" ? `Crustdata's complete search found no listing matching "${m.role_title}" at ${c.matched_name} since ${since}. A missing listing is an observation, not a confirmed pause.`
           : `Crustdata's listing search for "${m.role_title}" was incomplete, so no conclusion is drawn.`,
-        payload: JSON.stringify({ ...snap, status }),
+        payload: JSON.stringify({ ...snap, status, since }),
         complete: snap.complete ? 1 : 0,
       });
     }
@@ -244,9 +244,11 @@ export function latestReply(db: Database.Database, caseId: string): ReplyReading
 }
 
 function listingObservation(db: Database.Database, run: RunRow, m: MandateRecord): ListingObservation {
-  const row = db.prepare("SELECT id, payload, source_date FROM evidence WHERE agency_id = ? AND mandate_id = ? AND source_type = 'listing_check' ORDER BY retrieved_at DESC LIMIT 1").get(run.agency_id, m.id) as { id: string; payload: string; source_date: string | null } | undefined;
+  const row = db.prepare("SELECT id, payload, summary, source_date FROM evidence WHERE agency_id = ? AND mandate_id = ? AND source_type = 'listing_check' ORDER BY retrieved_at DESC LIMIT 1").get(run.agency_id, m.id) as { id: string; payload: string; summary: string; source_date: string | null } | undefined;
   if (!row) return { status: "not_checked" };
-  return { status: (JSON.parse(row.payload) as { status: ListingObservation["status"] }).status, evidenceId: row.id, checkedOn: row.source_date ?? undefined };
+  const payload = JSON.parse(row.payload) as { status: ListingObservation["status"]; since?: string };
+  const searchedSince = payload.since ?? row.summary.match(/since (\d{4}-\d{2}-\d{2})/)?.[1];
+  return { status: payload.status, evidenceId: row.id, checkedOn: row.source_date ?? undefined, searchedSince };
 }
 
 async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Promise<object> {

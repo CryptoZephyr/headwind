@@ -139,6 +139,8 @@ const cases: Case[] = [
     ], expectedCaveats: ["States the last confirmation date (2026-09-30) or age (11 days) and that it is past the 10-day limit and needs reconfirming.", "Reports the second-hand budget hint as reported, not as a freeze, pause or cancellation.", "Doesn't use company growth as evidence the role is open, or the never-seen listing as evidence it closed."] },
 ];
 for (const c of cases) {
+  const window = c.evidence.map((e) => e.summary.match(/(?:Crustdata's complete search|Baseline: Crustdata's complete search)[^.]*?since (\d{4}-\d{2}-\d{2})/)?.[1]).find(Boolean);
+  if (window && ["not_found", "still_absent", "baseline_absent"].includes(c.policy.listing.status)) c.policy.listing.searchedSince = window;
   c.policy.remarks = c.evidence.filter((e) => remarkIds.has(e.id)).map((e) => ({ date: e.sourceDate, text: e.summary }));
   if (c.policy.lastConfirmedAt) c.evidence.unshift(ev(`ev_${c.id.slice(0, 3).toLowerCase()}_confirm`, "agency_supplied", c.policy.lastConfirmedAt, `Client record: ${c.clientName} last confirmed its open roles with the agency on ${c.policy.lastConfirmedAt}.`));
 }
