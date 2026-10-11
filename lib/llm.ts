@@ -167,7 +167,7 @@ export function withRequiredFacts(note: CaseNote, facts: string[]): CaseNote {
 export function evidenceFallbackNote(input: { observation: string; caveats: string[]; evidence: EvidenceForModel[]; question: string }): CaseNote {
   const agency = input.evidence.filter((e) => e.provenance === "agency_supplied").map((e) => e.summary);
   return {
-    summary: [input.observation, ...input.caveats, ...(agency.length ? [`Agency-supplied records: ${agency.join(" ")}`] : [])].join(" "),
+    summary: [...(input.observation ? [input.observation] : []), ...input.caveats, ...(agency.length ? [`Agency-supplied records: ${agency.join(" ")}`] : [])].join(" "),
     question: input.question,
     evidence_ids: input.evidence.map((e) => e.id),
   };

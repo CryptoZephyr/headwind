@@ -282,10 +282,10 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
     if (policy.needsTask) {
       const evidenceInput = ev.map((e) => ({ id: e.id, provenance: e.provenance, sourceDate: e.source_date, summary: e.summary }));
       const coveredEvidenceIds = coveredIds(ev.map((e) => ({ id: e.id, sourceType: e.source_type })), policy.coveredSources);
-      const fallback = () => evidenceFallbackNote({ observation: policy.observation, caveats: policy.caveats, evidence: evidenceInput, question: `Is the ${m.role_title} role at ${c.name} still open, and is the expected start date still ${m.expected_trigger_date}?` });
+      const fallback = () => evidenceFallbackNote({ observation: (policy.openQuestions ?? [policy.observation]).join(" "), caveats: policy.caveats, evidence: evidenceInput, question: `Is the ${m.role_title} role at ${c.name} still open, and is the expected start date still ${m.expected_trigger_date}?` });
       try {
         if (coveredEvidenceIds.length === ev.length) throw new NothingLeftToDescribe();
-        const r = await ports.draftCaseNote({ roleTitle: m.role_title, clientName: c.name, stage: m.stage, missing: policy.missing, requiredFacts: policy.caveats, coveredEvidenceIds, evidence: evidenceInput });
+        const r = await ports.draftCaseNote({ roleTitle: m.role_title, clientName: c.name, stage: m.stage, missing: policy.openQuestions ?? policy.missing, requiredFacts: policy.caveats, coveredEvidenceIds, evidence: evidenceInput });
         chargeUsage(db, run, { modelCalls: r.calls, modelTokens: r.tokens });
         note = withRequiredFacts(r.note, policy.caveats);
       } catch (e) {

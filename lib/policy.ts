@@ -47,6 +47,7 @@ export interface PolicyResult {
   missing: string[];
   caveats: string[];
   coveredSources?: string[];
+  openQuestions?: string[];
 }
 
 function daysBetween(a: string, b: string): number {
@@ -102,7 +103,8 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
   if (age === null) missing.push("No record of when the client last confirmed this role.");
   else if (stale) missing.push(`Client last confirmed this role ${age} days ago.`);
   if (p.listing.status === "not_found") missing.push("The role's public listing was not found in the latest complete check.");
-  if (p.listing.status === "incomplete") missing.push("The latest listing check didn't finish, so it's unknown whether the role is still listed.");
+  const openQuestions = p.listing.status === "incomplete" ? ["The latest listing check didn't finish, so it's unknown whether the role is still listed."] : [];
+  missing.push(...openQuestions);
   if (p.reply?.outcome === "unclear") missing.push("The client's reply didn't say whether the role is still active.");
   const caveats = [confirmationCaveat(p)];
   if (declined(t)) {
@@ -127,5 +129,5 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
   if (declined(t)) coveredSources.push("company_snapshot");
   if (["not_found", "found", "baseline_found", "baseline_absent", "still_absent"].includes(p.listing.status)) coveredSources.push("listing_check");
   if (p.remarks?.length) coveredSources.push("agency_update");
-  return { outcome: "unknown", needsTask: true, considered, missing, caveats, coveredSources, observation: missing.join(" ") };
+  return { outcome: "unknown", needsTask: true, considered, missing, caveats, coveredSources, openQuestions, observation: missing.join(" ") };
 }
