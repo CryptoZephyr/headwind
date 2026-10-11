@@ -11,7 +11,13 @@ const root = path.join(process.cwd(), "fixtures", "agencies");
 const today = new Date().toISOString().slice(0, 10);
 const since = new Date(Date.now() - 30 * 86_400_000).toISOString().slice(0, 10);
 
-const cachePath = path.join(process.cwd(), "eval", "results", "coverage-cache.json");
+const reserve = 40;
+// Worst observed costs: an enrich with several candidate companies cost 6 credits, a listing search 0.27.
+const maxEnrichCost = 6;
+const maxListingCost = 0.5;
+
+// Answers are reused only within the same day and for the exact same query, so a rerun never reports old evidence as current.
+const cachePath = path.join(process.cwd(), "eval", "results", `coverage-cache-${today}.json`);
 const cache: { companies: Record<string, CompanySnapshot>; listings: Record<string, ListingSnapshot> } = fs.existsSync(cachePath)
   ? JSON.parse(fs.readFileSync(cachePath, "utf8"))
   : { companies: {}, listings: {} };
@@ -56,15 +62,25 @@ console.log(`${agencies.length} agencies valid: ${companyCount} companies, ${rol
 if (!live) process.exit(0);
 
 const before = await creditBalance();
-const cachedCompanies = agencies.reduce((n, a) => n + a.preview.clients.filter((c) => cache.companies[c.domain]).length, 0);
-const needed = (companyCount - cachedCompanies) * 2 + roleCount * 0.05;
-if (before - needed < 40) throw new Error(`Balance ${before} would drop below the 40-credit reserve (needs about ${needed}).`);
-console.log(`Balance before: ${before} credits; expected spend about ${needed}.`);
+console.log(`Balance before: ${before} credits; the run stops before any company that could take it below ${reserve}.`);
 
+const listingKey = (companyId: string, roleTitle: string) => `${companyId}|${cleanRoleTitle(roleTitle).toLowerCase()}|${since}`;
 const results = [];
+let stoppedEarly: string | null = null;
 for (const { slug, preview } of agencies) {
+  if (stoppedEarly) break;
   const companies = [];
   for (const c of preview.clients) {
+    const roleCountHere = preview.mandates.filter((x) => x.clientDomain === c.domain).length;
+    const bound = (cache.companies[c.domain] ? 0 : maxEnrichCost) + roleCountHere * maxListingCost;
+    if (bound > 0) {
+      const balance = await paced(creditBalance);
+      if (balance - bound < reserve) {
+        stoppedEarly = `Stopped before ${c.domain}: balance ${balance} could fall below the ${reserve}-credit reserve (this company could cost up to ${bound}).`;
+        console.log(stoppedEarly);
+        break;
+      }
+    }
     const snap = cache.companies[c.domain] ?? (cache.companies[c.domain] = await paced(() => fetchCompany(c.domain)));
     saveCache();
     const exact = snap.candidates.filter((x) => x.primaryDomain === c.domain && x.confidence >= 0.9);
@@ -72,7 +88,7 @@ for (const { slug, preview } of agencies) {
     const roles = [];
     for (const m of preview.mandates.filter((x) => x.clientDomain === c.domain)) {
       if (match !== "matched") { roles.push({ mandateId: m.id, roleTitle: cleanRoleTitle(m.roleTitle), listing: "blocked_by_match" }); continue; }
-      const ls = cache.listings[m.id] ?? (cache.listings[m.id] = await paced(() => fetchListings(exact[0].companyId, m.roleTitle, since)));
+      const ls = cache.listings[listingKey(exact[0].companyId, m.roleTitle)] ?? (cache.listings[listingKey(exact[0].companyId, m.roleTitle)] = await paced(() => fetchListings(exact[0].companyId, m.roleTitle, since)));
       saveCache();
       const hit = ls.listings.find((l) => titleMatches(l.title, m.roleTitle));
       roles.push({ mandateId: m.id, roleTitle: cleanRoleTitle(m.roleTitle), listing: hit ? "found" : ls.complete ? "not_found" : "incomplete", hit: hit ?? null, returned: ls.listings.length, credits: ls.credits });
@@ -89,5 +105,5 @@ for (const { slug, preview } of agencies) {
 }
 const after = await creditBalance();
 const out = path.join(process.cwd(), "eval", "results", `coverage-${new Date().toISOString().replace(/[:.]/g, "-")}.json`);
-fs.writeFileSync(out, JSON.stringify({ ranAt: new Date().toISOString(), listingsSince: since, creditsBefore: before, creditsAfter: after, results }, null, 2));
+fs.writeFileSync(out, JSON.stringify({ ranAt: new Date().toISOString(), listingsSince: since, creditsBefore: before, creditsAfter: after, stoppedEarly, results }, null, 2));
 console.log(`Balance after: ${after}. Saved ${out}`);
