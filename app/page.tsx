@@ -68,7 +68,7 @@ export default function Home() {
           <div>
             <p>
               Latest: {latest.kind === "reassess" ? "reassessment" : "weekly review"} · <strong>{RUN_LABEL[latest.status] ?? latest.status}</strong>
-              {latest.status !== "complete" && <> · step {latest.step}</>} · attempt {latest.attempts}
+              {latest.status !== "complete" && <> · step {latest.step}</>}{latest.attempts > 0 && <> · failed attempts {latest.attempts}</>}
             </p>
             <ul>
               {latest.steps.map((s) => (
