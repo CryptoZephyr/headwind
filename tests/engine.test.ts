@@ -8,6 +8,7 @@ import { recordClientReply, type ReplyReader } from "../lib/reply";
 import { ModelOutputError } from "../lib/llm";
 import { claimRun, enqueueRun, scheduleWeekly, getRun, LeaseLostError, processRun, RetryBlockedError, retryRun, SimulatedCrash, type Ports } from "../lib/review";
 import { commitImport } from "../lib/store";
+import { overview } from "../lib/views";
 
 delete process.env.NEATLOGS_API_KEY;
 process.env.HEADWIND_DB = ":memory:";
@@ -388,6 +389,9 @@ describe("decision cases (controlled replay of the 10 evaluation cases)", () => 
     const ev = db.prepare("SELECT summary FROM evidence WHERE mandate_id = 'M-102' AND source_type = 'listing_check'").get() as { summary: string };
     expect(ev.summary).toContain("no earlier listing history");
     expect(latest(db, "M-102").missing.join(" ")).not.toContain("listing");
+    const cases = overview(db)!.cases;
+    expect(cases.find((c) => c.mandateId === "M-102")!.listingHistory).toMatch(/^Role listing history: not available before \d{4}-\d{2}-\d{2}\./);
+    expect(cases.find((c) => c.mandateId === "M-103")!.listingHistory).toContain("agency saw the listing on");
     enqueueRun(db, agencyId);
     await drain(db, ports(cfo));
     expect(db.prepare("SELECT COUNT(*) AS n FROM review_run WHERE status = 'complete'").get()).toEqual({ n: 2 });

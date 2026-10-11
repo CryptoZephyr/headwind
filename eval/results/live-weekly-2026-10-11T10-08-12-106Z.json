@@ -1,0 +1,262 @@
+{
+ "label": "live weekly test 2026-10-11",
+ "agencyId": "agency_1c85d8c526c7d588",
+ "runId": "run_eac5efb75e90428e",
+ "status": "complete",
+ "error": null,
+ "traceId": "e9280508ace362c91ae376be0c66eb74",
+ "elapsedMs": 9029,
+ "usage": {
+  "crustdataCredits": 6,
+  "modelCalls": 2,
+  "modelTokens": 1212
+ },
+ "bindings": {
+  "reviewed": {
+   "scenario": "Headwind Reviewed (live weekly test 2026-10-11)",
+   "table": "Headwind Reviewed cash (live weekly test 2026-10-11)",
+   "prefix": "HW Reviewed"
+  },
+  "downside": {
+   "scenario": "Headwind Downside (live weekly test 2026-10-11)",
+   "table": "Headwind Downside cash (live weekly test 2026-10-11)",
+   "prefix": "HW Downside"
+  }
+ },
+ "steps": [
+  {
+   "step": "match_companies",
+   "status": "done",
+   "output": "{\"linear.app\":\"matched\",\"retool.com\":\"matched\",\"vercel.com\":\"matched\"}",
+   "completed_at": "2026-10-11 10:08:04"
+  },
+  {
+   "step": "check_listings",
+   "status": "done",
+   "output": "{\"M-101\":\"baseline_absent\",\"M-102\":\"baseline_absent\",\"M-103\":\"not_found\"}",
+   "completed_at": "2026-10-11 10:08:04"
+  },
+  {
+   "step": "assess",
+   "status": "done",
+   "output": "{\"M-101\":\"offer_accepted\",\"M-102\":\"unknown\",\"M-103\":\"unknown\"}",
+   "completed_at": "2026-10-11 10:08:06"
+  },
+  {
+   "step": "forecast",
+   "status": "done",
+   "output": "{\"forecastVersionId\":\"fv_ffb0eb0d241e6a99\",\"original\":2200000,\"reviewed\":2200000,\"downside\":1300000}",
+   "completed_at": "2026-10-11 10:08:06"
+  },
+  {
+   "step": "sync_cfo",
+   "status": "done",
+   "output": "{\"Reviewed\":{\"operationId\":\"op_6051e5175ee3236b\",\"status\":\"verified\",\"how\":\"written\",\"readback\":{\"Opening Cash\":20000,\"Expected Receipts\":17000,\"Recruiter Pay\":12000,\"Other Expenses\":3000,\"Closing Cash\":22000},\"changeLogId\":\"280221\"},\"Downside\":{\"operationId\":\"op_e230ee8aa0d0d3d2\",\"status\":\"verified\",\"how\":\"written\",\"readback\":{\"Opening Cash\":20000,\"Expected Receipts\":8000,\"Recruiter Pay\":12000,\"Other Expenses\":3000,\"Closing Cash\":13000},\"changeLogId\":\"280223\"}}",
+   "completed_at": "2026-10-11 10:08:11"
+  }
+ ],
+ "sourceSnapshots": [
+  {
+   "id": "ev_8819247ded3f2828",
+   "client_id": "client_5d08b595add616d7",
+   "mandate_id": "M-101",
+   "source_type": "agency_update",
+   "provenance": "agency_supplied",
+   "source_date": "2026-10-08",
+   "retrieved_at": "2026-10-11T10:07:58.401Z",
+   "summary": "Recruiter note (sample) on 2026-10-08: Candidate signed the offer letter; start date 20 October 2026 confirmed with the client.",
+   "payload": "{\"mandateId\":\"M-101\",\"updateDate\":\"2026-10-08\",\"source\":\"Recruiter note (sample)\",\"text\":\"Candidate signed the offer letter; start date 20 October 2026 confirmed with the client.\"}",
+   "complete": 1
+  },
+  {
+   "id": "ev_012cbf56abca7d9e",
+   "client_id": "client_5d08b595add616d7",
+   "mandate_id": "M-101",
+   "source_type": "candidate_record",
+   "provenance": "agency_supplied",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:07:58.401Z",
+   "summary": "Agency record (offer_accepted): Offer accepted 2026-10-08; signed offer letter on file (sample)",
+   "payload": "{\"stage\":\"offer_accepted\",\"record\":\"Offer accepted 2026-10-08; signed offer letter on file (sample)\"}",
+   "complete": 1
+  },
+  {
+   "id": "ev_501ece012192afd9",
+   "client_id": "client_4972566ef37b4d31",
+   "mandate_id": "M-102",
+   "source_type": "candidate_record",
+   "provenance": "agency_supplied",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:07:58.401Z",
+   "summary": "Agency record (final_interview): Two candidates at final interview (sample)",
+   "payload": "{\"stage\":\"final_interview\",\"record\":\"Two candidates at final interview (sample)\"}",
+   "complete": 1
+  },
+  {
+   "id": "ev_83090b2180062ae5",
+   "client_id": "client_8bd79232b332c2d6",
+   "mandate_id": "M-103",
+   "source_type": "candidate_record",
+   "provenance": "agency_supplied",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:07:58.401Z",
+   "summary": "Agency record (interviewing): One candidate interviewing (sample)",
+   "payload": "{\"stage\":\"interviewing\",\"record\":\"One candidate interviewing (sample)\"}",
+   "complete": 1
+  },
+  {
+   "id": "ev_3fae3380c96d3c45",
+   "client_id": "client_5d08b595add616d7",
+   "mandate_id": null,
+   "source_type": "company_snapshot",
+   "provenance": "live",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:08:03.400Z",
+   "summary": "Crustdata: Retool (retool.com) shows 3 open roles company-wide; 14 on 2026-06-01 vs 3 on 2026-09-01. Company-level only.",
+   "payload": "{\"candidates\":[{\"companyId\":\"633593\",\"name\":\"Retool\",\"primaryDomain\":\"retool.com\",\"confidence\":1}],\"openingsCount\":3,\"recentTitles\":[\"Software Engineer\",\"Agent Platform\",\"Software Engineer\",\"Automations\",\"Software Engineer\",\"Sandbox & Agent Executor\"],\"timeseries\":[{\"date\":\"2023-08-01\",\"openJobs\":12},{\"date\":\"2023-12-01\",\"openJobs\":6},{\"date\":\"2024-02-01\",\"openJobs\":1},{\"date\":\"2024-03-01\",\"openJobs\":14},{\"date\":\"2024-04-01\",\"openJobs\":11},{\"date\":\"2024-05-01\",\"openJobs\":31},{\"date\":\"2024-06-01\",\"openJobs\":9},{\"date\":\"2024-07-01\",\"openJobs\":22},{\"date\":\"2024-08-01\",\"openJobs\":7},{\"date\":\"2024-09-01\",\"openJobs\":14},{\"date\":\"2024-10-01\",\"openJobs\":2},{\"date\":\"2024-11-01\",\"openJobs\":6},{\"date\":\"2024-12-01\",\"openJobs\":1},{\"date\":\"2025-01-01\",\"openJobs\":7},{\"date\":\"2025-02-01\",\"openJobs\":6},{\"date\":\"2025-03-01\",\"openJobs\":12},{\"date\":\"2025-04-01\",\"openJobs\":22},{\"date\":\"2025-05-01\",\"openJobs\":16},{\"date\":\"2025-06-01\",\"openJobs\":18},{\"date\":\"2025-07-01\",\"openJobs\":15},{\"date\":\"2025-08-01\",\"openJobs\":4},{\"date\":\"2025-09-01\",\"openJobs\":24},{\"date\":\"2025-10-01\",\"openJobs\":20},{\"date\":\"2025-11-01\",\"openJobs\":14},{\"date\":\"2025-12-01\",\"openJobs\":24},{\"date\":\"2026-01-01\",\"openJobs\":20},{\"date\":\"2026-02-01\",\"openJobs\":7},{\"date\":\"2026-03-01\",\"openJobs\":3},{\"date\":\"2026-04-01\",\"openJobs\":4},{\"date\":\"2026-05-01\",\"openJobs\":9},{\"date\":\"2026-06-01\",\"openJobs\":14},{\"date\":\"2026-07-01\",\"openJobs\":5},{\"date\":\"2026-08-01\",\"openJobs\":8},{\"date\":\"2026-09-01\",\"openJobs\":3}]}",
+   "complete": 1
+  },
+  {
+   "id": "ev_84f77d9e4a410e97",
+   "client_id": "client_8bd79232b332c2d6",
+   "mandate_id": null,
+   "source_type": "company_snapshot",
+   "provenance": "live",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:08:04.056Z",
+   "summary": "Crustdata: Vercel (vercel.com) shows 9 open roles company-wide; 48 on 2026-07-01 vs 1 on 2026-10-01. Company-level only.",
+   "payload": "{\"candidates\":[{\"companyId\":\"631347\",\"name\":\"Vercel\",\"primaryDomain\":\"vercel.com\",\"confidence\":1}],\"openingsCount\":9,\"recentTitles\":[\"Software Engineer\",\"Platform\",\"Software Engineer\",\"Agentic Infrastructure\",\"Software Engineer\",\"Scheduled Tasks\",\"Software Engineer\",\"eve\",\"Machine Learning Engineer\",\"Trust & Safety\",\"Software Engineer - Data Platform\",\"Account Executive- Startups\",\"Install Base\",\"Design Engineer\",\"Software Engineer\",\"AI SDK\"],\"timeseries\":[{\"date\":\"2023-04-01\",\"openJobs\":2},{\"date\":\"2023-05-01\",\"openJobs\":3},{\"date\":\"2023-06-01\",\"openJobs\":5},{\"date\":\"2023-07-01\",\"openJobs\":6},{\"date\":\"2023-08-01\",\"openJobs\":6},{\"date\":\"2023-09-01\",\"openJobs\":2},{\"date\":\"2023-10-01\",\"openJobs\":3},{\"date\":\"2023-11-01\",\"openJobs\":5},{\"date\":\"2023-12-01\",\"openJobs\":7},{\"date\":\"2024-02-01\",\"openJobs\":4},{\"date\":\"2024-03-01\",\"openJobs\":5},{\"date\":\"2024-04-01\",\"openJobs\":4},{\"date\":\"2024-05-01\",\"openJobs\":3},{\"date\":\"2024-07-01\",\"openJobs\":19},{\"date\":\"2024-08-01\",\"openJobs\":4},{\"date\":\"2024-09-01\",\"openJobs\":24},{\"date\":\"2024-10-01\",\"openJobs\":24},{\"date\":\"2024-11-01\",\"openJobs\":20},{\"date\":\"2024-12-01\",\"openJobs\":16},{\"date\":\"2025-01-01\",\"openJobs\":8},{\"date\":\"2025-02-01\",\"openJobs\":26},{\"date\":\"2025-03-01\",\"openJobs\":16},{\"date\":\"2025-04-01\",\"openJobs\":16},{\"date\":\"2025-05-01\",\"openJobs\":30},{\"date\":\"2025-06-01\",\"openJobs\":18},{\"date\":\"2025-07-01\",\"openJobs\":62},{\"date\":\"2025-08-01\",\"openJobs\":37},{\"date\":\"2025-09-01\",\"openJobs\":52},{\"date\":\"2025-10-01\",\"openJobs\":86},{\"date\":\"2025-11-01\",\"openJobs\":36},{\"date\":\"2025-12-01\",\"openJobs\":105},{\"date\":\"2026-01-01\",\"openJobs\":24},{\"date\":\"2026-02-01\",\"openJobs\":30},{\"date\":\"2026-03-01\",\"openJobs\":11},{\"date\":\"2026-04-01\",\"openJobs\":17},{\"date\":\"2026-05-01\",\"openJobs\":6},{\"date\":\"2026-06-01\",\"openJobs\":22},{\"date\":\"2026-07-01\",\"openJobs\":48},{\"date\":\"2026-08-01\",\"openJobs\":35},{\"date\":\"2026-09-01\",\"openJobs\":13},{\"date\":\"2026-10-01\",\"openJobs\":1}]}",
+   "complete": 1
+  },
+  {
+   "id": "ev_df9d6b2dafe6cc7e",
+   "client_id": "client_4972566ef37b4d31",
+   "mandate_id": null,
+   "source_type": "company_snapshot",
+   "provenance": "live",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:08:03.207Z",
+   "summary": "Crustdata: Linear (linear.app) shows unknown open roles company-wide. Company-level only.",
+   "payload": "{\"candidates\":[{\"companyId\":\"633791\",\"name\":\"Linear\",\"primaryDomain\":\"linear.app\",\"confidence\":1}],\"openingsCount\":null,\"recentTitles\":[],\"timeseries\":[]}",
+   "complete": 1
+  },
+  {
+   "id": "ev_05899b3cbb7b35e8",
+   "client_id": "client_8bd79232b332c2d6",
+   "mandate_id": "M-103",
+   "source_type": "listing_baseline",
+   "provenance": "agency_supplied",
+   "source_date": "2026-09-15",
+   "retrieved_at": "2026-10-11T10:07:58.401Z",
+   "summary": "Agency saw the public listing for \"Staff Billing Platform Engineer (sample)\" on 2026-09-15 at https://vercel.com/careers (sample).",
+   "payload": "{\"url\":\"https://vercel.com/careers (sample)\",\"seen\":\"2026-09-15\"}",
+   "complete": 1
+  },
+  {
+   "id": "ev_2b222fb1d80aa189",
+   "client_id": "client_4972566ef37b4d31",
+   "mandate_id": "M-102",
+   "source_type": "listing_check",
+   "provenance": "live",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:08:04.362Z",
+   "summary": "Baseline: Crustdata's complete search found no listing matching \"Product Engineer (sample)\" at Linear added since 2026-09-11. This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet.",
+   "payload": "{\"listings\":[],\"totalCount\":0,\"complete\":true,\"filters\":{\"op\":\"and\",\"conditions\":[{\"field\":\"company.basic_info.company_id\",\"type\":\"=\",\"value\":633791},{\"field\":\"job_details.title\",\"type\":\"(.)\",\"value\":\"Product Engineer\"},{\"field\":\"metadata.date_added\",\"type\":\"=>\",\"value\":\"2026-09-11\"}]},\"credits\":0,\"status\":\"baseline_absent\"}",
+   "complete": 1
+  },
+  {
+   "id": "ev_6e0438a170af9bc3",
+   "client_id": "client_8bd79232b332c2d6",
+   "mandate_id": "M-103",
+   "source_type": "listing_check",
+   "provenance": "live",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:08:04.491Z",
+   "summary": "Crustdata's complete search found no listing matching \"Staff Billing Platform Engineer (sample)\" at Vercel since 2026-08-16. A missing listing is an observation, not a confirmed pause.",
+   "payload": "{\"listings\":[],\"totalCount\":0,\"complete\":true,\"filters\":{\"op\":\"and\",\"conditions\":[{\"field\":\"company.basic_info.company_id\",\"type\":\"=\",\"value\":631347},{\"field\":\"job_details.title\",\"type\":\"(.)\",\"value\":\"Staff Billing Platform Engineer\"},{\"field\":\"metadata.date_added\",\"type\":\"=>\",\"value\":\"2026-08-16\"}]},\"credits\":0,\"status\":\"not_found\"}",
+   "complete": 1
+  },
+  {
+   "id": "ev_a4d78fdf6d694b81",
+   "client_id": "client_5d08b595add616d7",
+   "mandate_id": "M-101",
+   "source_type": "listing_check",
+   "provenance": "live",
+   "source_date": "2026-10-11",
+   "retrieved_at": "2026-10-11T10:08:04.252Z",
+   "summary": "Baseline: Crustdata's complete search found no listing matching \"Senior Software Engineer (sample)\" at Retool added since 2026-09-11. This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet.",
+   "payload": "{\"listings\":[],\"totalCount\":0,\"complete\":true,\"filters\":{\"op\":\"and\",\"conditions\":[{\"field\":\"company.basic_info.company_id\",\"type\":\"=\",\"value\":633593},{\"field\":\"job_details.title\",\"type\":\"(.)\",\"value\":\"Senior Software Engineer\"},{\"field\":\"metadata.date_added\",\"type\":\"=>\",\"value\":\"2026-09-11\"}]},\"credits\":0,\"status\":\"baseline_absent\"}",
+   "complete": 1
+  }
+ ],
+ "decisions": [
+  {
+   "case_id": "case_7c7df1a3b86de5de",
+   "mandate_id": "M-101",
+   "selected_outcome": "offer_accepted",
+   "support": "Agency records show an accepted offer.",
+   "missing_facts": "[]",
+   "evidence_ids": "[\"ev_012cbf56abca7d9e\",\"ev_8819247ded3f2828\",\"ev_3fae3380c96d3c45\",\"ev_a4d78fdf6d694b81\"]",
+   "assumption_change": "Keep owner's fee, probability and timing."
+  },
+  {
+   "case_id": "case_086f656e1a6e558a",
+   "mandate_id": "M-102",
+   "selected_outcome": "unknown",
+   "support": "The evidence shows that the Product Engineer (sample) role for Linear is at the final interview stage with two candidates, but there are no public listings for this role on Linear's website. Company-level hiring numbers and a missing public listing do not prove a specific role was paused, cancelled, or filled.",
+   "missing_facts": "[\"Client last confirmed this role 12 days ago.\"]",
+   "evidence_ids": "[\"ev_501ece012192afd9\",\"ev_df9d6b2dafe6cc7e\",\"ev_2b222fb1d80aa189\"]",
+   "assumption_change": "Keep the disclosed assumption in Reviewed; exclude it in Downside until confirmed."
+  },
+  {
+   "case_id": "case_5c3b849c29b10197",
+   "mandate_id": "M-103",
+   "selected_outcome": "unknown",
+   "support": "The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata indicates a significant drop in company-wide open roles from 48 to 9 between July 1, 2026, and October 1, 2026. However, a complete search found no matching listing since August 16, 2026, which is an observation but not proof of a role pause.",
+   "missing_facts": "[\"Client last confirmed this role 33 days ago.\",\"The role's public listing was not found in the latest complete check.\"]",
+   "evidence_ids": "[\"ev_84f77d9e4a410e97\",\"ev_6e0438a170af9bc3\"]",
+   "assumption_change": "Keep the disclosed assumption in Reviewed; exclude it in Downside until confirmed."
+  }
+ ],
+ "tasks": [
+  {
+   "question": "Can you confirm if the Product Engineer (sample) role has been officially cancelled or if there are any updates on the hiring process?",
+   "assignee": "Bola (sample)",
+   "priority_reason": "USD 10,000 fee at 50% is unconfirmed: Client last confirmed this role 12 days ago.",
+   "mandate_id": "M-102"
+  },
+  {
+   "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been officially paused, cancelled, or filled?",
+   "assignee": "Chidi (sample)",
+   "priority_reason": "USD 10,000 fee at 40% is unconfirmed: Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check.",
+   "mandate_id": "M-103"
+  }
+ ],
+ "forecasts": [
+  {
+   "id": "fv_ffb0eb0d241e6a99",
+   "assumptions": "{\"treatments\":[{\"mandateId\":\"M-101\",\"outcome\":\"offer_accepted\",\"pausedUntil\":null},{\"mandateId\":\"M-102\",\"outcome\":\"unknown\",\"pausedUntil\":null},{\"mandateId\":\"M-103\",\"outcome\":\"unknown\",\"pausedUntil\":null}],\"horizon\":[\"2026-11-01\",\"2026-11-30\"]}",
+   "intended": "{\"original\":{\"name\":\"Original\",\"lines\":[{\"mandateId\":\"M-101\",\"expectedFeeCents\":800000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":800000,\"reason\":\"Imported assumption\"},{\"mandateId\":\"M-102\",\"expectedFeeCents\":500000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":500000,\"reason\":\"Imported assumption\"},{\"mandateId\":\"M-103\",\"expectedFeeCents\":400000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":400000,\"reason\":\"Imported assumption\"}],\"expectedReceiptsCents\":1700000,\"closingCashCents\":2200000},\"reviewed\":{\"name\":\"Reviewed\",\"lines\":[{\"mandateId\":\"M-101\",\"expectedFeeCents\":800000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":800000,\"reason\":\"Accepted offer: owner probability and timing kept\"},{\"mandateId\":\"M-102\",\"expectedFeeCents\":500000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":500000,\"reason\":\"Unresolved: disclosed assumption kept\"},{\"mandateId\":\"M-103\",\"expectedFeeCents\":400000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":400000,\"reason\":\"Unresolved: disclosed assumption kept\"}],\"expectedReceiptsCents\":1700000,\"closingCashCents\":2200000},\"downside\":{\"name\":\"Downside\",\"lines\":[{\"mandateId\":\"M-101\",\"expectedFeeCents\":800000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":800000,\"reason\":\"Accepted offer: owner probability and timing kept\"},{\"mandateId\":\"M-102\",\"expectedFeeCents\":500000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":0,\"reason\":\"Unresolved: excluded in downside\"},{\"mandateId\":\"M-103\",\"expectedFeeCents\":400000,\"collectionDate\":\"2026-11-19\",\"inHorizon\":true,\"includedCents\":0,\"reason\":\"Unresolved: excluded in downside\"}],\"expectedReceiptsCents\":800000,\"closingCashCents\":1300000}}",
+   "readback": "{\"Reviewed\":{\"operationId\":\"op_6051e5175ee3236b\",\"status\":\"verified\",\"how\":\"written\",\"readback\":{\"Opening Cash\":20000,\"Expected Receipts\":17000,\"Recruiter Pay\":12000,\"Other Expenses\":3000,\"Closing Cash\":22000},\"changeLogId\":\"280221\"},\"Downside\":{\"operationId\":\"op_e230ee8aa0d0d3d2\",\"status\":\"verified\",\"how\":\"written\",\"readback\":{\"Opening Cash\":20000,\"Expected Receipts\":8000,\"Recruiter Pay\":12000,\"Other Expenses\":3000,\"Closing Cash\":13000},\"changeLogId\":\"280223\"}}",
+   "verification": "verified"
+  }
+ ],
+ "operations": [
+  {
+   "id": "op_6051e5175ee3236b",
+   "target": "cfo.ai:Headwind Reviewed (live weekly test 2026-10-11):Headwind Reviewed cash (live weekly test 2026-10-11)",
+   "status": "verified",
+   "attempts": 1,
+   "result": "{\"operationId\":\"op_6051e5175ee3236b\",\"status\":\"verified\",\"how\":\"written\",\"readback\":{\"Opening Cash\":20000,\"Expected Receipts\":17000,\"Recruiter Pay\":12000,\"Other Expenses\":3000,\"Closing Cash\":22000},\"changeLogId\":\"280221\"}",
+   "reconciliation": "Readback matched the intended values."
+  },
+  {
+   "id": "op_e230ee8aa0d0d3d2",
+   "target": "cfo.ai:Headwind Downside (live weekly test 2026-10-11):Headwind Downside cash (live weekly test 2026-10-11)",
+   "status": "verified",
+   "attempts": 1,
+   "result": "{\"operationId\":\"op_e230ee8aa0d0d3d2\",\"status\":\"verified\",\"how\":\"written\",\"readback\":{\"Opening Cash\":20000,\"Expected Receipts\":8000,\"Recruiter Pay\":12000,\"Other Expenses\":3000,\"Closing Cash\":13000},\"changeLogId\":\"280223\"}",
+   "reconciliation": "Readback matched the intended values."
+  }
+ ]
+}
