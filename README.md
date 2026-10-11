@@ -198,6 +198,6 @@ npm run worker                 # runs queued reviews (restart it after code chan
 - Add a code-written warning for rising company hiring, matching the one for falling hiring.
 - Support more than one agency per server, with a separate sign-in for each.
 
-## License
+## License and security
 
-Not chosen yet.
+Headwind is open source under the [MIT License](LICENSE). To report a security problem, see [SECURITY.md](SECURITY.md).
