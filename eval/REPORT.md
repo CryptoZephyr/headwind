@@ -1,7 +1,7 @@
 # Headwind evaluation report (2026-10-11)
 
 What this covers, in two separate parts:
-- **Part A, controlled tests:** the 10 decision cases, what the model is allowed to see, the case-note fix, and an independent grade of case notes, including fresh held-out cases. Inputs are fixed or stubbed.
+- **Part A, controlled tests:** the 10 decision cases, what the model is allowed to see, the case-note fix, an independent grade of case notes, and the regrade after the caveat and checker fix (A5). Inputs are fixed or stubbed.
 - **Part B, completed live reviews:** one full weekly review and one recovery test, both against live Crustdata and live cfo.ai. Each ran once.
 
 Then Part C covers cfo.ai's plan and cost, and Part D lists what is still not shown.
@@ -40,7 +40,7 @@ First-time roles and conflicting evidence (cases 7 and 8):
 - **Case 8, a company-wide decline against a dated client confirmation:** the decision note now spells out the conflict and why the confirmation wins: "Client confirmed on 2026-10-11 that this role is still active. Crustdata shows company-wide open roles fell from 50 on 2026-07-01 to 10 on 2026-10-01. That count covers the whole company and says nothing about this role, so the dated confirmation for this role is used and the fee assumption is kept." The case-8 test checks that wording, the dates and the counts.
 - Crustdata's job search only returns current listings with an added date, not a role's past listings, so a first check can't recover earlier history. That's why only a baseline is recorded.
 
-The full suite has **52 of 52 tests passing**: these 10 cases plus 42 tests for recovery, imports, sign-in, calculations and what the model sees.
+The full suite has **68 of 68 tests passing**: these 10 cases plus 58 tests for recovery, imports, sign-in, calculations and what the model sees.
 
 ## A2. What the model sees
 
@@ -152,6 +152,67 @@ These are 6 hand-written sentences, labelled before the run.
 - **Headwind's check caught 1 of 3 unsupported sentences.** A hedge word anywhere in the sentence ("not", "could") lets a real claim through.
 - The judge caught 3 of 3, with 1 false alarm out of 3 hedged sentences.
 - None of the 35 real notes contained this pattern, but the gap is real.
+
+## A5. After the caveat and checker fix (PR #3)
+
+**What changed**
+- **Caveats are now written by code, not remembered by the model.** From the client's last confirmation date and the review date, Headwind works out the age (e.g. "41 days before the 2026-10-11 review") and says whether it's past the existing 10-day freshness limit. No new limit was added. Age alone never marks a role paused: a stale confirmation only opens a confirmation task and keeps the role "unknown", which the approved rules already did, so the forecast maths is unchanged.
+- **Conflicts are spelled out by code:** both sources, their dates, why one decides the current treatment (or that neither does), and what's still unresolved. These sentences are added to the saved note if the model leaves them out, so they appear on the case page.
+- **The client's last confirmation is now saved as evidence** ("Client record: ... last confirmed its open roles on ..."), so a note can cite it. Before, the date was used by the rules but wasn't in the evidence list, so the judge rightly called it unsupported.
+- **The hedge check now looks at each part of a sentence separately.** A "not" or "possibly" in one part no longer excuses a claim in another part.
+- **Bounded retry and fallback:** the model gets 3 tries. If all 3 fail, the note is built from the evidence itself: what was observed, the required caveats and the agency's own records.
+- **Repeated empty listing checks** (found by Devin Review): a second empty search is now recorded as "still no listing since the first check, so no removal can be inferred". Only a listing that was actually seen and then disappears counts as missing.
+
+**Hedge check probes** (written before the run; script `scripts/grade-revised-notes.ts`)
+
+| Sentence | Really unsupported? | Check flags it (before → after) | Judge flags it |
+|---|---|---|---|
+| "The role was paused, not cancelled." | yes | no → **yes** | yes |
+| "The role is no longer open and the client could not confirm a new date." | yes | no → **yes** | yes |
+| "Hiring is frozen company-wide, which confirms this role is on hold." | yes | yes → yes | yes |
+| "The role was possibly delayed; it was cancelled last week." | yes | new → yes | yes |
+| "Unconfirmed reports aside, the role is filled." | yes | new → yes | yes |
+| "The listing was not found; this is an observation, not proof of a pause." | no | no | no |
+| "It is unclear whether the role is still open." | no | no | no |
+| "The client may have filled the role elsewhere, so we should confirm." | no | no | no |
+| "There is no evidence, so far, that the role was cancelled." | no | **yes (false alarm)** | no |
+
+- The check now catches **5 of 5** unsupported sentences, up from 1 of 3.
+- It wrongly flags **1 of 4** cautious sentences. That false alarm is real: it makes the model retry, and in H1 all 5 notes fell back to the evidence-built note.
+- The same sentences also run as unit tests in `tests/llm.test.ts`.
+
+**Independent regrade** (judge: Claude Sonnet 4.6, writer: nova-micro, both at temperature 0; artifact `eval/results/revised-note-grading-2026-10-11T10-58-18-099Z.json`)
+
+Each saved row has the note, the rejected drafts and why they were rejected, the input evidence, the rule result and required caveats, the writer and judge models and settings, the rubric, the judge's reason and the neatlogs trace ID (65 of 67 rows; the 2 notes written fully by code have no model call).
+
+Groups, labelled in the artifact:
+- **Redrawn originals (new group):** M-102 and M-103 redrawn with the revised writer. These are not the original 20 notes, whose text was never saved.
+- **H1-H3:** the old held-out cases. They shaped this fix, so they are no longer held out.
+- **F1-F5:** fresh in the first post-fix run (17 of 21 passed there). That run found the missing confirmation evidence, so they shaped the second change and are no longer held out either.
+- **G1-G3:** written after the last change to the rules and never used to tune them. This is the only truly fresh group.
+
+Unsupported claims and caveat completeness are counted separately:
+
+| Group | Notes | Unsupported outcome claim (judge) | Company data used as role proof | Caveats complete (judge) | Required caveats present (code check) | Passed all |
+|---|---|---|---|---|---|---|
+| Redrawn originals | 20 | 2 / 20 | 0 / 20 | 19 / 20 | 20 / 20 | 18 / 20 |
+| H1-H3 (shaped the fix) | 11 | 0 / 11 | 0 / 11 | 11 / 11 | 11 / 11 | 11 / 11 |
+| F1-F5 (shaped the fix) | 21 | 1 / 21 | 0 / 21 | 16 / 21 | 21 / 21 | 15 / 21 |
+| **G1-G3 (fresh)** | **15** | **1 / 15** | **0 / 15** | **9 / 15** | **15 / 15** | **8 / 15** |
+| All | 67 | 4 / 67 | 0 / 67 | 55 / 67 | 67 / 67 | 52 / 67 |
+
+- Every note cited only real evidence IDs (67 of 67).
+- On the fresh cases: G1 (client quote "not cancelled, just slower") 5 of 5, G2 (fresh confirmation vs company decline and missing listing) 3 of 5, G3 (stale confirmation plus an unclear client reply) **0 of 5**.
+- An earlier run on the same G cases, before a logging-only change, gave 7 of 15. Results move by a note or two between runs.
+
+**Manual inspection of the tricky examples**
+- **All 4 "unsupported" flags are in the question, not the summary.** Three ask the client "has the role been paused, cancelled or filled?" and one asks "has there been any update?". I read none of them as asserting an outcome, but the first three do put outcomes in front of the client that no evidence suggests. Headwind's check doesn't read questions.
+- **G3 fails for a real reason:** the rules already list "the reply didn't say whether the role is still active" as an open question, but it isn't one of the code-written caveats, and the model never mentions the reply.
+- **F1 fails for a real reason too:** the recruiter's "probably slowing down, nothing decided yet" never appears in the notes. The model drops agency remarks that aren't turned into code-written caveats.
+- **Stale confirmation with a live listing (H3, F3, G3):** every note gave the age and said it needs reconfirming without calling the role paused.
+- **Fresh confirmation vs company decline (G2, F5):** the code-written sentence names both sources and dates and says why the role's own confirmation decides. The 2 G2 failures are a hedged question and a missed "the missing listing is only an observation".
+- **Fallback notes (H1):** all 5 were readable and passed, but several drafts were rejected only because of the check's false alarm above.
+- **Repeated text:** when the model already paraphrases a caveat, the code still adds the exact sentence, so some notes say the same thing twice.
 
 # Part B: Completed live reviews
 
@@ -314,22 +375,15 @@ Not validated: price, willingness to pay, adoption, Crustdata's paid credit pric
 
 # Part D: What is still not shown
 
-1. **Model notes miss caveats on hard cases:**
-   - 5 of 15 held-out notes passed the independent judge; 18 of 20 replay notes passed.
-   - 0 of 5 flagged a stale confirmation.
-   - No note made an unsupported outcome claim.
-   - A fix (prompt the writer to state staleness and the conflict rule, then regrade) hasn't been tried.
-2. **Headwind's check lets hedged claims through:** it missed 2 of 3 misleading-hedge sentences. It passed every real note, but it shouldn't be read as a quality grade.
-3. **The judge is one model:**
-   - It is stricter than a person might be (the M-103 and H1 failures are borderline).
-   - It had 1 false alarm in 6 probe sentences.
-   - Nobody else has checked its grades.
-4. **The A3 notes weren't stored:** the 20 notes graded in A4 were redrawn from the same inputs, not the original 20.
-5. **Live run size:** one complete weekly review and one recovery test, on sample data with simulated replies. There's no repeated live run, no real agency, and no forecast accuracy over time.
-6. **First-time roles:**
-   - Crustdata gives no past listing history, so a role's first week can only set a starting point.
-   - A removal can show up only from the second check onward.
-7. **cfo.ai cost:**
+1. **Some caveats still depend on the model:** only confirmation age and conflicting sources are written by code. An unclear client reply (G3, 0 of 5) and informal agency remarks (F1, 0 of 5) are often left out. On the only truly fresh cases, 9 of 15 notes had every caveat the judge expected.
+2. **Questions aren't checked:** 4 of 67 notes asked the client about outcomes nothing pointed to. No summary made an unsupported claim on my reading.
+3. **The hedge check has one known false alarm** ("There is no evidence, so far, that ... cancelled"), which forces needless retries and fallbacks. It is a word-pattern check, so it shouldn't be read as a quality grade.
+4. **Small, partly reused test set:** H1-H3 and F1-F5 both shaped the fix, so only the 3 G cases (15 notes) are untouched, and scores move by a note or two between runs.
+5. **The judge is one model:** nobody else has checked its grades, and some of its failures (F5 in round 1, part of G2) are about wording more than meaning.
+6. **The A3 notes weren't stored:** the A4 and A5 originals were redrawn from the same inputs, not the original 20.
+7. **Live run size:** one complete weekly review and one recovery test, on sample data with simulated replies. The fix in A5 hasn't been run live or deployed yet. There's no repeated live run, no real agency, and no forecast accuracy over time.
+8. **First-time roles:** Crustdata gives no past listing history, so a role's first check only sets a starting point. A removal can show up only after a listing has actually been seen.
+9. **cfo.ai cost:**
    - Startup is the lowest plan whose listed features cover Headwind, but Headwind hasn't run on it.
    - Usage limits on Startup are unverified.
    - Headwind's $300 price, adoption, Crustdata's paid credit price and neatlogs pricing are all unverified.

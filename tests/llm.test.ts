@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { containsUnsupportedClaim } from "../lib/llm";
+import { containsUnsupportedClaim, withRequiredFacts } from "../lib/llm";
 
 describe("containsUnsupportedClaim", () => {
   it("rejects a plain outcome claim", () => {
@@ -40,5 +40,35 @@ describe("containsUnsupportedClaim", () => {
 
   it("rejects cancelled in second sentence when first sentence is fine", () => {
     expect(containsUnsupportedClaim("Client confirmed the role. The search was cancelled.", false)).toBe(true);
+  });
+
+  it.each([
+    "The role was paused, not cancelled.",
+    "The role is no longer open and the client could not confirm a new date.",
+    "Hiring is frozen company-wide, which confirms this role is on hold.",
+    "The role was possibly delayed; it was cancelled last week.",
+    "Unconfirmed reports aside, the role is filled.",
+    "The client could not confirm the date and the role is on hold.",
+  ])("rejects a separate assertion that a hedge elsewhere doesn't cover: %s", (text) => {
+    expect(containsUnsupportedClaim(text, false)).toBe(true);
+  });
+
+  it.each([
+    "The listing was not found; this is an observation, not proof of a pause.",
+    "It is unclear whether the role is still open.",
+    "The client may have filled the role elsewhere, so we should confirm.",
+    "The role may be on hold or cancelled.",
+  ])("passes a hedged sentence: %s", (text) => {
+    expect(containsUnsupportedClaim(text, false)).toBe(false);
+  });
+});
+
+describe("withRequiredFacts", () => {
+  it("appends required facts the model left out, once", () => {
+    const note = { summary: "Needs confirming.", question: "Still open?", evidence_ids: ["e1"] };
+    const facts = ["Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review."];
+    const out = withRequiredFacts(note, facts);
+    expect(out.summary).toBe(`Needs confirming. ${facts[0]}`);
+    expect(withRequiredFacts(out, facts).summary).toBe(out.summary);
   });
 });

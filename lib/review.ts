@@ -1,6 +1,6 @@
 import type Database from "better-sqlite3";
 import { fetchCompany, fetchListings, titleMatches, type CompanySnapshot, type ListingSnapshot } from "./crustdata";
-import { draftCaseNote, ModelOutputError, type CaseNote } from "./llm";
+import { draftCaseNote, ModelOutputError, evidenceFallbackNote, NOTE_ATTEMPTS, withRequiredFacts, type CaseNote } from "./llm";
 import { faultEnabled } from "./faults";
 import { newId, stableId } from "./ids";
 import { decideTreatment, type CompanyTrend, type ListingObservation, type ReplyReading } from "./policy";
@@ -206,14 +206,17 @@ async function stepCheckListings(db: Database.Database, run: RunRow, ports: Port
   for (const m of mandates(db, run.agency_id)) {
     const c = byId.get(m.client_id)!;
     if (c.match_status !== "matched" || !c.company_id) { out[m.id] = "blocked_by_match"; continue; }
-    const firstCheck = !m.listing_seen_at && !db.prepare("SELECT 1 FROM evidence WHERE agency_id = ? AND mandate_id = ? AND source_type = 'listing_check' AND retired_at IS NULL AND json_extract(payload, '$.status') IN ('found', 'baseline_found')").get(run.agency_id, m.id);
+    const priorStatus = (statuses: string[]) => Boolean(db.prepare("SELECT 1 FROM evidence WHERE agency_id = ? AND mandate_id = ? AND source_type = 'listing_check' AND retired_at IS NULL AND json_extract(payload, '$.status') IN (SELECT value FROM json_each(?))").get(run.agency_id, m.id, JSON.stringify(statuses)));
+    const seenBefore = Boolean(m.listing_seen_at) || priorStatus(["found", "baseline_found"]);
+    const firstCheck = !seenBefore && !priorStatus(["baseline_absent", "still_absent", "not_found"]);
+    const baseline = firstCheck ? null : (db.prepare("SELECT source_date FROM evidence WHERE agency_id = ? AND mandate_id = ? AND source_type = 'listing_check' AND retired_at IS NULL ORDER BY retrieved_at ASC LIMIT 1").get(run.agency_id, m.id) as { source_date: string } | undefined)?.source_date;
     const evId = stableId("ev", run.id, m.id, "listings");
     if (!evidenceExists(db, evId)) {
       const since = addDays(m.listing_seen_at ?? new Date().toISOString().slice(0, 10), -30);
       const snap = await toolSpan("crustdata.job_search", () => ports.fetchListings(c.company_id!, m.role_title, since));
       chargeUsage(db, run, { crustdataCredits: snap.credits ?? snap.listings.length * 0.03 });
       const hit = snap.listings.find((l) => titleMatches(l.title, m.role_title));
-      const status: ListingObservation["status"] = !snap.complete && !hit ? "incomplete" : firstCheck ? (hit ? "baseline_found" : "baseline_absent") : hit ? "found" : "not_found";
+      const status: ListingObservation["status"] = !snap.complete && !hit ? "incomplete" : firstCheck ? (hit ? "baseline_found" : "baseline_absent") : hit ? "found" : seenBefore ? "not_found" : "still_absent";
       const now = new Date().toISOString();
       const noHistory = "This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet.";
       insertEvidence(db, {
@@ -221,6 +224,7 @@ async function stepCheckListings(db: Database.Database, run: RunRow, ports: Port
         summary: status === "baseline_found" ? `Baseline: Crustdata currently lists "${hit!.title}" (added ${hit!.dateAdded?.slice(0, 10) ?? "unknown"}). ${noHistory}`
           : status === "baseline_absent" ? `Baseline: Crustdata's complete search found no listing matching "${m.role_title}" at ${c.matched_name} added since ${since}. ${noHistory}`
           : status === "found" ? `Crustdata still lists "${hit!.title}" (added ${hit!.dateAdded?.slice(0, 10) ?? "unknown"}).`
+          : status === "still_absent" ? `Crustdata's complete search still finds no listing matching "${m.role_title}" at ${c.matched_name} added since ${since}. The role hasn't been seen listed since the first check${baseline ? ` on ${baseline}` : ""}, so no removal can be inferred.`
           : status === "not_found" ? `Crustdata's complete search found no listing matching "${m.role_title}" at ${c.matched_name} since ${since}. A missing listing is an observation, not a confirmed pause.`
           : `Crustdata's listing search for "${m.role_title}" was incomplete, so no conclusion is drawn.`,
         payload: JSON.stringify({ ...snap, status }),
@@ -240,9 +244,9 @@ export function latestReply(db: Database.Database, caseId: string): ReplyReading
 }
 
 function listingObservation(db: Database.Database, run: RunRow, m: MandateRecord): ListingObservation {
-  const row = db.prepare("SELECT id, payload FROM evidence WHERE agency_id = ? AND mandate_id = ? AND source_type = 'listing_check' ORDER BY retrieved_at DESC LIMIT 1").get(run.agency_id, m.id) as { id: string; payload: string } | undefined;
+  const row = db.prepare("SELECT id, payload, source_date FROM evidence WHERE agency_id = ? AND mandate_id = ? AND source_type = 'listing_check' ORDER BY retrieved_at DESC LIMIT 1").get(run.agency_id, m.id) as { id: string; payload: string; source_date: string | null } | undefined;
   if (!row) return { status: "not_checked" };
-  return { status: (JSON.parse(row.payload) as { status: ListingObservation["status"] }).status, evidenceId: row.id };
+  return { status: (JSON.parse(row.payload) as { status: ListingObservation["status"] }).status, evidenceId: row.id, checkedOn: row.source_date ?? undefined };
 }
 
 async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Promise<object> {
@@ -268,18 +272,14 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
     if (policy.needsTask) {
       const evidenceInput = ev.map((e) => ({ id: e.id, provenance: e.provenance, sourceDate: e.source_date, summary: e.summary }));
       try {
-        const r = await ports.draftCaseNote({ roleTitle: m.role_title, clientName: c.name, stage: m.stage, missing: policy.missing, evidence: evidenceInput });
+        const r = await ports.draftCaseNote({ roleTitle: m.role_title, clientName: c.name, stage: m.stage, missing: policy.missing, requiredFacts: policy.caveats, evidence: evidenceInput });
         chargeUsage(db, run, { modelCalls: r.calls, modelTokens: r.tokens });
-        note = r.note;
+        note = withRequiredFacts(r.note, policy.caveats);
       } catch (e) {
         if (!(e instanceof ModelOutputError)) throw e;
-        chargeUsage(db, run, { modelCalls: 2 });
+        chargeUsage(db, run, { modelCalls: NOTE_ATTEMPTS });
         missingFactsExtra = `Model note rejected: ${e.message} Model wrote: ${e.raw.slice(0, 300)}`;
-        note = {
-          summary: policy.observation,
-          question: `Is the ${m.role_title} role at ${c.name} still open, and is the expected start date still ${m.expected_trigger_date}?`,
-          evidence_ids: ev.map((e) => e.id),
-        };
+        note = evidenceFallbackNote({ observation: policy.observation, caveats: policy.caveats, evidence: evidenceInput, question: `Is the ${m.role_title} role at ${c.name} still open, and is the expected start date still ${m.expected_trigger_date}?` });
       }
     }
     const prev = db.prepare("SELECT version FROM case_record WHERE id = ?").get(caseId) as { version: number };

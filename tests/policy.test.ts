@@ -7,4 +7,33 @@ describe("decideTreatment", () => {
     expect(r.outcome).toBe("unknown");
     expect(r.needsTask).toBe(true);
   });
+
+  const decline = { fromDate: "2026-07-01", fromJobs: 41, toDate: "2026-10-01", toJobs: 2 };
+
+  it("stale confirmation with a live listing: follow-up under the 10-day limit, age stated, no pause inferred", () => {
+    const r = decideTreatment({ stage: "final_interview", lastConfirmedAt: "2026-08-31", cashDate: "2026-10-11", listing: { status: "found", checkedOn: "2026-10-11" }, reply: null });
+    expect(r.outcome).toBe("unknown");
+    expect(r.needsTask).toBe(true);
+    expect(r.caveats[0]).toBe("Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.");
+    expect(r.caveats.join(" ")).toContain("doesn't confirm the agency's mandate");
+  });
+
+  it("fresh role confirmation against a company-wide decline: both sources and dates, why, and what's unresolved", () => {
+    const r = decideTreatment({ stage: "final_interview", lastConfirmedAt: "2026-10-09", cashDate: "2026-10-11", listing: { status: "baseline_absent" }, reply: null, companyTrend: decline });
+    expect(r.outcome).toBe("unreviewed");
+    expect(r.needsTask).toBe(false);
+    const c = r.caveats.join(" ");
+    expect(c).toContain("fell from 41 on 2026-07-01 to 2 on 2026-10-01");
+    expect(c).toContain("client confirmed this role on 2026-10-09");
+    expect(c).toContain("dated confirmation for this role is used");
+    expect(c).toContain("Unresolved:");
+    expect(r.observation).toContain(c);
+  });
+
+  it("stale confirmation against a company-wide decline: neither settles the role", () => {
+    const r = decideTreatment({ stage: "interviewing", lastConfirmedAt: "2026-09-08", cashDate: "2026-10-11", listing: { status: "not_found" }, reply: null, companyTrend: decline });
+    expect(r.outcome).toBe("unknown");
+    expect(r.caveats.join(" ")).toContain("Neither settles this role");
+    expect(r.caveats.join(" ")).toContain("Unresolved: whether this role is still open.");
+  });
 });

@@ -8,14 +8,21 @@ export interface EvidenceForModel {
   summary: string;
 }
 
-const OUTCOME_WORDS = /\b(pause[sd]?|pausing|freeze|frozen|cancel(?:led|ed)|on hold|filled|lost)\b/i;
-const HEDGE_WORDS = /\b(not|no|unconfirmed|whether|if\b|may\b|might|could|unclear|observation|proof|confirm)\b/i;
+const OUTCOME_WORDS = /\b(pause[sd]?|pausing|freeze|frozen|cancel(?:led|ed|s)?|on hold|filled|lost|closed|withdrawn|shelved|scrapped|halted|no longer (?:open|active|hiring|going ahead|available)|not going ahead|stopped hiring)\b/i;
+const HEDGE_WORDS = /\b(not|no|never|unconfirmed|unverified|uncertain|unclear|unknown|whether|if|may|might|could|possibly|possible|perhaps|cannot|can't|doesn't|didn't|isn't|wasn't|without|observation|proof|evidence)\b/i;
+const CLAUSE_BREAK = /[,;:()\u2014]|\s-\s|\b(?:and|but|while|whereas|although|though|which|so|because|yet)\b/i;
+
+function unsupportedInClause(clause: string): boolean {
+  return [...clause.matchAll(new RegExp(OUTCOME_WORDS.source, "gi"))].some((m) => !HEDGE_WORDS.test(clause.slice(0, m.index)));
+}
 
 export function containsUnsupportedClaim(text: string, agencySuppliedStates: boolean): boolean {
   if (agencySuppliedStates) return false;
-  const sentences = text.match(/[^.!?]*[.!?]*/g) ?? [text];
-  return sentences.some((s) => OUTCOME_WORDS.test(s) && !HEDGE_WORDS.test(s));
+  const sentences = text.match(/[^.!?]+[.!?]*/g) ?? [text];
+  return sentences.some((s) => s.split(CLAUSE_BREAK).some((c) => c && unsupportedInClause(c)));
 }
+
+export const NOTE_ATTEMPTS = 3;
 
 async function askJson<T>(system: string, user: string, schema: z.ZodType<T>): Promise<{ value: T; tokens: number }> {
   const res = await modelClient().chat.completions.create({
@@ -42,8 +49,13 @@ async function askJson<T>(system: string, user: string, schema: z.ZodType<T>): P
   return { value: out.data, tokens: res.usage?.total_tokens ?? 0 };
 }
 
+export interface RejectedDraft {
+  raw: string;
+  reason: string;
+}
+
 export class ModelOutputError extends Error {
-  constructor(message: string, readonly raw: string) {
+  constructor(message: string, readonly raw: string, readonly rejected: RejectedDraft[] = []) {
     super(message);
   }
 }
@@ -61,12 +73,14 @@ export async function draftCaseNote(input: {
   clientName: string;
   stage: string;
   missing: string[];
+  requiredFacts?: string[];
   evidence: EvidenceForModel[];
-}): Promise<{ note: CaseNote; tokens: number; calls: number }> {
+}): Promise<{ note: CaseNote; tokens: number; calls: number; rejected?: RejectedDraft[] }> {
   const system = [
     "You help a recruitment agency owner review placement fees in a cash forecast.",
     "Write a short neutral summary of what the evidence shows and one question the account manager should ask the client.",
     "Company-level hiring numbers and a missing public listing are observations only. They never prove a specific role was paused, cancelled or filled.",
+    "Required facts are computed from the records and will be shown with your summary word for word; don't contradict them.",
     "Only cite evidence IDs from the list.",
     'Shape: {"summary": string, "question": string, "evidence_ids": string[]}',
   ].join("\n");
@@ -80,23 +94,40 @@ export async function draftCaseNote(input: {
     return null;
   }
 
-  const baseUser = JSON.stringify({ role: input.roleTitle, client: input.clientName, stage: input.stage, open_questions: input.missing, evidence: input.evidence });
+  const requiredFacts = input.requiredFacts ?? [];
+  const baseUser = JSON.stringify({ role: input.roleTitle, client: input.clientName, stage: input.stage, open_questions: input.missing, required_facts: requiredFacts, evidence: input.evidence });
   let tokens = 0;
   let rejection: ModelOutputError | null = null;
-  for (let calls = 1; calls <= 2; calls++) {
+  const rejected: RejectedDraft[] = [];
+  for (let calls = 1; calls <= NOTE_ATTEMPTS; calls++) {
     const user: string = rejection ? `${baseUser}\n\nYour previous answer was rejected: ${rejection.message} Answer again.` : baseUser;
     try {
       const r: { value: CaseNote; tokens: number } = await askJson(system, user, CaseNoteSchema);
       tokens += r.tokens;
       const problem = validate(r.value);
-      if (!problem) return { note: r.value, tokens, calls };
+      if (!problem) return { note: withRequiredFacts(r.value, requiredFacts), tokens, calls, rejected };
       rejection = new ModelOutputError(problem, JSON.stringify(r.value));
     } catch (e) {
       if (!(e instanceof ModelOutputError)) throw e;
       rejection = e;
     }
+    rejected.push({ raw: rejection.raw, reason: rejection.message });
   }
-  throw rejection!;
+  throw new ModelOutputError(rejection!.message, rejection!.raw, rejected);
+}
+
+export function withRequiredFacts(note: CaseNote, facts: string[]): CaseNote {
+  const extra = facts.filter((f) => !note.summary.includes(f));
+  return extra.length ? { ...note, summary: [note.summary, ...extra].join(" ") } : note;
+}
+
+export function evidenceFallbackNote(input: { observation: string; caveats: string[]; evidence: EvidenceForModel[]; question: string }): CaseNote {
+  const agency = input.evidence.filter((e) => e.provenance === "agency_supplied").map((e) => e.summary);
+  return {
+    summary: [input.observation, ...input.caveats, ...(agency.length ? [`Agency-supplied records: ${agency.join(" ")}`] : [])].join(" "),
+    question: input.question,
+    evidence_ids: input.evidence.map((e) => e.id),
+  };
 }
 
 const ReplySchema = z.object({

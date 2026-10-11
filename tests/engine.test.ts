@@ -398,6 +398,29 @@ describe("decision cases (controlled replay of the 10 evaluation cases)", () => 
     expect(latest(db, "M-102").missing.join(" ")).not.toContain("listing");
   });
 
+  it("7b. a role never seen listed stays a baseline: later empty searches claim no removal, a later sighting becomes the reference", async () => {
+    let listed = false;
+    const p: Ports = { ...ports(cfo), fetchListings: async () => ({ listings: listed ? [{ title: "Product Engineer (sample)", url: "https://example.com/j", location: null, dateAdded: "2026-10-12" }] : [], totalCount: listed ? 1 : 0, complete: true, filters: {}, credits: 0 }) };
+    const { db, agencyId } = await weekly(p);
+    const statuses = () => (db.prepare("SELECT json_extract(payload, '$.status') AS s FROM evidence WHERE mandate_id = 'M-102' AND source_type = 'listing_check' ORDER BY retrieved_at, rowid").all() as { s: string }[]).map((r) => r.s);
+    for (const next of [false, true, false]) {
+      listed = next;
+      enqueueRun(db, agencyId);
+      await drain(db, p);
+    }
+    expect(statuses()).toEqual(["baseline_absent", "still_absent", "found", "not_found"]);
+    const still = db.prepare("SELECT summary FROM evidence WHERE mandate_id = 'M-102' AND json_extract(payload, '$.status') = 'still_absent'").get() as { summary: string };
+    expect(still.summary).toContain("no removal can be inferred");
+    expect(latest(db, "M-102").missing.join(" ")).toContain("not found");
+  });
+
+  it("saved and displayed case notes carry the confirmation age from the records", async () => {
+    const { db } = await weekly();
+    const c = overview(db)!.cases.find((x) => x.mandateId === "M-102")!;
+    expect(c.summary).toContain("Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review.");
+    expect(c.decisions[0].support).toContain("12 days before the 2026-10-11 review");
+  });
+
   it("8. company-wide decline but the client confirms the role: role-specific evidence wins, both kept", async () => {
     const p = ports(cfo);
     const declining: Ports = { ...p, fetchCompany: async (d) => ({ ...(await p.fetchCompany(d)), timeseries: [{ date: "2026-07-01", openJobs: 50 }, { date: "2026-10-01", openJobs: 10 }] }) };

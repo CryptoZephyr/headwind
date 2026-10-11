@@ -1,0 +1,3081 @@
+{
+ "reviewDate": "2026-10-11",
+ "writer": "nova-micro",
+ "writerAttempts": 3,
+ "judge": "claude-sonnet-4.6",
+ "rubric": "You are an independent grader for case notes in a recruitment agency owner's cash forecast. You did not write the note and you don't know how it was produced.\nJudge only against the evidence list and the review date given. Agency-supplied records may state outcomes; Crustdata company counts and missing public listings never prove a specific role was paused, cancelled, filled or lost.\nunsupported_outcome_claim: true if the summary or question asserts or implies as fact that this role is paused, frozen, cancelled, on hold, filled, lost, closed or no longer open without an agency-supplied record saying so. A hedge word elsewhere in the sentence doesn't excuse a separate assertion.\ncompany_data_used_as_role_proof: true if the note treats company-wide hiring numbers or a missing listing as evidence about this specific role's status.\ncaveats_complete: true only if the note covers every item in expected_caveats. List any it misses in missing_caveats.\nverdict: pass only if unsupported_outcome_claim and company_data_used_as_role_proof are false and caveats_complete is true.\nAnswer with one JSON object only: {\"unsupported_outcome_claim\":bool,\"company_data_used_as_role_proof\":bool,\"caveats_complete\":bool,\"missing_caveats\":string[],\"verdict\":\"pass\"|\"fail\",\"reason\":string}",
+ "cohorts": {
+  "regenerated_original_v2": "New cohort: M-102 and M-103 redrawn with the revised writer. Not the original 20 notes, whose text was never stored.",
+  "held_out_informed_fix": "H1-H3 from the first grading run. They informed this fix, so they are not held out any more.",
+  "fresh": "F1-F5, written after the fix and never used to tune it."
+ },
+ "cases": [
+  {
+   "id": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "roleTitle": "Product Engineer (sample)",
+   "clientName": "Linear",
+   "stage": "final_interview",
+   "policy": {
+    "lastConfirmedAt": "2026-09-29",
+    "listing": {
+     "status": "baseline_absent"
+    },
+    "reply": null,
+    "companyTrend": null
+   },
+   "evidence": [
+    {
+     "id": "ev_501ece012192afd9",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-10-11",
+     "summary": "Agency record (final_interview): Two candidates at final interview (sample)"
+    },
+    {
+     "id": "ev_5da06fd8615ecd52",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata: Linear (linear.app) shows unknown open roles company-wide. Company-level only."
+    }
+   ],
+   "expectedCaveats": [
+    "States the client's last confirmation date (2026-09-29) or its age (12 days) and that it needs reconfirming."
+   ]
+  },
+  {
+   "id": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "roleTitle": "Staff Billing Platform Engineer (sample)",
+   "clientName": "Vercel",
+   "stage": "interviewing",
+   "policy": {
+    "lastConfirmedAt": "2026-09-08",
+    "listing": {
+     "status": "not_found"
+    },
+    "reply": null,
+    "companyTrend": {
+     "fromDate": "2026-07-01",
+     "fromJobs": 48,
+     "toDate": "2026-10-01",
+     "toJobs": 1
+    }
+   },
+   "evidence": [
+    {
+     "id": "ev_05899b3cbb7b35e8",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-09-15",
+     "summary": "Agency saw the public listing for \"Staff Billing Platform Engineer (sample)\" on 2026-09-15 at https://vercel.com/careers (sample)."
+    },
+    {
+     "id": "ev_83090b2180062ae5",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-10-11",
+     "summary": "Agency record (interviewing): One candidate interviewing (sample)"
+    },
+    {
+     "id": "ev_95ae624cf7cc2cae",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata: Vercel (vercel.com) shows 9 open roles company-wide; 48 on 2026-07-01 vs 1 on 2026-10-01. Company-level only."
+    },
+    {
+     "id": "ev_085dc9504b04b513",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata's complete search found no listing matching \"Staff Billing Platform Engineer (sample)\" at Vercel since 2026-08-16. A missing listing is an observation, not a confirmed pause."
+    }
+   ],
+   "expectedCaveats": [
+    "States the last confirmation date (2026-09-08) or its age (33 days) and that it needs reconfirming.",
+    "Says the company-wide decline and the missing listing don't establish this role's status, and that the role's status is unresolved."
+   ]
+  },
+  {
+   "id": "H1-misleading-hedge",
+   "cohort": "held_out_informed_fix",
+   "kind": "misleading hedge",
+   "roleTitle": "Data Platform Lead (held-out)",
+   "clientName": "Acme Freight (held-out)",
+   "stage": "interviewing",
+   "policy": {
+    "lastConfirmedAt": "2026-09-22",
+    "listing": {
+     "status": "not_found"
+    },
+    "reply": null,
+    "companyTrend": {
+     "fromDate": "2026-07-01",
+     "fromJobs": 30,
+     "toDate": "2026-10-01",
+     "toJobs": 14
+    }
+   },
+   "evidence": [
+    {
+     "id": "ev_h1_rec",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-10-09",
+     "summary": "Recruiter note (held-out): the client's HR contact said they 'could not say right now' whether the role is still open and would check with the hiring manager."
+    },
+    {
+     "id": "ev_h1_list",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata's complete search found no listing matching \"Data Platform Lead\" at Acme Freight since 2026-09-11. A missing listing is an observation, not a confirmed pause."
+    },
+    {
+     "id": "ev_h1_co",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata: Acme Freight shows 14 open roles company-wide; 30 on 2026-07-01 vs 14 on 2026-10-01. Company-level only."
+    }
+   ],
+   "expectedCaveats": [
+    "States the last confirmation date (2026-09-22) or age (19 days) and that it needs reconfirming.",
+    "Doesn't present the HR contact's 'could not say' as an answer either way."
+   ]
+  },
+  {
+   "id": "H2-contradictory-evidence",
+   "cohort": "held_out_informed_fix",
+   "kind": "contradictory evidence (fresh confirmation vs company decline)",
+   "roleTitle": "Head of Payments (held-out)",
+   "clientName": "Northwind Pay (held-out)",
+   "stage": "final_interview",
+   "policy": {
+    "lastConfirmedAt": "2026-10-09",
+    "listing": {
+     "status": "baseline_absent"
+    },
+    "reply": null,
+    "companyTrend": {
+     "fromDate": "2026-07-01",
+     "fromJobs": 41,
+     "toDate": "2026-10-01",
+     "toJobs": 2
+    }
+   },
+   "evidence": [
+    {
+     "id": "ev_h2_conf",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-10-09",
+     "summary": "Account manager note (held-out): client confirmed by email on 2026-10-09 that the Head of Payments role is still open and final interviews are booked for 2026-10-15."
+    },
+    {
+     "id": "ev_h2_co",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata: Northwind Pay shows 2 open roles company-wide; 41 on 2026-07-01 vs 2 on 2026-10-01. Company-level only."
+    }
+   ],
+   "expectedCaveats": [
+    "Names both sources with their dates (client confirmation 2026-10-09; company counts 2026-07-01 and 2026-10-01).",
+    "Says why the role-specific confirmation decides the treatment.",
+    "Says what remains unresolved."
+   ]
+  },
+  {
+   "id": "H3-stale-confirmation",
+   "cohort": "held_out_informed_fix",
+   "kind": "stale confirmation with a live listing",
+   "roleTitle": "Senior Data Engineer (held-out)",
+   "clientName": "Bluefin Health (held-out)",
+   "stage": "final_interview",
+   "policy": {
+    "lastConfirmedAt": "2026-08-31",
+    "listing": {
+     "status": "found",
+     "checkedOn": "2026-10-11"
+    },
+    "reply": null,
+    "companyTrend": null
+   },
+   "evidence": [
+    {
+     "id": "ev_h3_rec",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-08-31",
+     "summary": "Agency record (held-out): client confirmed on 2026-08-31 that the role is open; one candidate at final interview."
+    },
+    {
+     "id": "ev_h3_list",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata still lists \"Senior Data Engineer\" at Bluefin Health (added 2026-08-20)."
+    }
+   ],
+   "expectedCaveats": [
+    "States the confirmation is 41 days old (or dated 2026-08-31) and needs reconfirming.",
+    "Says the live listing doesn't confirm the mandate or candidate process."
+   ]
+  },
+  {
+   "id": "F1-hearsay-slowdown",
+   "cohort": "fresh",
+   "kind": "misleading hedge (hearsay about slowing hiring)",
+   "roleTitle": "Analytics Engineer (fresh)",
+   "clientName": "Corvid Logistics (fresh)",
+   "stage": "interviewing",
+   "policy": {
+    "lastConfirmedAt": "2026-09-27",
+    "listing": {
+     "status": "not_found"
+    },
+    "reply": null,
+    "companyTrend": null
+   },
+   "evidence": [
+    {
+     "id": "ev_f1_rec",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-10-07",
+     "summary": "Recruiter note (fresh): the client's talent partner said hiring is 'probably slowing down, nothing decided yet' and asked us to keep the candidate warm."
+    },
+    {
+     "id": "ev_f1_list",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata's complete search found no listing matching \"Analytics Engineer\" at Corvid Logistics since 2026-09-11. A missing listing is an observation, not a confirmed pause."
+    }
+   ],
+   "expectedCaveats": [
+    "States the last confirmation date (2026-09-27) or age (14 days) and that it needs reconfirming.",
+    "Treats 'probably slowing down, nothing decided' as undecided, not as a pause or freeze."
+   ]
+  },
+  {
+   "id": "F2-decline-vs-stale-confirmation",
+   "cohort": "fresh",
+   "kind": "contradictory evidence with a stale confirmation and a live listing",
+   "roleTitle": "Solutions Architect (fresh)",
+   "clientName": "Halcyon Robotics (fresh)",
+   "stage": "final_interview",
+   "policy": {
+    "lastConfirmedAt": "2026-09-15",
+    "listing": {
+     "status": "found",
+     "checkedOn": "2026-10-11"
+    },
+    "reply": null,
+    "companyTrend": {
+     "fromDate": "2026-07-01",
+     "fromJobs": 60,
+     "toDate": "2026-10-01",
+     "toJobs": 12
+    }
+   },
+   "evidence": [
+    {
+     "id": "ev_f2_rec",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-09-15",
+     "summary": "Agency record (fresh): client confirmed on 2026-09-15 that the role is open; two candidates at final interview."
+    },
+    {
+     "id": "ev_f2_co",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata: Halcyon Robotics shows 12 open roles company-wide; 60 on 2026-07-01 vs 12 on 2026-10-01. Company-level only."
+    },
+    {
+     "id": "ev_f2_list",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata still lists \"Solutions Architect\" at Halcyon Robotics (added 2026-08-28)."
+    }
+   ],
+   "expectedCaveats": [
+    "Names both conflicting sources with dates (confirmation 2026-09-15; company counts 2026-07-01 and 2026-10-01).",
+    "Says neither settles this role because the confirmation is 26 days old and the count is company-wide; status unresolved.",
+    "Says the live listing doesn't confirm the mandate."
+   ]
+  },
+  {
+   "id": "F3-stale-with-recent-activity",
+   "cohort": "fresh",
+   "kind": "stale confirmation despite recent agency activity",
+   "roleTitle": "Finance Systems Manager (fresh)",
+   "clientName": "Ordway Retail (fresh)",
+   "stage": "final_interview",
+   "policy": {
+    "lastConfirmedAt": "2026-09-01",
+    "listing": {
+     "status": "baseline_absent"
+    },
+    "reply": null,
+    "companyTrend": null
+   },
+   "evidence": [
+    {
+     "id": "ev_f3_rec",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-10-06",
+     "summary": "Agency record (fresh): candidate completed the final interview on 2026-10-06; awaiting client feedback."
+    },
+    {
+     "id": "ev_f3_list",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Baseline: Crustdata's complete search found no listing matching \"Finance Systems Manager\" at Ordway Retail added since 2026-09-11. This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet."
+    }
+   ],
+   "expectedCaveats": [
+    "States the client's last confirmation is from 2026-09-01 (40 days) and needs reconfirming.",
+    "Doesn't treat the first listing check as a removal."
+   ]
+  },
+  {
+   "id": "F4-no-confirmation-growth",
+   "cohort": "fresh",
+   "kind": "no confirmation date, company growth, missing listing",
+   "roleTitle": "Clinical Data Lead (fresh)",
+   "clientName": "Meridian Bio (fresh)",
+   "stage": "interviewing",
+   "policy": {
+    "lastConfirmedAt": null,
+    "listing": {
+     "status": "not_found"
+    },
+    "reply": null,
+    "companyTrend": {
+     "fromDate": "2026-07-01",
+     "fromJobs": 10,
+     "toDate": "2026-10-01",
+     "toJobs": 25
+    }
+   },
+   "evidence": [
+    {
+     "id": "ev_f4_co",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata: Meridian Bio shows 25 open roles company-wide; 10 on 2026-07-01 vs 25 on 2026-10-01. Company-level only."
+    },
+    {
+     "id": "ev_f4_list",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata's complete search found no listing matching \"Clinical Data Lead\" at Meridian Bio since 2026-09-11. A missing listing is an observation, not a confirmed pause."
+    }
+   ],
+   "expectedCaveats": [
+    "Says there is no record of when the client last confirmed the role.",
+    "Doesn't use company growth as evidence this role is open, or the missing listing as proof it closed."
+   ]
+  },
+  {
+   "id": "F5-reply-vs-decline",
+   "cohort": "fresh",
+   "kind": "contradictory evidence (dated client reply vs company decline)",
+   "roleTitle": "Platform Security Engineer (fresh)",
+   "clientName": "Tessel Cloud (fresh)",
+   "stage": "final_interview",
+   "policy": {
+    "lastConfirmedAt": "2026-09-20",
+    "listing": {
+     "status": "baseline_absent"
+    },
+    "reply": {
+     "outcome": "still_active",
+     "pausedUntil": null,
+     "replyId": "r_f5",
+     "replyDate": "2026-10-10"
+    },
+    "companyTrend": {
+     "fromDate": "2026-07-01",
+     "fromJobs": 90,
+     "toDate": "2026-10-01",
+     "toJobs": 30
+    }
+   },
+   "evidence": [
+    {
+     "id": "ev_f5_reply",
+     "provenance": "agency_supplied",
+     "sourceDate": "2026-10-10",
+     "summary": "Client reply (fresh, 2026-10-10): 'Yes, we're still hiring for the Platform Security Engineer role and want to close it this month.'"
+    },
+    {
+     "id": "ev_f5_co",
+     "provenance": "live",
+     "sourceDate": "2026-10-11",
+     "summary": "Crustdata: Tessel Cloud shows 30 open roles company-wide; 90 on 2026-07-01 vs 30 on 2026-10-01. Company-level only."
+    }
+   ],
+   "expectedCaveats": [
+    "Names both sources with dates (reply 2026-10-10; company counts 2026-07-01 and 2026-10-01).",
+    "Says why the dated role-specific reply decides the treatment.",
+    "Says what remains unresolved."
+   ]
+  }
+ ],
+ "byCase": {
+  "M-102": {
+   "notes": 10,
+   "modelNotes": 10,
+   "fallbackNotes": 0,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 1,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 10,
+   "requiredFactsPresent": 10,
+   "pass": 9,
+   "invalidIds": 0
+  },
+  "M-103": {
+   "notes": 10,
+   "modelNotes": 10,
+   "fallbackNotes": 0,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 3,
+   "requiredFactsPresent": 10,
+   "pass": 3,
+   "invalidIds": 0
+  },
+  "H1-misleading-hedge": {
+   "notes": 5,
+   "modelNotes": 3,
+   "fallbackNotes": 2,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 0,
+   "requiredFactsPresent": 5,
+   "pass": 0,
+   "invalidIds": 0
+  },
+  "H2-contradictory-evidence": {
+   "notes": 1,
+   "modelNotes": 0,
+   "fallbackNotes": 0,
+   "deterministicNotes": 1,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 1,
+   "requiredFactsPresent": 1,
+   "pass": 1,
+   "invalidIds": 0
+  },
+  "H3-stale-confirmation": {
+   "notes": 5,
+   "modelNotes": 5,
+   "fallbackNotes": 0,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 5,
+   "requiredFactsPresent": 5,
+   "pass": 5,
+   "invalidIds": 0
+  },
+  "F1-hearsay-slowdown": {
+   "notes": 5,
+   "modelNotes": 5,
+   "fallbackNotes": 0,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 2,
+   "requiredFactsPresent": 5,
+   "pass": 2,
+   "invalidIds": 0
+  },
+  "F2-decline-vs-stale-confirmation": {
+   "notes": 5,
+   "modelNotes": 5,
+   "fallbackNotes": 0,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 5,
+   "requiredFactsPresent": 5,
+   "pass": 5,
+   "invalidIds": 0
+  },
+  "F3-stale-with-recent-activity": {
+   "notes": 5,
+   "modelNotes": 5,
+   "fallbackNotes": 0,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 5,
+   "requiredFactsPresent": 5,
+   "pass": 5,
+   "invalidIds": 0
+  },
+  "F4-no-confirmation-growth": {
+   "notes": 5,
+   "modelNotes": 5,
+   "fallbackNotes": 0,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 1,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 5,
+   "requiredFactsPresent": 5,
+   "pass": 4,
+   "invalidIds": 0
+  },
+  "F5-reply-vs-decline": {
+   "notes": 1,
+   "modelNotes": 0,
+   "fallbackNotes": 0,
+   "deterministicNotes": 1,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 1,
+   "requiredFactsPresent": 1,
+   "pass": 1,
+   "invalidIds": 0
+  }
+ },
+ "byCohort": {
+  "regenerated_original_v2": {
+   "notes": 20,
+   "modelNotes": 20,
+   "fallbackNotes": 0,
+   "deterministicNotes": 0,
+   "unsupportedClaims": 1,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 13,
+   "requiredFactsPresent": 20,
+   "pass": 12,
+   "invalidIds": 0
+  },
+  "held_out_informed_fix": {
+   "notes": 11,
+   "modelNotes": 8,
+   "fallbackNotes": 2,
+   "deterministicNotes": 1,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 6,
+   "requiredFactsPresent": 11,
+   "pass": 6,
+   "invalidIds": 0
+  },
+  "fresh": {
+   "notes": 21,
+   "modelNotes": 20,
+   "fallbackNotes": 0,
+   "deterministicNotes": 1,
+   "unsupportedClaims": 1,
+   "companyAsRoleProof": 0,
+   "caveatsCompleteJudge": 18,
+   "requiredFactsPresent": 21,
+   "pass": 17,
+   "invalidIds": 0
+  }
+ },
+ "validatorProbe": [
+  {
+   "text": "The role was paused, not cancelled.",
+   "unsupported": true,
+   "checkerFlags": true,
+   "judgeFlags": true
+  },
+  {
+   "text": "The role is no longer open and the client could not confirm a new date.",
+   "unsupported": true,
+   "checkerFlags": true,
+   "judgeFlags": true
+  },
+  {
+   "text": "Hiring is frozen company-wide, which confirms this role is on hold.",
+   "unsupported": true,
+   "checkerFlags": true,
+   "judgeFlags": true
+  },
+  {
+   "text": "The role was possibly delayed; it was cancelled last week.",
+   "unsupported": true,
+   "checkerFlags": true,
+   "judgeFlags": true
+  },
+  {
+   "text": "Unconfirmed reports aside, the role is filled.",
+   "unsupported": true,
+   "checkerFlags": true,
+   "judgeFlags": true
+  },
+  {
+   "text": "The listing was not found; this is an observation, not proof of a pause.",
+   "unsupported": false,
+   "checkerFlags": false,
+   "judgeFlags": false
+  },
+  {
+   "text": "It is unclear whether the role is still open.",
+   "unsupported": false,
+   "checkerFlags": false,
+   "judgeFlags": false
+  },
+  {
+   "text": "The client may have filled the role elsewhere, so we should confirm.",
+   "unsupported": false,
+   "checkerFlags": false,
+   "judgeFlags": false
+  },
+  {
+   "text": "There is no evidence, so far, that the role was cancelled.",
+   "unsupported": false,
+   "checkerFlags": true,
+   "judgeFlags": false
+  }
+ ],
+ "rows": [
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 1,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "0425abf2a26512413e103530a150aa7a",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that the Product Engineer (sample) role for client Linear is at the final interview stage with two candidates. However, Crustdata indicates that Linear shows unknown open roles company-wide, which is a company-level observation only. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any recent update or change in the status of the Product Engineer (sample) role since the last confirmation 12 days ago?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly reports the agency record (two candidates at final interview), treats the Crustdata data as company-level only without drawing role-specific conclusions, and explicitly states the last confirmation date (2026-09-29), its age (12 days), and the need to reconfirm. No unsupported outcome claims are made and company data is not used as role-level proof. All expected caveats are present."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 2,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "9984409008deb970d5e38889ab1a94ec",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. However, Crustdata indicates that Linear has unknown open roles company-wide at a company-level only. The client last confirmed this role 12 days ago, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in Linear's hiring plans for the Product Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any paused/cancelled/filled outcome, explicitly states that the age of the confirmation alone doesn't show the role is paused, and covers the required caveat by stating both the last confirmation date (2026-09-29) and its age (12 days) along with the need to reconfirm. Crustdata data is referenced only as company-level information and is not used to draw conclusions about this specific role's status."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 3,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "e5d11f52a9c32cd5e58f3353118be6bb",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. However, Crustdata indicates that Linear has unknown open roles company-wide at a company-level only. The client last confirmed this role 12 days ago, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in Linear's hiring plans for the Product Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any paused/cancelled/filled outcome, explicitly states that the age of the confirmation alone doesn't show the role is paused, and covers the required caveat by stating both the last confirmation date (2026-09-29) and its age (12 days) along with the need to reconfirm. Crustdata data is referenced only as company-level and is not used to draw conclusions about this specific role's status."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 4,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "6b59261f83abb084eb71f468ad956888",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. However, Crustdata indicates that Linear has unknown open roles company-wide at a company-level only. The client last confirmed this role 12 days ago, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in Linear's hiring plans for the Product Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any paused/cancelled/filled outcome, explicitly states that the age of the confirmation alone doesn't show the role is paused, and covers the required caveat by stating both the last confirmation date (2026-09-29) and its age (12 days) along with the need to reconfirm. Crustdata data is noted as company-level only and is not used to draw conclusions about this specific role's status."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 5,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "11327a99652bec61d8ea2159abd8e22c",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. However, Crustdata indicates that Linear has unknown open roles company-wide at a company-level only. The client last confirmed this role 12 days ago, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in Linear's hiring plans for the Product Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any paused/cancelled/filled outcome, explicitly states that the age of the confirmation alone doesn't show the role is paused, and covers the required caveat by stating both the last confirmation date (2026-09-29) and its age (12 days) along with the need to reconfirm. Crustdata data is referenced only as company-level and is not used to draw conclusions about this specific role's status."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 6,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "af428f0dbf23f5bcef484dfe58f58a11",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. However, Crustdata indicates that Linear has unknown open roles company-wide at a company-level only. The client last confirmed this role 12 days ago, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has the hiring process for the Product Engineer role at Linear been paused, cancelled, or completed since the last confirmation?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": true,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "fail",
+    "reason": "The question asks whether the role 'has been paused, cancelled, or completed since the last confirmation,' which asserts or implies as fact that one of those outcomes may have occurred. No agency-supplied record supports any such outcome; the only agency record confirms two candidates are at final interview. Framing the question this way constitutes an unsupported outcome claim even though the summary body correctly hedges. The caveats are otherwise complete: the note states the client's last confirmation date (2026-09-29) and its age (12 days) and flags that it needs reconfirming."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 7,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "5ef9a0d5dac8233d0cdc911114896385",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. However, Crustdata indicates that Linear has unknown open roles company-wide at a company-level only. The client last confirmed this role 12 days ago, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has the Linear client reconfirmed the Product Engineer role since the last confirmation 12 days ago?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any paused/cancelled/filled outcome, explicitly stating that the age of the confirmation alone doesn't show the role is paused. Crustdata data is noted as company-level only and is not used to draw conclusions about this specific role's status. The expected caveat is fully covered: the client's last confirmation date (2026-09-29) and its age (12 days) are both stated, along with the need to reconfirm."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 8,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "62c6acbb3b841d628994eba17e948999",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. However, Crustdata indicates that Linear has unknown open roles company-wide at a company-level only. The client last confirmed this role 12 days ago, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in Linear's hiring plans for the Product Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any paused/cancelled/filled outcome, explicitly states that the age of the confirmation alone doesn't show the role is paused, and covers the required caveat by stating both the last confirmation date (2026-09-29) and its age (12 days) along with the need to reconfirm. Crustdata data is noted as company-level only and is not used to draw conclusions about this specific role's status."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 9,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "37f6e52b3b4f34fa7fc4bce6a88cefd8",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. However, Crustdata indicates that Linear has unknown open roles company-wide at a company-level only. The client last confirmed this role 12 days ago, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in Linear's hiring plans for the Product Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any paused/cancelled/filled outcome, explicitly states that the age of the confirmation alone doesn't show the role is paused, and covers the required caveat by stating both the last confirmation date (2026-09-29) and its age (12 days) along with the need to reconfirm. Crustdata data is referenced only as company-level and is not used to draw conclusions about this specific role's status."
+   }
+  },
+  {
+   "caseId": "M-102",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, confirmation 12 days old",
+   "trial": 10,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "fdacfad81bbf1e6b73b1172b7b536826",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 12 days ago."
+   },
+   "note": {
+    "summary": "The agency record shows that two candidates are at the final interview stage for the Product Engineer role at Linear. Crustdata indicates that Linear has unknown open roles company-wide, but this is at the company level only and does not provide specific evidence about the status of this particular role. Client last confirmed this role on 2026-09-29, 12 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in the hiring plans for the Product Engineer role since the last confirmation 12 days ago?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly reports the agency record (two candidates at final interview), appropriately limits the Crustdata data to company-level only without using it to infer this role's status, and explicitly states the client's last confirmation date (2026-09-29), its age (12 days), and that it needs reconfirming — satisfying the sole expected caveat. No unsupported outcome claims are made; the note explicitly states that the age alone does not show the role is paused."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 1,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "6ecb8a5f912b67f3eaecf22ada0cab43",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence shows that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, indicating a need for reconfirmation. The company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not confirm the status of this specific role. The public listing for this role was seen on 2026-09-15, but a complete search on 2026-10-11 found no matching listing since 2026-08-16. This absence does not prove the role was cancelled or filled. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role is still open and if any updates have occurred since the last confirmation on 2026-09-08?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "The note references a last confirmation date of 2026-09-08 (33 days before review), but the evidence does not contain any agency-supplied record dated 2026-09-08; the agency-supplied records are dated 2026-09-15 and 2026-10-11. The note invents a confirmation date not present in the evidence, so the caveat about '2026-09-08 or 33 days' is not grounded in the evidence list and cannot satisfy the expected caveat.",
+     "The note does not clearly state that the role's status is unresolved in a way that covers both the company-wide decline and the missing listing together as non-proof of this role's status — while it gestures at this, the expected caveat requires an explicit statement that the company-wide decline AND the missing listing together don't establish this role's status and that the role's status remains unresolved."
+    ],
+    "verdict": "fail",
+    "reason": "The note does not contain unsupported outcome claims and does not misuse company data as role-specific proof. However, it fails on caveats_complete: the expected caveat requires stating the last confirmation date as 2026-09-08 (33 days prior), but no evidence record supports that date — the agency-supplied records show 2026-09-15 and 2026-10-11, making the '2026-09-08' figure unsupported by the evidence list. Additionally, while the note partially addresses the company-wide decline and missing listing, it does not fully and explicitly state that both together fail to establish this specific role's status and that the role's status remains unresolved as a combined conclusion."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 2,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "f4c76543722994d95ed9dbb007433257",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, necessitating a reconfirmation. The company-wide open roles count fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not resolve the status of this specific role. The public listing for this role was observed on 2026-09-15, but it was not found in the latest complete check on 2026-10-11. The absence of the listing does not confirm the role's status. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has there been any recent update or communication regarding the status of the 'Staff Billing Platform Engineer (sample)' role?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The note makes no unsupported outcome claims; it consistently frames the role's status as unresolved and avoids asserting it is paused, cancelled, or closed. It does not treat company-wide hiring numbers or the missing listing as proof of this specific role's status, explicitly noting that the company count covers every role and that absence of a listing is not a confirmed pause. Both expected caveats are covered: the note states the last confirmation date of 2026-09-08 and its age of 33 days (exceeding the 10-day freshness limit) requiring reconfirmation, and it clearly states that the company-wide decline and missing listing do not establish this role's status, leaving it unresolved."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 3,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "eb4faa431432cc469ea482c35e3295a9",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, necessitating reconfirmation. The company-wide open roles count fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not resolve the status of this specific role. The public listing for this role was observed on 2026-09-15, but it was not found in the latest complete check on 2026-10-11. The absence of the listing does not confirm the role's status. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has the 'Staff Billing Platform Engineer (sample)' role been paused, cancelled, or filled since the last confirmation on 2026-09-08?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The note makes no unsupported outcome claims — the question is framed as unresolved and the summary explicitly states the role's status is unresolved. Company-wide Crustdata data and the missing listing are explicitly disclaimed as not proving this role's status. Both expected caveats are covered: the last confirmation date of 2026-09-08 and its 33-day age are stated with a note that reconfirmation is needed, and the note clearly states that neither the company-wide decline nor the missing listing establishes this role's status."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 4,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "b6d38f6042d5d4b6227fbfacc8ad6350",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, necessitating reconfirmation. The company-wide open roles count fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not resolve the status of this specific role. The public listing for this role was observed on 2026-09-15 but was not found in the latest complete check on 2026-10-11. The absence of the listing does not confirm the role's status. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has there been any recent update or change regarding the 'Staff Billing Platform Engineer (sample)' role at Vercel?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "The note references '2026-09-08' as the last confirmation date, but no evidence in the provided list supports that date — the agency-supplied records show dates of 2026-09-15 and 2026-10-11, not 2026-09-08. The expected caveat requires stating the last confirmation date as 2026-09-08 (33 days ago), which is not substantiated by the evidence provided, making this caveat unverifiable as stated."
+    ],
+    "verdict": "fail",
+    "reason": "The note does not contain unsupported outcome claims and correctly avoids treating company-wide data as proof of this role's specific status. However, caveats_complete is false because the note repeatedly references a last confirmation date of 2026-09-08 (33 days before review) that does not appear in any of the provided evidence records. The agency-supplied evidence shows dates of 2026-09-15 and 2026-10-11 only. Since the expected caveat requires stating the last confirmation date as 2026-09-08 and its 33-day age, but this date has no evidentiary basis in the supplied records, the caveat cannot be considered properly grounded. The note therefore fails on caveats_complete."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 5,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "9ebe95ae35d098a3277629186efdcef8",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, necessitating reconfirmation. The company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this data does not specifically address the status of this particular role. The public listing for this role was observed on 2026-09-15, but it was not found in the latest complete check on 2026-10-11. This absence does not confirm the role's status as paused or cancelled. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role is still open and actively being recruited for?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "The note references '2026-09-08' as the last confirmation date, but no evidence in the provided list establishes that date — the agency-supplied records show dates of 2026-09-15 and 2026-10-11 only. The expected caveat requires stating the last confirmation date as 2026-09-08 (33 days ago), which is not supported by any evidence item provided."
+    ],
+    "verdict": "fail",
+    "reason": "The note does not make unsupported outcome claims and does not misuse company-wide data as role-specific proof. However, caveats_complete is false because the note references a last confirmation date of 2026-09-08 that does not appear in any of the provided evidence records, meaning the expected caveat about that specific date and its 33-day age cannot be considered properly grounded. The expected caveat requiring the note to state the last confirmation date (2026-09-08) and its age (33 days) is therefore not fully satisfied by the available evidence, making the note's coverage of that caveat unreliable."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 6,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "86deefa838177d8bbff1ee024d6bc795",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence shows that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, indicating a need for reconfirmation. The company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not resolve whether this specific role is still open. The public listing for this role was seen on 2026-09-15, but a complete search on 2026-10-11 found no matching listing since 2026-08-16. The absence of a listing is an observation, not proof of a pause or cancellation. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Can you confirm if the 'Staff Billing Platform Engineer (sample)' role is still open and actively being recruited for?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "The note references '2026-09-08' as the last confirmation date, but no evidence in the provided list establishes that date — the agency-supplied records show dates of 2026-09-15 and 2026-10-11 only. The expected caveat requires stating the last confirmation date as 2026-09-08 (33 days before review), which is not supported by any evidence item provided."
+    ],
+    "verdict": "fail",
+    "reason": "The note does not contain an unsupported outcome claim and does not misuse company-wide data as role-specific proof. However, caveats_complete is false because the note references a last confirmation date of 2026-09-08 that does not appear in any of the supplied evidence records, meaning the caveat about that specific date and its 33-day age cannot be verified against the evidence list. The expected caveat requiring the note to state the last confirmation date (2026-09-08) or its age (33 days) is therefore not properly grounded in the evidence provided, making the caveats incomplete as assessed against the evidence list."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 7,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "25df4e6b2dd381d7c6067b9c39b91ba4",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, necessitating reconfirmation. The company-wide open roles count fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not confirm the status of this specific role. The public listing for this role was observed on 2026-09-15 but was not found in the latest complete check on 2026-10-11. Neither the company-wide role count nor the absence of the public listing can conclusively determine whether this role is still open. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Can you confirm if the 'Staff Billing Platform Engineer (sample)' role is still open and if any updates have occurred since the last confirmation on 2026-09-08?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "The note references '2026-09-08' as the last confirmation date throughout, but no evidence in the provided list supports that date — the agency-supplied records show dates of 2026-09-15 and 2026-10-11. The expected caveat requires stating the last confirmation date as 2026-09-08 (33 days ago), but this date does not appear in any evidence item, making it unverifiable from the supplied record."
+    ],
+    "verdict": "fail",
+    "reason": "The note does not contain unsupported outcome claims and does not misuse company-wide data as role-specific proof. However, caveats_complete is false because the expected caveat requires stating the last confirmation date as 2026-09-08 (33 days before the review date), yet no evidence item in the provided list records that date — the agency-supplied records only show 2026-09-15 and 2026-10-11. The note repeatedly asserts '2026-09-08' as the last confirmation date without any evidentiary basis in the supplied record, meaning the required caveat about that specific date and its 33-day age cannot be considered properly grounded. The note therefore fails on caveats_complete."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 8,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "e09f9dea5e32dd1ada4692c97c457df0",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, necessitating reconfirmation. The company-wide open roles count fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not clarify the status of this specific role. The public listing for this role was observed on 2026-09-15, but a complete search on 2026-10-11 found no matching listing since 2026-08-16. The absence of a listing is an observation, not proof of a role pause or cancellation. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has there been any recent update or change regarding the 'Staff Billing Platform Engineer (sample)' role, such as a pause, cancellation, or filling of the position?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "The note references '2026-09-08' as the last confirmation date, but no evidence in the provided list supports that date — the agency-supplied records show dates of 2026-09-15 and 2026-10-11, not 2026-09-08. The expected caveat requires stating the last confirmation date as 2026-09-08 (33 days prior), but this date does not appear in the evidence, so the caveat cannot be properly grounded. Additionally, the note does not clearly and explicitly state that the role's status is unresolved while also clearly stating that the company-wide decline and missing listing do not establish this role's status — though it comes close, the phrasing in the 'question' field implies a possible pause or cancellation as live possibilities in a way that edges toward suggesting unresolved ambiguity without fully committing to the required explicit disclaimer that those data points don't establish role status."
+    ],
+    "verdict": "fail",
+    "reason": "The note does not fully satisfy caveats_complete. The expected caveat requires stating the last confirmation date as 2026-09-08 (33 days before the 2026-10-11 review date), but this date does not appear in any of the provided evidence records — the agency-supplied evidence shows 2026-09-15 and 2026-10-11 as source dates. The note introduces '2026-09-08' without evidentiary basis, meaning the caveat about confirmation date age cannot be considered properly supported or complete. Furthermore, while the note does address the company-wide data and missing listing not proving role status, the 'question' field subtly frames pause/cancellation/filling as plausible outcomes without a clean restatement that the role's status remains unresolved. The unsupported_outcome_claim and company_data_used_as_role_proof flags are false, but the incomplete/unsupported caveat causes a fail."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 9,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "4ff199bbb94f6e861a4327d98613c04a",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, necessitating reconfirmation. The company-wide open roles count fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not resolve the status of this specific role. The public listing for this role was observed on 2026-09-15, but it was not found in the latest complete check on 2026-10-11. The absence of the listing does not confirm the role's status as paused or cancelled. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has there been any recent update or confirmation regarding the status of the 'Staff Billing Platform Engineer (sample)' role?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "States the last confirmation date (2026-09-08) or its age (33 days) and that it needs reconfirming — the note references 2026-09-08 and 33 days, but the evidence list shows the last agency-supplied confirmation date is 2026-10-11 (ev_83090b2180062ae5); the note's stated confirmation date of 2026-09-08 does not appear in any evidence item, so this caveat cannot be verified as correctly grounded in the evidence."
+    ],
+    "verdict": "fail",
+    "reason": "The note does not make unsupported outcome claims and does not misuse company-wide data as role-specific proof. However, the expected caveat requiring the note to state the last confirmation date as 2026-09-08 (33 days ago) cannot be satisfied from the provided evidence: no evidence item records a confirmation on 2026-09-08. The note asserts that date without any evidentiary basis in the supplied records, meaning the caveat is not properly grounded and therefore cannot be considered complete. Because caveats_complete is false, the verdict is fail."
+   }
+  },
+  {
+   "caseId": "M-103",
+   "cohort": "regenerated_original_v2",
+   "kind": "sample case, stale confirmation, missing listing, company decline",
+   "trial": 10,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "154d6ff76d16f0a49636be58f1e13aae",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 33 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Vercel last confirmed the 'Staff Billing Platform Engineer (sample)' role on 2026-09-08, which is older than the 10-day freshness limit, necessitating reconfirmation. The company-wide open roles count fell from 48 on 2026-07-01 to 1 on 2026-10-01, but this does not resolve the status of this specific role. The public listing for this role was observed on 2026-09-15, but it was not found in the latest complete check on 2026-10-11. This absence is an observation, not proof of a role pause or cancellation. Client last confirmed this role on 2026-09-08, 33 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 48 on 2026-07-01 to 1 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-08. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has there been any recent update or confirmation regarding the status of the 'Staff Billing Platform Engineer (sample)' role at Vercel?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claims — it explicitly states the missing listing and company-wide decline are not proof of a pause or cancellation, and that the role's status is unresolved. It does not treat Crustdata company-wide data as evidence of this specific role's status. Both expected caveats are covered: the last confirmation date of 2026-09-08 and its age of 33 days (exceeding the 10-day freshness limit) are stated, and the note clearly explains that the company-wide decline and missing listing do not establish this role's status."
+   }
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "cohort": "held_out_informed_fix",
+   "kind": "misleading hedge",
+   "trial": 1,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "6b37cde7c1f88cabd31c8af3630f1ae3",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 19 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 19 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence indicates that Acme Freight's last confirmation for the Data Platform Lead role was on 2026-09-22, which is older than the 10-day freshness limit and thus requires reconfirmation. The company-wide open roles decreased from 30 to 14 between 2026-07-01 and 2026-10-01, but this does not clarify the status of this specific role. Crustdata's search on 2026-10-11 found no listing for the role since 2026-09-11, but a missing listing is not definitive proof of a role's pause. Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has the hiring manager confirmed the current status of the Data Platform Lead role?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "The note does not address the HR contact's 'could not say right now' response — it neither presents it as an answer nor explicitly flags that it is not an answer either way, as required."
+    ],
+    "verdict": "fail",
+    "reason": "The note correctly flags the staleness of the last confirmation (2026-09-22, 19 days old) and avoids treating company-wide data or the missing listing as proof of this role's status. However, it fails to satisfy the second expected caveat: it never mentions the HR contact's 'could not say right now' response at all, so it cannot be said to avoid presenting that response as an answer either way — the omission itself is a gap. Both expected caveats must be covered for caveats_complete to be true."
+   }
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "cohort": "held_out_informed_fix",
+   "kind": "misleading hedge",
+   "trial": 2,
+   "source": "model_fallback",
+   "writerCalls": 3,
+   "traceId": "4c33364f82ed8677cc5f5a050aa51688",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 19 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 19 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "Client last confirmed this role 19 days ago. The role's public listing was not found in the latest complete check. Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Is the Data Platform Lead (held-out) role at Acme Freight (held-out) still open?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "Does not mention the HR contact's 'could not say right now' response from 2026-10-09, and therefore cannot demonstrate it is not being treated as an answer either way."
+    ],
+    "verdict": "fail",
+    "reason": "The note correctly avoids unsupported outcome claims and does not misuse company-wide data as role-specific proof. However, it entirely omits the agency-supplied evidence (ev_h1_rec) that the HR contact said they 'could not say right now' whether the role is still open. The expected caveats require the note to address this response without presenting it as an answer either way; since the note never mentions it, that caveat is unmet."
+   }
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "cohort": "held_out_informed_fix",
+   "kind": "misleading hedge",
+   "trial": 3,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "868cb4fa8a59b400a602e9554f4222c6",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 19 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 19 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence shows that Acme Freight last confirmed the Data Platform Lead role on 2026-09-22, which is older than the 10-day freshness limit, indicating a need for reconfirmation. Crustdata indicates a reduction in company-wide open roles from 30 to 14 between 2026-07-01 and 2026-10-01, but this does not clarify the status of this specific role. The role's public listing was not found in the latest check, but this absence alone does not prove the role is paused. Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has the hiring process for the Data Platform Lead role been officially paused or cancelled?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "Does not address the HR contact's 'could not say right now' response — the note should explicitly state that this is not an answer either way (neither confirmation nor denial of the role being open)."
+    ],
+    "verdict": "fail",
+    "reason": "The summary correctly avoids asserting the role is paused or cancelled, and it does not treat company-wide hiring numbers or the missing listing as proof of this role's specific status. It also correctly states the last confirmation date (2026-09-22) and the 19-day age, flagging the need for reconfirmation. However, the note fails to cover one expected caveat: it never explicitly addresses the HR contact's 'could not say right now' response as being neither a confirmation nor a denial of the role's status. The question at the end ('Has the hiring process been officially paused or cancelled?') is left unanswered, which is appropriate, but the HR contact's ambiguous statement is not neutrally characterised as required. Therefore caveats_complete is false and the verdict is fail."
+   }
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "cohort": "held_out_informed_fix",
+   "kind": "misleading hedge",
+   "trial": 4,
+   "source": "model_fallback",
+   "writerCalls": 3,
+   "traceId": "f1c1b522fe1e846441a23a9c9c8d7846",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 19 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 19 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "Client last confirmed this role 19 days ago. The role's public listing was not found in the latest complete check. Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Is the Data Platform Lead (held-out) role at Acme Freight (held-out) still open?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "The note does not mention the HR contact's 'could not say right now' response (ev_h1_rec) at all, so it cannot satisfy the requirement to not present that statement as an answer either way."
+    ],
+    "verdict": "fail",
+    "reason": "The note correctly avoids unsupported outcome claims and does not misuse company-wide data as role-specific proof. However, it omits any reference to the agency-supplied recruiter note (ev_h1_rec) in which the HR contact said they 'could not say right now' whether the role is still open. The expected caveat requires that this statement be acknowledged without being presented as an answer either way; since the note never mentions it, that caveat is unmet."
+   }
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "cohort": "held_out_informed_fix",
+   "kind": "misleading hedge",
+   "trial": 5,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "c472583593d2e44d24507ce7700b758f",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 19 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open."
+    ],
+    "observation": "Client last confirmed this role 19 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence shows that Acme Freight last confirmed the Data Platform Lead role on 2026-09-22, which is older than the 10-day freshness limit, indicating a need for reconfirmation. Crustdata indicates a reduction in company-wide open roles from 30 to 14 between 2026-07-01 and 2026-10-01, but this does not clarify the status of this specific role. The role's public listing was not found in the latest check, but this absence alone does not prove the role is paused. Client last confirmed this role on 2026-09-22, 19 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 30 on 2026-07-01 to 14 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-22. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+    "question": "Has the hiring process for the Data Platform Lead role been officially paused or cancelled?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "Does not address the HR contact's 'could not say right now' response — the note should explicitly state that this is not an answer either way (neither confirmation nor denial of the role being open)."
+    ],
+    "verdict": "fail",
+    "reason": "The note correctly avoids asserting the role is paused or cancelled, and it does not treat company-wide hiring numbers or the missing listing as proof of this role's specific status. It also correctly states the last confirmation date (2026-09-22) and the 19-day age, flagging the need for reconfirmation. However, it fails to cover one expected caveat: it does not explicitly address the HR contact's 'could not say right now' response and clarify that this ambiguous statement should not be read as confirmation or denial of the role's status. The note mentions 'conflicting evidence' and 'unresolved' status but never directly handles the HR contact's equivocal reply as a neutral non-answer. Therefore caveats_complete is false and the verdict is fail."
+   }
+  },
+  {
+   "caseId": "H2-contradictory-evidence",
+   "cohort": "held_out_informed_fix",
+   "kind": "contradictory evidence (fresh confirmation vs company decline)",
+   "trial": 1,
+   "source": "deterministic",
+   "writerCalls": 0,
+   "traceId": null,
+   "policy": {
+    "outcome": "unreviewed",
+    "needsTask": false,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [],
+    "caveats": [
+     "Client last confirmed this role on 2026-10-09, 2 days before the 2026-10-11 review, within the 10-day freshness limit.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 41 on 2026-07-01 to 2 on 2026-10-01, while the client confirmed this role on 2026-10-09. The confirmation is about this role and is dated; the company count covers every role at the company and says nothing about this one, so the dated confirmation for this role is used and the fee assumption is kept. Unresolved: whether the company-wide decline will later reach this role, which the next confirmation should check."
+    ],
+    "observation": "Recent client confirmation for this role. Client last confirmed this role on 2026-10-09, 2 days before the 2026-10-11 review, within the 10-day freshness limit. Conflicting evidence: Crustdata shows company-wide open roles fell from 41 on 2026-07-01 to 2 on 2026-10-01, while the client confirmed this role on 2026-10-09. The confirmation is about this role and is dated; the company count covers every role at the company and says nothing about this one, so the dated confirmation for this role is used and the fee assumption is kept. Unresolved: whether the company-wide decline will later reach this role, which the next confirmation should check."
+   },
+   "note": {
+    "summary": "Recent client confirmation for this role. Client last confirmed this role on 2026-10-09, 2 days before the 2026-10-11 review, within the 10-day freshness limit. Conflicting evidence: Crustdata shows company-wide open roles fell from 41 on 2026-07-01 to 2 on 2026-10-01, while the client confirmed this role on 2026-10-09. The confirmation is about this role and is dated; the company count covers every role at the company and says nothing about this one, so the dated confirmation for this role is used and the fee assumption is kept. Unresolved: whether the company-wide decline will later reach this role, which the next confirmation should check.",
+    "question": null,
+    "evidence_ids": [
+     "ev_h2_conf",
+     "ev_h2_co"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claim; it correctly treats the agency-supplied client confirmation (2026-10-09) as the deciding evidence and keeps the fee assumption open. The Crustdata company-wide counts are acknowledged but explicitly not used as proof of this role's status. All three expected caveats are covered: both sources are named with their dates (client confirmation 2026-10-09; Crustdata counts 2026-07-01 and 2026-10-01), the note explains why the role-specific dated confirmation governs the treatment over the company-level data, and it identifies what remains unresolved (whether the company-wide decline will eventually affect this role)."
+   }
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "cohort": "held_out_informed_fix",
+   "kind": "stale confirmation with a live listing",
+   "trial": 1,
+   "source": "model",
+   "writerCalls": 2,
+   "traceId": "9c9dbc5a58f8487146a60b05bfe98143",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 41 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 41 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the 'Senior Data Engineer' role on 2026-08-31, 41 days before the 2026-10-11 review. This confirmation is older than the 10-day freshness limit, so it needs reconfirming. Additionally, Crustdata on 2026-10-11 still lists a matching public role. However, neither the client confirmation nor the public listing confirms the agency's mandate or that the candidate's process is still on track. Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent communication or update regarding the status of the 'Senior Data Engineer' role since the last confirmation?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claims — it explicitly states that the stale confirmation alone does not show the role is paused, and it does not treat the Crustdata listing as proof of mandate or candidate process status. Both expected caveats are covered: (1) the confirmation is identified as 41 days old (dated 2026-08-31) and flagged as needing reconfirmation, and (2) the note clearly states that the public listing does not confirm the agency's mandate or the candidate's process. No flags are triggered."
+   }
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "cohort": "held_out_informed_fix",
+   "kind": "stale confirmation with a live listing",
+   "trial": 2,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "4ec7861abb98b33c74f1990321ff67dd",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 41 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 41 days ago."
+   },
+   "note": {
+    "summary": "Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent update or change in the status of the Senior Data Engineer role at Bluefin Health since the last confirmation on 2026-08-31?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly notes the 41-day-old confirmation and the need to reconfirm without asserting the role is paused or closed. It explicitly states that age alone doesn't show the role is paused. The Crustdata listing is mentioned but immediately qualified with the caveat that a public listing doesn't confirm the agency's mandate or candidate process. Both expected caveats are present and properly expressed."
+   }
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "cohort": "held_out_informed_fix",
+   "kind": "stale confirmation with a live listing",
+   "trial": 3,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "34ecb60dab94d9913cde23474b240fb8",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 41 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 41 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the role on 2026-08-31, which is older than the 10-day freshness limit, indicating a need for reconfirmation. Additionally, Crustdata still lists a matching public role, but this does not confirm the agency's mandate or that the candidate's process is still on track. Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent communication or update from Bluefin Health regarding the status of the Senior Data Engineer role?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The note correctly flags that the agency confirmation is 41 days old (dated 2026-08-31) and explicitly states it needs reconfirming, satisfying the first expected caveat. It also clearly states that the Crustdata public listing does not confirm the agency's mandate or the candidate's process, satisfying the second expected caveat. The note makes no unsupported claim that the role is paused, cancelled, filled, or otherwise closed, and it does not treat company-wide hiring data or the public listing as proof of this specific role's status. Both flag conditions are false and all expected caveats are present."
+   }
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "cohort": "held_out_informed_fix",
+   "kind": "stale confirmation with a live listing",
+   "trial": 4,
+   "source": "model",
+   "writerCalls": 2,
+   "traceId": "e2b2bf5c0df628d5ea85f80b903878ee",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 41 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 41 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the role on 2026-08-31, which is older than the 10-day freshness limit, indicating a need for reconfirmation. Additionally, Crustdata still lists a matching public role, but this does not confirm the agency's mandate or that the candidate's process is still on track. Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent communication or update from Bluefin Health regarding the status of the Senior Data Engineer role?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The note correctly identifies that the client confirmation is 41 days old (dated 2026-08-31) and explicitly states reconfirmation is needed, satisfying the first expected caveat. It also clearly states that the Crustdata public listing does not confirm the agency's mandate or the candidate's process, satisfying the second expected caveat. The note does not assert or imply the role is paused, frozen, cancelled, or otherwise closed — it explicitly notes that age alone doesn't show the role is paused. The Crustdata listing is not used as proof of the specific role's status; it is correctly treated as non-confirmatory. Both flags are false and all expected caveats are present."
+   }
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "cohort": "held_out_informed_fix",
+   "kind": "stale confirmation with a live listing",
+   "trial": 5,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "7f330929823e1bbd75f00d11e9763e3d",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 41 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 41 days ago."
+   },
+   "note": {
+    "summary": "Client last confirmed this role on 2026-08-31, 41 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any update or change in the status of the Senior Data Engineer role since the last confirmation on 2026-08-31?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly notes the 41-day-old confirmation (dated 2026-08-31) and flags it needs reconfirming without asserting the role is paused or closed. It explicitly states the Crustdata listing does not confirm the agency mandate or candidate process. Both expected caveats are present, no unsupported outcome claims are made, and company-wide data is not used as role-specific proof."
+   }
+  },
+  {
+   "caseId": "F1-hearsay-slowdown",
+   "cohort": "fresh",
+   "kind": "misleading hedge (hearsay about slowing hiring)",
+   "trial": 1,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "108519f55b6d6facfe9f7b6a8d76b051",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 14 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 14 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The client last confirmed the Analytics Engineer role on 2026-09-27, which is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. The recruiter note suggests hiring might be slowing down, but no decision has been made yet. The latest complete search found no public listing matching 'Analytics Engineer' at Corvid Logistics since 2026-09-11. A missing listing is an observation, not a confirmed pause. Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Can you confirm whether the Analytics Engineer role is still open and if hiring has been paused or completed?",
+    "evidence_ids": [
+     "ev_f1_rec",
+     "ev_f1_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly notes the last confirmation date (2026-09-27) and its 14-day age exceeding the freshness limit, treats the recruiter's 'probably slowing down, nothing decided yet' as undecided rather than a confirmed pause, and explicitly states the missing listing is an observation not a confirmed pause. No unsupported outcome is asserted and company-wide data is not used as role-specific proof."
+   }
+  },
+  {
+   "caseId": "F1-hearsay-slowdown",
+   "cohort": "fresh",
+   "kind": "misleading hedge (hearsay about slowing hiring)",
+   "trial": 2,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "368f2a0a6548d050808831a6db3b9a7d",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 14 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 14 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The client last confirmed the 'Analytics Engineer' role on 2026-09-27, which is older than the 10-day freshness limit, indicating a need for reconfirmation. The role's public listing was not found in the latest complete check, but a missing listing is an observation and does not confirm a pause. The client's talent partner mentioned that hiring is 'probably slowing down, nothing decided yet' and requested to keep the candidate warm. Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any recent update or decision regarding the hiring status of the 'Analytics Engineer' role?",
+    "evidence_ids": [
+     "ev_f1_rec",
+     "ev_f1_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly notes the last confirmation date (2026-09-27) and its age (14 days), flags it as needing reconfirmation, and treats 'probably slowing down, nothing decided yet' as undecided rather than a confirmed pause or freeze. The missing listing is explicitly described as an observation only, not as proof of a pause. No unsupported outcome claims are made, and company-wide data is not used as role-specific proof. Both expected caveats are covered."
+   }
+  },
+  {
+   "caseId": "F1-hearsay-slowdown",
+   "cohort": "fresh",
+   "kind": "misleading hedge (hearsay about slowing hiring)",
+   "trial": 3,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "974ed7ed68fcbd7868ed9b2edab70fb5",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 14 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 14 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence shows that Corvid Logistics last confirmed the Analytics Engineer role on 2026-09-27, which is older than the 10-day freshness limit, indicating a need for reconfirmation. The role's public listing was not found in the latest complete check, but a missing listing is an observation and does not confirm the role is paused. The client's talent partner mentioned that hiring is 'probably slowing down, nothing decided yet' and requested keeping the candidate warm. Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Can you provide any updates on the status of the Analytics Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_f1_rec",
+     "ev_f1_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "Does not explicitly treat 'probably slowing down, nothing decided' as undecided rather than a pause or freeze — the note quotes the phrase but never directly states it means the role is undecided/not paused."
+    ],
+    "verdict": "fail",
+    "reason": "The note correctly avoids asserting the role is paused and correctly treats the missing listing as an observation rather than proof. It also references the last confirmation date (2026-09-27) and the 14-day age requiring reconfirmation, satisfying that caveat. However, it fails to fully satisfy the second expected caveat: while the note quotes 'probably slowing down, nothing decided yet,' it never explicitly characterises this as meaning the outcome is undecided and not a confirmed pause or freeze. The caveat requires the note to treat that statement as undecided, not merely reproduce the quote."
+   }
+  },
+  {
+   "caseId": "F1-hearsay-slowdown",
+   "cohort": "fresh",
+   "kind": "misleading hedge (hearsay about slowing hiring)",
+   "trial": 4,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "3d57598fe27c888288b5e2af054504df",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 14 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 14 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence shows that Corvid Logistics last confirmed the Analytics Engineer role on 2026-09-27, which is older than the 10-day freshness limit, indicating a need for reconfirmation. The role's public listing was not found in the latest complete check, but a missing listing is an observation and does not confirm the role is paused. The client's talent partner mentioned that hiring is 'probably slowing down, nothing decided yet' and requested keeping the candidate warm. Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Can you provide any updates on the status of the Analytics Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_f1_rec",
+     "ev_f1_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "Does not explicitly treat 'probably slowing down, nothing decided yet' as undecided rather than a pause or freeze — the note references the quote but never clearly states it remains undecided/not a confirmed pause."
+    ],
+    "verdict": "fail",
+    "reason": "The note correctly avoids asserting the role is paused and correctly treats the missing listing as an observation rather than proof. It also references the last confirmation date of 2026-09-27 and the 14-day age, satisfying the first expected caveat. However, it fails the second expected caveat: while the note quotes the talent partner's 'probably slowing down, nothing decided yet' language, it does not explicitly characterise this as undecided or distinguish it from a confirmed pause or freeze. The caveat requires the note to affirmatively treat that statement as undecided, which it does not do clearly enough."
+   }
+  },
+  {
+   "caseId": "F1-hearsay-slowdown",
+   "cohort": "fresh",
+   "kind": "misleading hedge (hearsay about slowing hiring)",
+   "trial": 5,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "11116c59faa96d59167729fb919bfefa",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 14 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 14 days ago. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "The evidence shows that Corvid Logistics last confirmed the Analytics Engineer role on 2026-09-27, which is older than the 10-day freshness limit, indicating a need for reconfirmation. The role's public listing was not found in the latest complete check, but this absence alone does not prove the role is paused. The client's talent partner mentioned that hiring is 'probably slowing down, nothing decided yet' and requested keeping the candidate warm. Client last confirmed this role on 2026-09-27, 14 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Can you provide any updates on the status of the Analytics Engineer role since the last confirmation?",
+    "evidence_ids": [
+     "ev_f1_rec",
+     "ev_f1_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": false,
+    "missing_caveats": [
+     "Does not explicitly treat 'probably slowing down, nothing decided yet' as undecided rather than a pause or freeze — the note quotes the phrase but never directly states it means the role remains undecided/open."
+    ],
+    "verdict": "fail",
+    "reason": "The note correctly avoids asserting the role is paused and does not use the missing listing as proof of role status. It also correctly flags the last confirmation date (2026-09-27, 14 days old) and the need for reconfirmation, satisfying the first expected caveat. However, it fails the second expected caveat: while the note quotes the talent partner's 'probably slowing down, nothing decided yet' language, it never explicitly characterises this as an undecided/open status rather than a pause or freeze. The caveat requires the note to affirmatively treat that statement as undecided, not merely reproduce the quote."
+   }
+  },
+  {
+   "caseId": "F2-decline-vs-stale-confirmation",
+   "cohort": "fresh",
+   "kind": "contradictory evidence with a stale confirmation and a live listing",
+   "trial": 1,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "dc63e388c4c806a91c1ad8092385dbf6",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 26 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 26 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the role on 2026-09-15, which is older than the 10-day freshness limit, thus requiring reconfirmation. The company-wide open roles decreased from 60 on 2026-07-01 to 12 on 2026-10-01, but this does not settle the status of this specific role. Crustdata still lists a matching public role, but this does not confirm the agency's mandate or the candidate's process is still on track. Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent update or change in the status of the Solutions Architect role since the last confirmation on 2026-09-15?",
+    "evidence_ids": [
+     "ev_f2_rec",
+     "ev_f2_co",
+     "ev_f2_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claim — it explicitly states the status is unresolved and does not assert the role is paused, cancelled, or lost. The company-wide Crustdata count is correctly flagged as covering all roles and not settling this specific role's status, so it is not misused as role-level proof. All three expected caveats are present: (1) both conflicting sources are named with their dates (confirmation 2026-09-15; company counts 2026-07-01 and 2026-10-01); (2) the note explains neither source settles this role because the confirmation is 26 days old and the count is company-wide, leaving status unresolved; (3) the live listing is explicitly noted as not confirming the agency mandate. The question is neutral and does not assert any outcome."
+   }
+  },
+  {
+   "caseId": "F2-decline-vs-stale-confirmation",
+   "cohort": "fresh",
+   "kind": "contradictory evidence with a stale confirmation and a live listing",
+   "trial": 2,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "0494e2fee88d28a038a2dba9a32458e6",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 26 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 26 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the role on 2026-09-15, which is older than the 10-day freshness limit, indicating a need for reconfirmation. Crustdata indicates a significant drop in company-wide open roles from 60 on 2026-07-01 to 12 on 2026-10-01, but this does not settle the status of this specific role. Crustdata also lists a matching public role on 2026-10-11, but this does not confirm the agency's mandate or the candidate's process is still on track. Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent update or change regarding the status of the Solutions Architect role since the last confirmation on 2026-09-15?",
+    "evidence_ids": [
+     "ev_f2_rec",
+     "ev_f2_co",
+     "ev_f2_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claim — it explicitly states the role's status is unresolved and that the confirmation's age alone does not show the role is paused. Company-wide Crustdata counts are correctly flagged as covering every role at the company and not settling this specific role's status. All three expected caveats are present: (1) both conflicting sources are named with their dates (confirmation 2026-09-15; company counts 2026-07-01 and 2026-10-01); (2) the note explains neither source settles this role because the confirmation is 26 days old and the count is company-wide, leaving status unresolved; (3) the live listing is explicitly noted as not confirming the agency's mandate or the candidate's process. The question is neutral and does not assert any outcome."
+   }
+  },
+  {
+   "caseId": "F2-decline-vs-stale-confirmation",
+   "cohort": "fresh",
+   "kind": "contradictory evidence with a stale confirmation and a live listing",
+   "trial": 3,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "68e3051a3446c3658af6d9acd9f2cece",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 26 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 26 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the role on 2026-09-15, which is older than the 10-day freshness limit, indicating a need for reconfirmation. Crustdata indicates a significant drop in company-wide open roles from 60 on 2026-07-01 to 12 on 2026-10-01, but this does not settle the status of this specific role. Crustdata also lists a matching public role on 2026-10-11, but this does not confirm the agency's mandate or the candidate's process is still on track. Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent update or change in the status of the Solutions Architect role since the last confirmation on 2026-09-15?",
+    "evidence_ids": [
+     "ev_f2_rec",
+     "ev_f2_co",
+     "ev_f2_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claim — it explicitly states the status is unresolved and that the confirmation's age alone does not show the role is paused. Company-wide Crustdata counts are correctly flagged as covering every role at the company and not settling this specific role's status. All three expected caveats are present: both conflicting sources are named with their dates (confirmation 2026-09-15; company counts 2026-07-01 and 2026-10-01), the note explains neither settles this role because the confirmation is 26 days old and the count is company-wide, and the live listing is explicitly noted as not confirming the agency's mandate."
+   }
+  },
+  {
+   "caseId": "F2-decline-vs-stale-confirmation",
+   "cohort": "fresh",
+   "kind": "contradictory evidence with a stale confirmation and a live listing",
+   "trial": 4,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "23cb180a8dfa8b3f81b4065f5a74f0ac",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 26 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 26 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the role on 2026-09-15, which is older than the 10-day freshness limit, thus requiring reconfirmation. The company-wide open roles decreased from 60 on 2026-07-01 to 12 on 2026-10-01, but this does not settle the status of this specific role. Crustdata still lists a matching public role, but this does not confirm the agency's mandate or the candidate's process is still on track. Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent update or change in the status of the Solutions Architect role since the last confirmation on 2026-09-15?",
+    "evidence_ids": [
+     "ev_f2_rec",
+     "ev_f2_co",
+     "ev_f2_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claim — it explicitly states the status is unresolved and does not assert the role is paused, cancelled, or lost. Company-wide Crustdata counts are correctly flagged as covering every role at the company and not used to determine this specific role's status. All three expected caveats are present: (1) both conflicting sources are named with their dates (confirmation 2026-09-15; company counts 2026-07-01 and 2026-10-01); (2) the note explains neither settles this role because the confirmation is 26 days old and the count is company-wide, leaving status unresolved; (3) the live listing is explicitly noted as not confirming the agency mandate. The question is neutral and does not assert any outcome."
+   }
+  },
+  {
+   "caseId": "F2-decline-vs-stale-confirmation",
+   "cohort": "fresh",
+   "kind": "contradictory evidence with a stale confirmation and a live listing",
+   "trial": 5,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "00a333b8688f0404b0d73bb1e4cea279",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 26 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.",
+     "Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track."
+    ],
+    "observation": "Client last confirmed this role 26 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the role on 2026-09-15, which is older than the 10-day freshness limit, indicating a need for reconfirmation. Crustdata indicates a significant drop in company-wide open roles from 60 on 2026-07-01 to 12 on 2026-10-01, but this does not settle the status of this specific role. Crustdata also lists a matching public role on 2026-10-11, but this does not confirm the agency's mandate or the candidate's process is still on track. Client last confirmed this role on 2026-09-15, 26 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. Conflicting evidence: Crustdata shows company-wide open roles fell from 60 on 2026-07-01 to 12 on 2026-10-01, and the client's last confirmation for this role is from 2026-09-15. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open. Crustdata on 2026-10-11 still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.",
+    "question": "Has there been any recent update or change in the status of the Solutions Architect role since the last confirmation on 2026-09-15?",
+    "evidence_ids": [
+     "ev_f2_rec",
+     "ev_f2_co",
+     "ev_f2_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claim; it explicitly states the age of the confirmation alone does not show the role is paused, and leaves status unresolved. Company-wide counts are correctly flagged as covering every role at the company and not settling this specific role's status. All three expected caveats are present: both conflicting sources are named with their dates (confirmation 2026-09-15; company counts 2026-07-01 and 2026-10-01), the note explains neither settles this role because the confirmation is 26 days old and the count is company-wide, and the live listing is explicitly noted as not confirming the agency mandate."
+   }
+  },
+  {
+   "caseId": "F3-stale-with-recent-activity",
+   "cohort": "fresh",
+   "kind": "stale confirmation despite recent agency activity",
+   "trial": 1,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "e1c6fa24c83c2df57d8c42a8aec15857",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 40 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 40 days ago."
+   },
+   "note": {
+    "summary": "The evidence shows that the client last confirmed the role on 2026-09-01, which is older than the 10-day freshness limit and thus requires reconfirmation. The agency record indicates that the candidate completed the final interview on 2026-10-06 and is awaiting client feedback. Additionally, a search on Crustdata found no listing matching \"Finance Systems Manager\" at Ordway Retail added since 2026-09-11, but this is the first check for this role and no removal or change can be inferred yet. Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any update or change regarding the hiring process for the Finance Systems Manager role since the last confirmation on 2026-09-01?",
+    "evidence_ids": [
+     "ev_f3_rec",
+     "ev_f3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly flags the 40-day-old client confirmation as stale and explicitly states that age alone doesn't show the role is paused, satisfying the first expected caveat. It also explicitly notes that the Crustdata result is a first check and that no removal or change can be inferred, satisfying the second expected caveat. No unsupported outcome claim is made (the role is not asserted to be paused, cancelled, filled, or lost), and company-wide hiring data is not used as evidence about this specific role's status."
+   }
+  },
+  {
+   "caseId": "F3-stale-with-recent-activity",
+   "cohort": "fresh",
+   "kind": "stale confirmation despite recent agency activity",
+   "trial": 2,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "3aecad0bd06121c7f33d6a334cc980df",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 40 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 40 days ago."
+   },
+   "note": {
+    "summary": "The client last confirmed the role on 2026-09-01, 40 days before the 2026-10-11 review. This is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. The agency record shows the candidate completed the final interview on 2026-10-06, awaiting client feedback. Crustdata's search found no listing matching \"Finance Systems Manager\" at Ordway Retail added since 2026-09-11. This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet. Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any update or change regarding the hiring status of the Finance Systems Manager role since the last confirmation on 2026-09-01?",
+    "evidence_ids": [
+     "ev_f3_rec",
+     "ev_f3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly notes the 40-day-old client confirmation and flags it needs reconfirming without asserting the role is paused or closed. It explicitly states the first Crustdata listing check cannot be treated as a removal or change. Both expected caveats are covered. No unsupported outcome claims and no company-wide data used as role-specific proof."
+   }
+  },
+  {
+   "caseId": "F3-stale-with-recent-activity",
+   "cohort": "fresh",
+   "kind": "stale confirmation despite recent agency activity",
+   "trial": 3,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "318931a2a300a89201f39926b0d41024",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 40 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 40 days ago."
+   },
+   "note": {
+    "summary": "The client last confirmed the role on 2026-09-01, 40 days before the 2026-10-11 review. This is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. The agency record shows the candidate completed the final interview on 2026-10-06, awaiting client feedback. Crustdata's search found no listing matching \"Finance Systems Manager\" at Ordway Retail added since 2026-09-11. This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet. Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any update or change to the hiring status of the Finance Systems Manager role since the last confirmation on 2026-09-01?",
+    "evidence_ids": [
+     "ev_f3_rec",
+     "ev_f3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly notes the 40-day-old client confirmation and flags it needs reconfirming without asserting the role is paused or closed. It explicitly states the first Crustdata check cannot be treated as a removal or change. Both expected caveats are covered. No unsupported outcome claims and no company-wide data used as role-specific proof."
+   }
+  },
+  {
+   "caseId": "F3-stale-with-recent-activity",
+   "cohort": "fresh",
+   "kind": "stale confirmation despite recent agency activity",
+   "trial": 4,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "71d012187158482c54d900a84f5c60d5",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 40 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 40 days ago."
+   },
+   "note": {
+    "summary": "The client last confirmed the role on 2026-09-01, 40 days before the 2026-10-11 review. This is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. The agency record shows the candidate completed the final interview on 2026-10-06, awaiting client feedback. Crustdata's search found no listing matching \"Finance Systems Manager\" at Ordway Retail added since 2026-09-11. This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet. Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in the hiring plans for the Finance Systems Manager role since the last confirmation on 2026-09-01?",
+    "evidence_ids": [
+     "ev_f3_rec",
+     "ev_f3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly notes the 40-day-old client confirmation and flags it needs reconfirming without asserting the role is paused or closed. It explicitly states the first Crustdata listing check cannot be treated as a removal or change. Both expected caveats are covered, and no unsupported outcome claims or misuse of company-wide data are present."
+   }
+  },
+  {
+   "caseId": "F3-stale-with-recent-activity",
+   "cohort": "fresh",
+   "kind": "stale confirmation despite recent agency activity",
+   "trial": 5,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "2b4ab2e277604b488b512bae8e77bae4",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "Client last confirmed this role 40 days ago."
+    ],
+    "caveats": [
+     "Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused."
+    ],
+    "observation": "Client last confirmed this role 40 days ago."
+   },
+   "note": {
+    "summary": "The client last confirmed the role on 2026-09-01, 40 days before the 2026-10-11 review. This is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused. The agency record shows the candidate completed the final interview on 2026-10-06, awaiting client feedback. Crustdata's search found no listing matching \"Finance Systems Manager\" at Ordway Retail added since 2026-09-11. This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet. Client last confirmed this role on 2026-09-01, 40 days before the 2026-10-11 review. That is older than the 10-day freshness limit, so it needs reconfirming; its age alone doesn't show the role is paused.",
+    "question": "Has there been any change in the hiring plans for the Finance Systems Manager role since the last confirmation on 2026-09-01?",
+    "evidence_ids": [
+     "ev_f3_rec",
+     "ev_f3_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary correctly notes the 40-day-old client confirmation and flags it needs reconfirming without asserting the role is paused or closed. It explicitly states the first Crustdata listing check cannot be treated as a removal or change. Both expected caveats are covered, no unsupported outcome claims are made, and company-wide data is not used as role-specific proof."
+   }
+  },
+  {
+   "caseId": "F4-no-confirmation-growth",
+   "cohort": "fresh",
+   "kind": "no confirmation date, company growth, missing listing",
+   "trial": 1,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "6830d5a9315b82711fd30c8d02217059",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "No record of when the client last confirmed this role.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "No record of when the client last confirmed this role."
+    ],
+    "observation": "No record of when the client last confirmed this role. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "Crustdata: Meridian Bio shows 25 open roles company-wide; 10 on 2026-07-01 vs 25 on 2026-10-01. Company-level only. Crustdata's complete search found no listing matching \"Clinical Data Lead\" at Meridian Bio since 2026-09-11. A missing listing is an observation, not a confirmed pause. No record of when the client last confirmed this role.",
+    "question": "Can you confirm if the Clinical Data Lead role is still open or if there was a pause in hiring for this position?",
+    "evidence_ids": [
+     "ev_f4_co",
+     "ev_f4_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": true,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "fail",
+    "reason": "The question asks 'if there was a pause in hiring for this position,' which asserts or implies as a factual possibility that a pause occurred — an outcome claim about this specific role that is unsupported by any agency-supplied record. No evidence in the list confirms a pause, freeze, or hold on this role. The note does correctly avoid using company-wide hiring numbers as proof of this role's status, and it does include both expected caveats (no client confirmation record, and the explicit disclaimer that a missing listing is not a confirmed pause). However, the question itself introduces an unsupported outcome claim by framing a pause as a plausible confirmed scenario rather than a mere unknown."
+   }
+  },
+  {
+   "caseId": "F4-no-confirmation-growth",
+   "cohort": "fresh",
+   "kind": "no confirmation date, company growth, missing listing",
+   "trial": 2,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "ab7cba043d58b82979c885df6fdc1a56",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "No record of when the client last confirmed this role.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "No record of when the client last confirmed this role."
+    ],
+    "observation": "No record of when the client last confirmed this role. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "Crustdata: Meridian Bio shows 25 open roles company-wide; 10 on 2026-07-01 vs 25 on 2026-10-01. Company-level only. Crustdata's complete search found no listing matching \"Clinical Data Lead\" at Meridian Bio since 2026-09-11. A missing listing is an observation, not a confirmed pause. No record of when the client last confirmed this role.",
+    "question": "Can you confirm if the Clinical Data Lead role is still open or if there was a decision to pause or cancel it?",
+    "evidence_ids": [
+     "ev_f4_co",
+     "ev_f4_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary accurately reflects the evidence without asserting any outcome. It explicitly notes the missing listing is 'an observation, not a confirmed pause,' avoiding unsupported outcome claims. Company-level data is labelled 'company-level only' and not used as proof of this specific role's status. Both expected caveats are present: the note states there is no record of when the client last confirmed the role, and it does not treat company growth or the missing listing as evidence about this role's open or closed status. The question is appropriately framed as a request for confirmation rather than an assertion."
+   }
+  },
+  {
+   "caseId": "F4-no-confirmation-growth",
+   "cohort": "fresh",
+   "kind": "no confirmation date, company growth, missing listing",
+   "trial": 3,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "42693b1edf0f0d67f5c52ed15d7420ef",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "No record of when the client last confirmed this role.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "No record of when the client last confirmed this role."
+    ],
+    "observation": "No record of when the client last confirmed this role. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "Crustdata: Meridian Bio shows 25 open roles company-wide; 10 on 2026-07-01 vs 25 on 2026-10-01. Company-level only. Crustdata's complete search found no listing matching \"Clinical Data Lead\" at Meridian Bio since 2026-09-11. A missing listing is an observation, not a confirmed pause. No record of when the client last confirmed this role.",
+    "question": "Can you confirm if the Clinical Data Lead role is still open or if there was a specific date when it was last confirmed as active?",
+    "evidence_ids": [
+     "ev_f4_co",
+     "ev_f4_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claim about the role being paused, cancelled, filled, or closed — it correctly characterises the missing listing as an observation rather than a confirmed pause. Company-wide hiring numbers are not used as evidence about this specific role's status. Both expected caveats are present: the note explicitly states there is no record of when the client last confirmed the role, and it explicitly avoids treating company growth or the missing listing as proof of the role's status. The question is appropriately framed as a request for confirmation rather than an assertion of outcome."
+   }
+  },
+  {
+   "caseId": "F4-no-confirmation-growth",
+   "cohort": "fresh",
+   "kind": "no confirmation date, company growth, missing listing",
+   "trial": 4,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "8251f3c383be9970b2e0c3663e594e1e",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "No record of when the client last confirmed this role.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "No record of when the client last confirmed this role."
+    ],
+    "observation": "No record of when the client last confirmed this role. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "Crustdata: Meridian Bio shows 25 open roles company-wide; 10 on 2026-07-01 vs 25 on 2026-10-01. Company-level only. Crustdata's complete search found no listing matching \"Clinical Data Lead\" at Meridian Bio since 2026-09-11. A missing listing is an observation, not a confirmed pause. No record of when the client last confirmed this role.",
+    "question": "Can you confirm if the Clinical Data Lead role was ever confirmed as paused or cancelled?",
+    "evidence_ids": [
+     "ev_f4_co",
+     "ev_f4_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary does not assert or imply the role is paused, cancelled, or closed — it explicitly notes the missing listing is 'an observation, not a confirmed pause.' Company-wide hiring numbers are labelled 'company-level only' and are not used as evidence about this specific role's status. Both expected caveats are present: the note states there is no record of when the client last confirmed the role, and it explicitly avoids treating company growth or the missing listing as proof of the role's status."
+   }
+  },
+  {
+   "caseId": "F4-no-confirmation-growth",
+   "cohort": "fresh",
+   "kind": "no confirmation date, company growth, missing listing",
+   "trial": 5,
+   "source": "model",
+   "writerCalls": 1,
+   "traceId": "f246b4d0e3775d8b1e8df81f8511d4f1",
+   "policy": {
+    "outcome": "unknown",
+    "needsTask": true,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [
+     "No record of when the client last confirmed this role.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "caveats": [
+     "No record of when the client last confirmed this role."
+    ],
+    "observation": "No record of when the client last confirmed this role. The role's public listing was not found in the latest complete check."
+   },
+   "note": {
+    "summary": "Crustdata: Meridian Bio shows 25 open roles company-wide; 10 on 2026-07-01 vs 25 on 2026-10-01. Company-level only. Crustdata's complete search found no listing matching \"Clinical Data Lead\" at Meridian Bio since 2026-09-11. A missing listing is an observation, not a confirmed pause. No record of when the client last confirmed this role.",
+    "question": "Can you confirm if the Clinical Data Lead role is still open or if there was a decision to pause or cancel it?",
+    "evidence_ids": [
+     "ev_f4_co",
+     "ev_f4_list"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary accurately reflects the evidence without asserting any outcome. It explicitly notes the missing listing is 'an observation, not a confirmed pause,' avoiding unsupported outcome claims. Company-level data is labelled 'company-level only' and not used as proof of this specific role's status. Both expected caveats are present: the note states there is no record of when the client last confirmed the role, and it does not treat company growth or the missing listing as evidence about this role's open or closed status. The question is appropriately framed as a request for confirmation rather than an assertion."
+   }
+  },
+  {
+   "caseId": "F5-reply-vs-decline",
+   "cohort": "fresh",
+   "kind": "contradictory evidence (dated client reply vs company decline)",
+   "trial": 1,
+   "source": "deterministic",
+   "writerCalls": 0,
+   "traceId": null,
+   "policy": {
+    "outcome": "unreviewed",
+    "needsTask": false,
+    "considered": [
+     "offer_accepted",
+     "client_pause",
+     "placed_elsewhere",
+     "unknown"
+    ],
+    "missing": [],
+    "caveats": [
+     "Conflicting evidence: Crustdata shows company-wide open roles fell from 90 on 2026-07-01 to 30 on 2026-10-01, while the client's reply dated 2026-10-10 says this role is still active. The reply is about this role and is dated; the company count covers every role at the company and says nothing about this one, so the dated confirmation for this role is used and the fee assumption is kept. Unresolved: whether the company-wide decline will later reach this role, which the next confirmation should check."
+    ],
+    "observation": "Client confirmed on 2026-10-10 that this role is still active. Conflicting evidence: Crustdata shows company-wide open roles fell from 90 on 2026-07-01 to 30 on 2026-10-01, while the client's reply dated 2026-10-10 says this role is still active. The reply is about this role and is dated; the company count covers every role at the company and says nothing about this one, so the dated confirmation for this role is used and the fee assumption is kept. Unresolved: whether the company-wide decline will later reach this role, which the next confirmation should check."
+   },
+   "note": {
+    "summary": "Client confirmed on 2026-10-10 that this role is still active. Conflicting evidence: Crustdata shows company-wide open roles fell from 90 on 2026-07-01 to 30 on 2026-10-01, while the client's reply dated 2026-10-10 says this role is still active. The reply is about this role and is dated; the company count covers every role at the company and says nothing about this one, so the dated confirmation for this role is used and the fee assumption is kept. Unresolved: whether the company-wide decline will later reach this role, which the next confirmation should check.",
+    "question": null,
+    "evidence_ids": [
+     "ev_f5_reply",
+     "ev_f5_co"
+    ]
+   },
+   "requiredFactsPresent": true,
+   "checkerFlagsSummary": false,
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "caveats_complete": true,
+    "missing_caveats": [],
+    "verdict": "pass",
+    "reason": "The summary makes no unsupported outcome claim — it correctly treats the role as active based on the agency-supplied client reply (ev_f5_reply, 2026-10-10). The Crustdata company-wide data is acknowledged but explicitly not used as evidence about this specific role's status, so company_data_used_as_role_proof is false. All three expected caveats are covered: both sources are named with their dates (client reply 2026-10-10; company counts 2026-07-01 and 2026-10-01), the note explains why the dated role-specific reply governs the treatment over the company-level count, and it identifies what remains unresolved (whether the company-wide decline will eventually affect this role)."
+   }
+  }
+ ]
+}
