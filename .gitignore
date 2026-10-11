@@ -7,3 +7,5 @@ data/
 !.env.example
 next-env.d.ts
 *.tsbuildinfo
+.claude/
+.entire/
