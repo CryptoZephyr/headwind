@@ -291,7 +291,7 @@ async function runStep(db: Database.Database, run: RunRow, step: string, ports: 
 
 export async function processRun(db: Database.Database, run: RunRow, owner: string, ports: Ports = livePorts, opts: { crashAfterStep?: string } = {}): Promise<RunRow> {
   return workflow(`review.${run.kind}`, async (traceId) => {
-    if (traceId) db.prepare("UPDATE review_run SET trace_id = COALESCE(trace_id, ?) WHERE id = ?").run(traceId, run.id);
+    if (traceId) db.prepare("UPDATE review_run SET trace_id = ? WHERE id = ?").run(traceId, run.id);
     if (run.input_version !== inputVersion(db, run.agency_id)) {
       db.prepare("UPDATE review_run SET status = 'failed', error = ?, lease_owner = NULL WHERE id = ?").run("The imported data changed after this review was planned. Start a new review.", run.id);
       return getRun(db, run.id);
