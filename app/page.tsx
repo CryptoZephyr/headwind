@@ -62,7 +62,7 @@ export default function Home() {
 
       <section>
         <h2>Weekly review</h2>
-        <ReviewControls agencyId={agency.id} active={active} />
+        <ReviewControls agencyId={agency.id} active={active} retryRunId={latest && ["partial", "failed"].includes(latest.status) ? latest.id : null} />
         {!latest && <p>No review yet. Run one to check this month&apos;s placements against client evidence.</p>}
         {latest && (
           <div>
@@ -76,7 +76,7 @@ export default function Home() {
               ))}
             </ul>
             {latest.error && <p role="alert">Last error: {latest.error}{latest.status === "retrying" && " The worker will try again automatically."}</p>}
-            {latest.status === "partial" && <p role="alert">Some steps didn&apos;t finish. Saved results are kept; run the review again to retry only what&apos;s missing.</p>}
+            {latest.status === "partial" && <p role="alert">Some steps didn&apos;t finish. Saved results are kept; “Retry unfinished steps” picks up from the failed step without repeating finished ones.</p>}
           </div>
         )}
       </section>

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function ReviewControls({ agencyId, active }: { agencyId: string; active: boolean }) {
+export function ReviewControls({ agencyId, active, retryRunId }: { agencyId: string; active: boolean; retryRunId: string | null }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -15,10 +15,18 @@ export function ReviewControls({ agencyId, active }: { agencyId: string; active:
   }, [active, router]);
 
   async function start() {
+    await send("/api/reviews", { agencyId });
+  }
+
+  async function retry() {
+    await send("/api/reviews/retry", { runId: retryRunId });
+  }
+
+  async function send(url: string, payload: object) {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/reviews", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ agencyId }) });
+      const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error || "Couldn't start the review.");
       router.refresh();
@@ -34,10 +42,15 @@ export function ReviewControls({ agencyId, active }: { agencyId: string; active:
       <button onClick={start} disabled={busy || active}>
         {active ? "Review running…" : busy ? "Starting…" : "Run weekly review"}
       </button>
+      {retryRunId && !active && (
+        <button onClick={retry} disabled={busy}>
+          {busy ? "Retrying…" : "Retry unfinished steps"}
+        </button>
+      )}
       {active && <p>The worker is processing this review. This page refreshes on its own.</p>}
       {error && (
         <p role="alert">
-          {error} <button onClick={start}>Try again</button>
+          {error}
         </p>
       )}
     </div>

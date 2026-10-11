@@ -6,7 +6,7 @@ import { closeDb, getDb } from "../lib/db";
 import { previewImport } from "../lib/importer";
 import { recordClientReply, type ReplyReader } from "../lib/reply";
 import { ModelOutputError } from "../lib/llm";
-import { claimRun, enqueueRun, getRun, processRun, SimulatedCrash, type Ports } from "../lib/review";
+import { claimRun, enqueueRun, getRun, processRun, retryRun, SimulatedCrash, type Ports } from "../lib/review";
 import { commitImport } from "../lib/store";
 
 delete process.env.NEATLOGS_API_KEY;
@@ -170,5 +170,13 @@ describe("review engine", () => {
     expect(final.status).toBe("partial");
     expect(final.attempts).toBe(3);
     expect(final.error).toContain("sync_cfo");
+
+    const recovered = new FakeCfo();
+    expect(retryRun(db2, r2)).toBe(true);
+    expect(retryRun(db2, r2)).toBe(false);
+    await drain(db2, ports(recovered));
+    expect(getRun(db2, r2).status).toBe("complete");
+    expect(recovered.writes).toBe(2);
+    expect(db2.prepare("SELECT COUNT(*) AS n FROM decision").get()).toEqual({ n: 3 });
   });
 });

@@ -61,6 +61,13 @@ export function enqueueRun(db: Database.Database, agencyId: string, kind: RunKin
   return id;
 }
 
+export function retryRun(db: Database.Database, runId: string): boolean {
+  const r = db
+    .prepare("UPDATE review_run SET status = 'queued', attempts = 0, error = NULL, available_at = NULL, lease_owner = NULL, lease_expires_at = NULL, updated_at = datetime('now') WHERE id = ? AND status IN ('partial','failed')")
+    .run(runId);
+  return r.changes === 1;
+}
+
 export function claimRun(db: Database.Database, owner: string): RunRow | null {
   return (
     (db
