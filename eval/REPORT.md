@@ -1,7 +1,7 @@
 # Headwind evaluation report (2026-10-11)
 
 What this covers, in two separate parts:
-- **Part A, controlled tests:** the 10 decision cases, what the model is allowed to see, the case-note fix, an independent grade of case notes, and the regrade after the caveat and checker fix (A5). Inputs are fixed or stubbed.
+- **Part A, controlled tests:** the 10 decision cases, what the model is allowed to see, the case-note fix, an independent grade of case notes, and the regrades after the caveat and checker fixes (A5-A7). Inputs are fixed or stubbed.
 - **Part B, completed live reviews:** one full weekly review and one recovery test, both against live Crustdata and live cfo.ai. Each ran once.
 
 Then Part C covers cfo.ai's plan and cost, and Part D lists what is still not shown.
@@ -253,6 +253,71 @@ Unsupported claims and caveat completeness are counted separately:
 - **M-103, 2 unsupported plus 1 company-data flag:** in 3 of 10 notes the model wrote that the missing listing was "indicating it may no longer be active". The check lets this through because "may" hedges it, but the judge reads it as treating a missing listing as evidence about the role. I agree with the judge: the hedge doesn't change that the inference rests only on a missing listing. One of these notes also asks whether the role has been "paused, cancelled, or filled".
 - **H1, 2 company-data flags:** both point at the code-written conflict sentence ("Conflicting evidence: ... company-wide open roles fell from 30 to 14 ..., and the client's last confirmation ... Neither settles this role"). That sentence is the one A5 added to name both sources, and it says the company count doesn't settle the role. The judge objects to putting the two side by side at all. I read this as the judge being strict, not as the note using company data as proof. In A5 the same sentence wasn't flagged in the H1 fallback notes, so this judge is not consistent on it.
 - **Still missing (unchanged):** G3 (unclear client reply) 0 of 5, F1 (informal "probably slowing down") 0 of 5, and 2 of 5 H1 notes don't mention HR's "could not say".
+
+## A7. Mandatory caveats for replies, remarks and missing listings; question check (PR #3, third round)
+
+**What changed**
+- **More caveats are now written by code from saved evidence, not left to the model:**
+  - **Unclear client reply:** "The client's reply on <date> doesn't say whether this role is still active, so it stays unconfirmed."
+  - **Recruiter remarks** (saved `agency_update` evidence): "Reported remark (<date>), repeated as said and not a dated client confirmation of this role's status: <text>". These are added only when the case is unresolved, so a recent confirmation isn't cluttered with them.
+  - **Listing gone after a sighting:** "Crustdata on <date> found no matching public listing after an earlier sighting. A missing listing is an observation only; it doesn't show this role is paused, cancelled or filled."
+  - **Conflict sentences** now say outright that the company-wide count "is not evidence about this one".
+  - None of these change the forecast treatment. They only add text.
+- **The hedge check:**
+  - A guess drawn from a missing listing ("indicating it may no longer be active") is now flagged even with "may" in it. Negated forms ("does not indicate", "never prove, indicate, or suggest") still pass.
+  - A comma part with no verb no longer inherits an earlier hedge just because it has no verb. "The role may be paused, definitely cancelled." is flagged. A real list ("unclear whether the role was paused, cancelled or filled") still passes.
+  - "Insufficient evidence", "inconclusive", "unproven" and "lacking" count as cautious. "The evidence shows..." still doesn't.
+- **Questions to the client are checked too.** If a question names an outcome (paused, cancelled, filled...) that no agency record mentions, it's rejected and the model tries again, within the same 3-attempt limit.
+- The writer's summary limit went from 600 to 1,200 characters and from 400 to 700 output tokens. Longer notes with the new caveats were being cut off and rejected as "missing fields".
+- **Two prompt lines were reworded.** The model was copying the prompt word for word ("never prove, indicate or suggest..."), and that tripped the check.
+
+**How the fix was tuned (so you can judge how fresh the cases are)**
+- `revised-note-grading-2026-10-11T11-53-33-967Z.json` (first run): G2 fell back to the code-written note 5 of 5 times and failed every time. The cause was that nothing said the missing listing was only an observation. That run led to the listing caveat.
+- `...11-59-01-664Z.json`: 66 of 67 passed, but 15 notes fell back. The model was copying the new prompt line, and the check flagged it. G1 failed once on the old remark wording. That run led to the prompt rewording, the remark wording and the "or indicate" fix.
+- So G1-G3 shaped this round and are no longer fresh. **K1-K3 are new cases**, written after every change above and not used for any tuning.
+- `...12-04-23-253Z.json` was a check run of the same code before K1-K3 were added: 67 of 67 passed, with 0 fallbacks.
+
+**Hedge check probes** (17 hand-written sentences: 9 unsupported, 8 cautious)
+
+| Sentence | Really unsupported? | Check flags it | Judge flags it |
+|---|---|---|---|
+| The 7 unsupported sentences from A6 | yes | 7 / 7 | 7 / 7 |
+| "The listing was not found in the latest complete check, indicating it may no longer be active." (new) | yes | yes | yes |
+| "The role may be paused, definitely cancelled." (new) | yes | yes | yes |
+| The 5 cautious sentences from A6 | no | 0 / 5 | 0 / 5 |
+| "The missing listing does not indicate that the role was cancelled." (new) | no | no | no |
+| "There is insufficient evidence that the role was cancelled." (new) | no | no | no |
+| "These observations never prove, indicate, or suggest that the role was paused." (new) | no | no | no |
+
+- The check flags **9 of 9** unsupported sentences and **0 of 8** cautious ones, and the judge agrees on all 17. These are hand-written probes, not a measure of every possible sentence. 88 unit tests cover these and the question check.
+
+**Independent regrade** (same judge, rubric and labels; artifact `eval/results/revised-note-grading-2026-10-11T12-10-15-072Z.json`; 80 of 82 rows have a neatlogs trace ID; the other 2 are code-only notes with no model call)
+
+| Group | Notes | Unsupported outcome claim (judge) | Company data used as role proof | Caveats complete (judge) | Required caveats present (code check) | Passed all |
+|---|---|---|---|---|---|---|
+| Redrawn originals | 20 | 0 / 20 | 0 / 20 | 20 / 20 | 20 / 20 | 20 / 20 |
+| H1-H3 (shaped earlier fixes) | 11 | 0 / 11 | 0 / 11 | 11 / 11 | 11 / 11 | 11 / 11 |
+| F1-F5 (shaped earlier fixes) | 21 | 1 / 21 | 0 / 21 | 21 / 21 | 21 / 21 | 20 / 21 |
+| G1-G3 (shaped this fix) | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| **K1-K3 (fresh)** | **15** | **0 / 15** | **1 / 15** | **15 / 15** | **15 / 15** | **14 / 15** |
+| All | 82 | 1 / 82 | 1 / 82 | 82 / 82 | 82 / 82 | 80 / 82 |
+
+- Every note cited only real evidence IDs (82 of 82). **No note fell back to the code-written text** (0 of 82). The writer used 81 calls for 80 model notes, and one draft was rejected and redone.
+- **By case:** M-102 10 of 10, M-103 10 of 10, H1 5 of 5, H2 1 of 1, H3 5 of 5, F1 5 of 5, F2 4 of 5, F3-F5 11 of 11, G1-G3 15 of 15, K1 4 of 5, K2 5 of 5, K3 5 of 5.
+- **Old gaps now closed:** G3 (unclear client reply) went from 0 of 5 to 5 of 5. F1 (informal "probably slowing down") went from 0 of 5 to 5 of 5. "May no longer be active" now appears in 0 of 20 M-103/M-102 notes, down from 3 in A6. That's because the sentences are now written by code, not because the model got better at this.
+
+**Manual inspection of the 2 failures and the tricky cases**
+- **F2 #3, judged an unsupported claim:** the note says "it is unclear whether the role is still open or if it has been paused or filled". The same judge passed the almost identical probe "It is unclear whether the role was paused, cancelled or filled." I read the note as cautious and the judge as inconsistent. The check also passes it, on purpose.
+- **K1 #3, judged as company data used as role proof:** the note disclaims the company count, then says "no public listing for the role has been found since 2026-09-11" without saying that proves nothing. The judge reads that as using the listing. I think it's borderline: the note never draws a conclusion from it. Still, the never-seen-listing state (`still_absent`) has no code-written "this proves nothing" sentence, unlike `not_found`.
+- **K1 (rumour of an internal move):** in 5 of 5 notes the remark is reported as "nothing agreed" and none says the role is filled. **K2:** all 5 have the reply and listing caveats. **K3:** all 5 say there's no confirmation on record and that the first sighting doesn't confirm the mandate.
+- **Questions:** all 82 saved questions ask neutrally about the role's status. None lists possible outcomes.
+
+**Remaining limits (evidence quality)**
+- **Notes repeat themselves.** The model often restates a code-written caveat in its own words, and the code then appends the exact sentence. In K2 the confirmation sentence appears twice. Correctness isn't affected, but the notes are longer than they need to be.
+- **The judge isn't fully consistent** on "unclear whether ... paused or filled" (see F2) and on mentioning a missing listing at all (K1). Its verdicts are one model's reading, not ground truth.
+- **K1-K3 are 3 hand-written cases, 5 notes each.** That's evidence the fix generalises to new cases of these kinds, not a measure of real agency traffic.
+- **The checks are pattern-based.** They match the outcome words we listed (paused, cancelled, filled, frozen, on hold, closed, withdrawn and similar). A claim phrased in words outside that list ("the client has moved on") wouldn't be caught by code. Only the judge would catch it.
+- **Every case uses Nova Micro at temperature 0.** Another writer model hasn't been regraded.
 
 # Part B: Completed live reviews
 

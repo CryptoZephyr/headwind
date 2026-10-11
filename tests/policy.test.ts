@@ -42,5 +42,21 @@ describe("decideTreatment", () => {
     expect(r.outcome).toBe("unknown");
     expect(r.caveats.join(" ")).toContain("Neither settles this role");
     expect(r.caveats.join(" ")).toContain("Unresolved: whether this role is still open.");
+    expect(r.caveats.join(" ")).toContain("not evidence about this one");
+    expect(r.caveats.join(" ")).toContain("A missing listing is an observation only");
+  });
+
+  it("unclear reply and reported remarks become caveats on the unknown path, without changing the treatment", () => {
+    const r = decideTreatment({ stage: "interviewing", lastConfirmedAt: "2026-10-09", cashDate: "2026-10-11", listing: { status: "baseline_absent" }, reply: { outcome: "unclear", pausedUntil: null, replyId: "r1", replyDate: "2026-10-09" }, remarks: [{ date: "2026-10-07", text: "Recruiter note: hiring is 'probably slowing down, nothing decided yet'." }] });
+    expect(r.outcome).toBe("unknown");
+    const c = r.caveats.join(" ");
+    expect(c).toContain("The client's reply on 2026-10-09 doesn't say whether this role is still active");
+    expect(c).toContain("Reported remark (2026-10-07), repeated as said and not a dated client confirmation of this role's status: Recruiter note: hiring is 'probably slowing down, nothing decided yet'.");
+  });
+
+  it("reported remarks don't add caveats when a recent confirmation settles the role", () => {
+    const r = decideTreatment({ stage: "final_interview", lastConfirmedAt: "2026-10-09", cashDate: "2026-10-11", listing: { status: "baseline_absent" }, reply: null, remarks: [{ date: "2026-10-08", text: "Recruiter note: all good." }] });
+    expect(r.outcome).toBe("unreviewed");
+    expect(r.caveats.join(" ")).not.toContain("Reported remark");
   });
 });

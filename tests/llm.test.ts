@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { containsUnsupportedClaim, withRequiredFacts } from "../lib/llm";
+import { containsUnsupportedClaim, questionRaisesUnsupportedOutcome, withRequiredFacts } from "../lib/llm";
 
 describe("containsUnsupportedClaim", () => {
   it("rejects a plain outcome claim", () => {
@@ -52,6 +52,10 @@ describe("containsUnsupportedClaim", () => {
     "The evidence shows the role was cancelled.",
     "It is unclear whether the role was paused, but it was cancelled last week.",
     "Not confirmed, the role was cancelled.",
+    "The listing was not found in the latest complete check, indicating it may no longer be active.",
+    "The company-wide decline suggests the role may be on hold.",
+    "The role may be paused, definitely cancelled.",
+    "The role may be paused, the client cancelled it.",
   ])("rejects a separate assertion that a hedge elsewhere doesn't cover: %s", (text) => {
     expect(containsUnsupportedClaim(text, false)).toBe(true);
   });
@@ -63,6 +67,11 @@ describe("containsUnsupportedClaim", () => {
     "The role may be on hold or cancelled.",
     "There is no evidence, so far, that the role was cancelled.",
     "It is unclear whether the role was paused, cancelled or filled.",
+    "The missing listing does not indicate that the role was cancelled.",
+    "Nothing suggests whether the role was paused.",
+    "There is insufficient evidence that the role was cancelled.",
+    "These observations never prove, indicate, or suggest that the role was paused.",
+    "The role may be paused, cancelled, or filled.",
   ])("passes a hedged sentence: %s", (text) => {
     expect(containsUnsupportedClaim(text, false)).toBe(false);
   });
@@ -75,5 +84,17 @@ describe("withRequiredFacts", () => {
     const out = withRequiredFacts(note, facts);
     expect(out.summary).toBe(`Needs confirming. ${facts[0]}`);
     expect(withRequiredFacts(out, facts).summary).toBe(out.summary);
+  });
+});
+
+describe("questionRaisesUnsupportedOutcome", () => {
+  it("rejects a question that names an outcome no agency record mentions", () => {
+    expect(questionRaisesUnsupportedOutcome("Has the role been paused, cancelled or filled?", "Client record: last confirmed on 2026-09-08.")).toBe(true);
+  });
+  it("passes a neutral status question", () => {
+    expect(questionRaisesUnsupportedOutcome("Is the role still open, and is the start date still 2026-11-01?", "")).toBe(false);
+  });
+  it("passes a question about an outcome an agency record raised", () => {
+    expect(questionRaisesUnsupportedOutcome("You said the role is not cancelled; is it still going ahead this quarter?", "the hiring manager said the role is 'not cancelled, approvals are just slower'")).toBe(false);
   });
 });

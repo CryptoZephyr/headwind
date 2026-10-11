@@ -265,8 +265,9 @@ async function stepAssess(db: Database.Database, run: RunRow, ports: Ports): Pro
     }
     const reply = latestReply(db, caseId);
     const readReplyIds = (db.prepare("SELECT id FROM client_reply WHERE case_id = ? AND interpretation IS NOT NULL AND assessed_at IS NULL").all(caseId) as { id: string }[]).map((r) => r.id);
-    const policy = decideTreatment({ stage: m.stage, lastConfirmedAt: c.last_confirmed_at, cashDate: agency.cash_date, listing: listingObservation(db, run, m), reply, companyTrend: companyTrend(db, run.agency_id, c.id) });
     const ev = evidenceFor(db, run.agency_id, m.id, c.id);
+    const remarks = ev.filter((e) => e.source_type === "agency_update").map((e) => ({ date: e.source_date, text: e.summary }));
+    const policy = decideTreatment({ stage: m.stage, lastConfirmedAt: c.last_confirmed_at, cashDate: agency.cash_date, listing: listingObservation(db, run, m), reply, companyTrend: companyTrend(db, run.agency_id, c.id), remarks });
     let note: CaseNote | null = null;
     let missingFactsExtra: string | null = null;
     if (policy.needsTask) {

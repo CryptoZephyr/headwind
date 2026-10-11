@@ -29,6 +29,12 @@ export interface PolicyInput {
   listing: ListingObservation;
   reply: ReplyReading | null;
   companyTrend?: CompanyTrend | null;
+  remarks?: AgencyRemark[];
+}
+
+export interface AgencyRemark {
+  date: string | null;
+  text: string;
 }
 
 export interface PolicyResult {
@@ -91,14 +97,17 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
   const caveats = [confirmationCaveat(p)];
   if (declined(t)) {
     caveats.push(stale
-      ? `Conflicting evidence: ${companyDecline(t)}, and ${p.lastConfirmedAt ? `the client's last confirmation for this role is from ${p.lastConfirmedAt}` : "there is no dated client confirmation for this role"}. Neither settles this role: the company count covers every role at the company, and the confirmation is not recent enough to rely on. Unresolved: whether this role is still open.`
+      ? `Conflicting evidence. Neither settles this role: ${companyDecline(t)}, a count that covers every role at the company and is not evidence about this one; ${p.lastConfirmedAt ? `the client's last confirmation for this role is from ${p.lastConfirmedAt}, too old to rely on` : "there is no dated client confirmation for this role"}. Unresolved: whether this role is still open.`
       : `Conflicting evidence: ${companyDecline(t)}, while the client confirmed this role on ${p.lastConfirmedAt}. The confirmation is about this role and is dated; the company count covers every role at the company and says nothing about this one, so the dated confirmation for this role is used rather than the company count. Unresolved: whether the company-wide decline will later reach this role, which the next confirmation should check.`);
   }
+  if (p.listing.status === "not_found") caveats.push(`Crustdata ${p.listing.checkedOn ? `on ${p.listing.checkedOn} ` : ""}found no matching public listing after an earlier sighting. A missing listing is an observation only; it doesn't show this role is paused, cancelled or filled.`);
   if ((p.listing.status === "found" || p.listing.status === "baseline_found") && stale) {
     caveats.push(`Crustdata ${p.listing.checkedOn ? `on ${p.listing.checkedOn} ` : ""}${p.listing.status === "baseline_found" ? "currently lists a matching public role (first check, no earlier sighting)" : "still lists a matching public role"}. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.`);
   }
   if (missing.length === 0) {
     return { outcome: "unreviewed", needsTask: false, considered, missing, caveats, observation: ["Recent client confirmation for this role.", ...caveats].join(" ") };
   }
+  if (p.reply?.outcome === "unclear") caveats.push(`The client's reply${p.reply.replyDate ? ` on ${p.reply.replyDate}` : ""} doesn't say whether this role is still active, so it stays unconfirmed.`);
+  for (const r of p.remarks ?? []) caveats.push(`Reported remark${r.date ? ` (${r.date})` : ""}, repeated as said and not a dated client confirmation of this role's status: ${r.text}`);
   return { outcome: "unknown", needsTask: true, considered, missing, caveats, observation: missing.join(" ") };
 }
