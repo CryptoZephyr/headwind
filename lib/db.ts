@@ -165,6 +165,11 @@ CREATE TABLE IF NOT EXISTS external_operation (
 
 let instance: Database.Database | null = null;
 
+function addColumn(db: Database.Database, table: string, column: string, type: string): void {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
+  if (!cols.some((c) => c.name === column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+}
+
 export function dbPath(): string {
   return process.env.HEADWIND_DB ?? path.join(process.cwd(), "data", "headwind.db");
 }
@@ -176,6 +181,8 @@ export function getDb(): Database.Database {
   instance = new Database(file);
   instance.pragma("busy_timeout = 5000");
   instance.exec(SCHEMA);
+  addColumn(instance, "client", "retired_at", "TEXT");
+  addColumn(instance, "evidence", "retired_at", "TEXT");
   return instance;
 }
 

@@ -52,3 +52,12 @@ describe("validation", () => {
     expect(r.original.expectedReceiptsCents).toBe(0);
   });
 });
+
+describe("client pause that ends before the expected trigger", () => {
+  it("keeps the fee on its original timing", () => {
+    const r = calculateScenarios(agency, mandates, [{ mandateId: "M-102", outcome: "client_pause", pausedUntil: "2026-10-10" }]);
+    const line = r.reviewed.lines.find((l) => l.mandateId === "M-102")!;
+    expect(line.includedCents).toBe(500_000);
+    expect(line.collectionDate).toBe("2026-11-19");
+  });
+});

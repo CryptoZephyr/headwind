@@ -29,6 +29,7 @@ export interface ClientRecord {
   match_status: string;
   company_id: string | null;
   matched_name: string | null;
+  retired_at: string | null;
 }
 
 export interface MandateRecord {
@@ -80,13 +81,18 @@ export function commitImport(db: Database.Database, p: ImportPreview, opts: { is
        ON CONFLICT(id) DO UPDATE SET cash_date=excluded.cash_date, horizon_start=excluded.horizon_start, horizon_end=excluded.horizon_end,
          opening_cash_cents=excluded.opening_cash_cents, receivables_cents=excluded.receivables_cents, recruiter_pay_cents=excluded.recruiter_pay_cents, other_expenses_cents=excluded.other_expenses_cents`
     ).run(agencyId, f.agencyName, f.currency, opts.isSample ? 1 : 0, f.cashDate, f.horizonStart, f.horizonEnd, f.openingCashCents, f.receivablesCents, f.recruiterPayCents, f.otherExpensesCents);
+    db.prepare("UPDATE evidence SET retired_at = ? WHERE agency_id = ? AND provenance = 'agency_supplied' AND retired_at IS NULL").run(now, agencyId);
+    db.prepare("UPDATE client SET retired_at = ? WHERE agency_id = ? AND retired_at IS NULL").run(now, agencyId);
+    const keep = JSON.stringify(p.mandates.map((m) => m.id));
+    db.prepare("DELETE FROM mandate WHERE agency_id = ? AND id NOT IN (SELECT value FROM json_each(?))").run(agencyId, keep);
+    db.prepare("UPDATE case_record SET state = 'removed', updated_at = datetime('now') WHERE agency_id = ? AND mandate_id NOT IN (SELECT value FROM json_each(?))").run(agencyId, keep);
     const clientIds = new Map<string, string>();
     for (const c of p.clients) {
       const id = stableId("client", agencyId, c.domain);
       clientIds.set(c.domain, id);
       db.prepare(
         `INSERT INTO client (id, agency_id, name, domain, account_manager, last_confirmed_at) VALUES (?,?,?,?,?,?)
-         ON CONFLICT(id) DO UPDATE SET name=excluded.name, account_manager=excluded.account_manager, last_confirmed_at=excluded.last_confirmed_at`
+         ON CONFLICT(id) DO UPDATE SET name=excluded.name, account_manager=excluded.account_manager, last_confirmed_at=excluded.last_confirmed_at, retired_at=NULL`
       ).run(id, agencyId, c.name, c.domain, c.accountManager, c.lastConfirmedAt);
     }
     for (const m of p.mandates) {
@@ -115,8 +121,9 @@ export function commitImport(db: Database.Database, p: ImportPreview, opts: { is
 
 export function insertEvidence(db: Database.Database, e: EvidenceRecord): void {
   db.prepare(
-    `INSERT OR IGNORE INTO evidence (id, agency_id, client_id, mandate_id, source_type, provenance, source_date, retrieved_at, summary, payload, complete)
-     VALUES (@id,@agency_id,@client_id,@mandate_id,@source_type,@provenance,@source_date,@retrieved_at,@summary,@payload,@complete)`
+    `INSERT INTO evidence (id, agency_id, client_id, mandate_id, source_type, provenance, source_date, retrieved_at, summary, payload, complete)
+     VALUES (@id,@agency_id,@client_id,@mandate_id,@source_type,@provenance,@source_date,@retrieved_at,@summary,@payload,@complete)
+     ON CONFLICT(id) DO UPDATE SET retired_at = NULL`
   ).run(e);
 }
 
@@ -139,17 +146,17 @@ export function mandateInput(m: MandateRecord): MandateInput {
 }
 
 export function clients(db: Database.Database, agencyId: string): ClientRecord[] {
-  return db.prepare("SELECT * FROM client WHERE agency_id = ? ORDER BY name").all(agencyId) as ClientRecord[];
+  return db.prepare("SELECT * FROM client WHERE agency_id = ? AND retired_at IS NULL ORDER BY name").all(agencyId) as ClientRecord[];
 }
 
 export function evidenceFor(db: Database.Database, agencyId: string, mandateId: string, clientId: string): EvidenceRecord[] {
-  return db.prepare("SELECT * FROM evidence WHERE agency_id = ? AND (mandate_id = ? OR (mandate_id IS NULL AND client_id = ?)) ORDER BY retrieved_at, id").all(agencyId, mandateId, clientId) as EvidenceRecord[];
+  return db.prepare("SELECT * FROM evidence WHERE agency_id = ? AND retired_at IS NULL AND (mandate_id = ? OR (mandate_id IS NULL AND client_id = ?)) ORDER BY retrieved_at, id").all(agencyId, mandateId, clientId) as EvidenceRecord[];
 }
 
 export function inputVersion(db: Database.Database, agencyId: string): string {
   const a = getAgency(db, agencyId);
   const ms = mandates(db, agencyId);
-  const cs = clients(db, agencyId).map((c) => ({ ...c, match_status: undefined, company_id: undefined, matched_name: undefined }));
+  const cs = clients(db, agencyId).map((c) => ({ ...c, match_status: undefined, company_id: undefined, matched_name: undefined, retired_at: undefined }));
   const agencyFields = { ...a, cfo_binding: undefined };
   return sha256({ agencyFields, ms, cs }).slice(0, 16);
 }

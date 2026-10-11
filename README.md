@@ -15,9 +15,9 @@ Each week Headwind takes your open mandates and cash figures, checks each client
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in the keys
+cp .env.example .env.local   # fill in the keys and HEADWIND_PASSWORD
 npx tsx scripts/seed-sample.ts   # optional: labelled sample agency
-npm run dev                      # web app on http://localhost:3000
+npm run dev                      # web app on http://localhost:3000 (sign in with HEADWIND_PASSWORD)
 npm run worker                   # processes queued reviews
 ```
 

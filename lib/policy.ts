@@ -52,6 +52,7 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
   if (age === null) missing.push("No record of when the client last confirmed this role.");
   else if (age > STALE_CONFIRMATION_DAYS) missing.push(`Client last confirmed this role ${age} days ago.`);
   if (p.listing.status === "not_found") missing.push("The role's public listing was not found in the latest complete check.");
+  if (p.listing.status === "incomplete") missing.push("The latest listing check didn't finish, so it's unknown whether the role is still listed.");
   if (p.reply?.outcome === "unclear") missing.push("The client's reply didn't say whether the role is still active.");
   if (missing.length === 0) {
     return { outcome: "unreviewed", needsTask: false, considered, missing, observation: "Recent client confirmation and no conflicting evidence." };

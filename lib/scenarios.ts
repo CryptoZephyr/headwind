@@ -83,9 +83,9 @@ export function calculateScenarios(agency: AgencyInput, mandates: MandateInput[]
     const t = byId.get(m.id)?.outcome ?? "unreviewed";
     if (t === "client_pause") {
       const until = byId.get(m.id)?.pausedUntil;
-      const shifted = until && until > m.expectedTriggerDate ? until : null;
+      const shifted = until ? (until > m.expectedTriggerDate ? until : m.expectedTriggerDate) : null;
       const l = shifted
-        ? line(m, agency, true, `Client confirmed pause; trigger moved to ${shifted}`, shifted)
+        ? line(m, agency, true, shifted === until ? `Client confirmed pause; trigger moved to ${shifted}` : `Client confirmed pause ending ${until}, before the expected trigger; timing kept`, shifted)
         : { ...line(m, agency, false, "Client confirmed pause with no restart date"), includedCents: 0 };
       reviewedLines.push(l);
       downsideLines.push(l);

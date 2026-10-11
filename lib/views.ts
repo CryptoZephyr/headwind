@@ -58,7 +58,7 @@ export function overview(db: Database.Database): Overview | null {
       replies: (db.prepare("SELECT * FROM client_reply WHERE case_id = ? ORDER BY reply_date DESC").all(id) as Record<string, string | number | null>[]).map((x) => ({
         id: x.id as string, date: x.reply_date as string, source: x.source as string, body: x.body as string, simulated: x.is_simulated === 1, reading: readReply(x.interpretation as string | null),
       })),
-      evidence: db.prepare("SELECT * FROM evidence WHERE agency_id = ? AND (mandate_id = ? OR (mandate_id IS NULL AND client_id = ?)) ORDER BY retrieved_at DESC").all(agency.id, r.mandate_id, r.client_id) as EvidenceRecord[],
+      evidence: db.prepare("SELECT * FROM evidence WHERE agency_id = ? AND retired_at IS NULL AND (mandate_id = ? OR (mandate_id IS NULL AND client_id = ?)) ORDER BY retrieved_at DESC").all(agency.id, r.mandate_id, r.client_id) as EvidenceRecord[],
     };
   });
   const fv = db.prepare("SELECT * FROM forecast_version WHERE agency_id = ? ORDER BY created_at DESC, rowid DESC LIMIT 1").get(agency.id) as Record<string, string | null> | undefined;

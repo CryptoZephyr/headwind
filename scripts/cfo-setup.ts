@@ -1,3 +1,4 @@
+import "../lib/env";
 import { createCashTable, ensureScenario, readCashTable, type CfoBinding } from "../lib/cfo";
 import { getDb } from "../lib/db";
 import { getAgency, type CfoBindings } from "../lib/store";

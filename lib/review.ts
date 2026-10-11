@@ -54,14 +54,31 @@ export interface Ports {
 export const livePorts: Ports = { fetchCompany, fetchListings: (c, t, s) => fetchListings(c, t, s), draftCaseNote, cfo: liveCfo };
 
 export function enqueueRun(db: Database.Database, agencyId: string, kind: RunKind = "weekly", budget: Budget = { crustdataCredits: 10, modelCalls: 20 }): string {
-  const active = db.prepare("SELECT id FROM review_run WHERE agency_id = ? AND status IN ('queued','running','retrying')").get(agencyId) as { id: string } | undefined;
+  const active =
+    kind === "weekly"
+      ? (db.prepare("SELECT id FROM review_run WHERE agency_id = ? AND status IN ('queued','running','retrying')").get(agencyId) as { id: string } | undefined)
+      : (db
+          .prepare(
+            `SELECT r.id FROM review_run r WHERE r.agency_id = ? AND r.status = 'queued' AND r.attempts = 0
+               AND NOT EXISTS (SELECT 1 FROM review_step s WHERE s.run_id = r.id AND s.step = 'assess' AND s.status = 'done')
+               AND NOT EXISTS (SELECT 1 FROM decision d WHERE d.run_id = r.id)
+             ORDER BY r.rowid DESC LIMIT 1`
+          )
+          .get(agencyId) as { id: string } | undefined);
   if (active) return active.id;
   const id = newId("run");
   db.prepare("INSERT INTO review_run (id, agency_id, kind, status, step, input_version, budget) VALUES (?,?,?,?,?,?,?)").run(id, agencyId, kind, "queued", STEPS[kind][0], inputVersion(db, agencyId), JSON.stringify(budget));
   return id;
 }
 
+export class RetryBlockedError extends Error {}
+
 export function retryRun(db: Database.Database, runId: string): boolean {
+  const run = db.prepare("SELECT * FROM review_run WHERE id = ?").get(runId) as RunRow | undefined;
+  if (!run || !["partial", "failed"].includes(run.status)) return false;
+  const other = db.prepare("SELECT 1 FROM review_run WHERE agency_id = ? AND id != ? AND status IN ('queued','running','retrying')").get(run.agency_id, runId);
+  if (other) throw new RetryBlockedError("Another review for this agency is in progress. Retry once it finishes.");
+  if (run.input_version !== inputVersion(db, run.agency_id)) throw new RetryBlockedError("The imported data changed after this review was planned. Start a new review instead.");
   const r = db
     .prepare("UPDATE review_run SET status = 'queued', attempts = 0, error = NULL, available_at = NULL, lease_owner = NULL, lease_expires_at = NULL, updated_at = datetime('now') WHERE id = ? AND status IN ('partial','failed')")
     .run(runId);
@@ -73,14 +90,29 @@ export function claimRun(db: Database.Database, owner: string): RunRow | null {
     (db
       .prepare(
         `UPDATE review_run SET lease_owner = ?, lease_expires_at = datetime('now', '+${LEASE_SECONDS} seconds'), status = 'running', updated_at = datetime('now')
-         WHERE id = (SELECT id FROM review_run WHERE status IN ('queued','running','retrying')
-           AND (lease_expires_at IS NULL OR lease_expires_at < datetime('now'))
-           AND (available_at IS NULL OR available_at <= datetime('now'))
-           ORDER BY created_at LIMIT 1)
+         WHERE id = (SELECT r.id FROM review_run r WHERE r.status IN ('queued','running','retrying')
+           AND (r.lease_expires_at IS NULL OR r.lease_expires_at < datetime('now'))
+           AND (r.available_at IS NULL OR r.available_at <= datetime('now'))
+           AND NOT EXISTS (SELECT 1 FROM review_run o WHERE o.agency_id = r.agency_id AND o.rowid < r.rowid AND o.status IN ('queued','running','retrying'))
+           ORDER BY r.rowid LIMIT 1)
          RETURNING *`
       )
       .get(owner) as RunRow | undefined) ?? null
   );
+}
+
+function holdsLease(db: Database.Database, runId: string, owner: string): boolean {
+  return db.prepare(`UPDATE review_run SET lease_expires_at = datetime('now', '+${LEASE_SECONDS} seconds') WHERE id = ? AND lease_owner = ? AND status = 'running'`).run(runId, owner).changes === 1;
+}
+
+function startHeartbeat(db: Database.Database, runId: string, owner: string): { guard: () => void; stop: () => void } {
+  let lost = false;
+  const timer = setInterval(() => { if (!holdsLease(db, runId, owner)) lost = true; }, (LEASE_SECONDS / 4) * 1000);
+  timer.unref();
+  return {
+    guard: () => { if (lost || !holdsLease(db, runId, owner)) { lost = true; throw new LeaseLostError(); } },
+    stop: () => clearInterval(timer),
+  };
 }
 
 function renewLease(db: Database.Database, runId: string, owner: string, step: string): void {
@@ -269,7 +301,7 @@ function stepForecast(db: Database.Database, run: RunRow): object {
   return { forecastVersionId: fvId, original: scenarios.original.closingCashCents, reviewed: scenarios.reviewed.closingCashCents, downside: scenarios.downside.closingCashCents };
 }
 
-async function stepSyncCfo(db: Database.Database, run: RunRow, ports: Ports): Promise<object> {
+async function stepSyncCfo(db: Database.Database, run: RunRow, ports: Ports, guard: () => void): Promise<object> {
   const agency = getAgency(db, run.agency_id);
   if (!agency.cfo_binding) throw new Error("cfo.ai isn't set up for this agency yet. Run the cfo.ai setup first.");
   const bindings = JSON.parse(agency.cfo_binding) as CfoBindings;
@@ -279,19 +311,19 @@ async function stepSyncCfo(db: Database.Database, run: RunRow, ports: Ports): Pr
   for (const [name, total, binding] of [["Reviewed", s.reviewed, bindings.reviewed], ["Downside", s.downside, bindings.downside]] as const) {
     results[name] = await syncScenario(db, fv.id, name, binding, {
       openingCash: agency.opening_cash_cents / 100, expectedReceipts: total.expectedReceiptsCents / 100, recruiterPay: agency.recruiter_pay_cents / 100, otherExpenses: agency.other_expenses_cents / 100,
-    }, ports.cfo);
+    }, ports.cfo, guard);
   }
   db.prepare("UPDATE forecast_version SET readback = ?, verification = 'verified' WHERE id = ?").run(JSON.stringify(results), fv.id);
   return results;
 }
 
-async function runStep(db: Database.Database, run: RunRow, step: string, ports: Ports): Promise<object> {
+async function runStep(db: Database.Database, run: RunRow, step: string, ports: Ports, guard: () => void): Promise<object> {
   switch (step) {
     case "match_companies": return stepMatchCompanies(db, run, ports);
     case "check_listings": return stepCheckListings(db, run, ports);
     case "assess": return stepAssess(db, run, ports);
     case "forecast": return stepForecast(db, run);
-    case "sync_cfo": return stepSyncCfo(db, run, ports);
+    case "sync_cfo": return stepSyncCfo(db, run, ports, guard);
     default: throw new Error(`Unknown step ${step}`);
   }
 }
@@ -307,12 +339,15 @@ export async function processRun(db: Database.Database, run: RunRow, owner: stri
       const done = db.prepare("SELECT 1 FROM review_step WHERE run_id = ? AND step = ? AND status = 'done'").get(run.id, step);
       if (done) continue;
       renewLease(db, run.id, owner, step);
+      const heartbeat = startHeartbeat(db, run.id, owner);
       try {
-        const output = await toolSpan(`step.${step}`, () => runStep(db, run, step, ports));
+        const output = await toolSpan(`step.${step}`, () => runStep(db, run, step, ports, heartbeat.guard));
+        heartbeat.guard();
         db.prepare("INSERT INTO review_step (run_id, step, status, output, completed_at) VALUES (?,?,?,?,datetime('now')) ON CONFLICT(run_id, step) DO UPDATE SET status='done', output=excluded.output, completed_at=excluded.completed_at").run(run.id, step, "done", JSON.stringify(output));
         if (opts.crashAfterStep === step || faultEnabled(`crash_after_${step}`)) throw new SimulatedCrash(step);
       } catch (e) {
         if (e instanceof SimulatedCrash || e instanceof LeaseLostError) throw e;
+        if (!holdsLease(db, run.id, owner)) throw new LeaseLostError();
         const message = e instanceof Error ? e.message : String(e);
         const attempts = run.attempts + 1;
         const final = attempts >= MAX_ATTEMPTS || e instanceof BudgetError;
@@ -322,6 +357,8 @@ export async function processRun(db: Database.Database, run: RunRow, owner: stri
         );
         db.prepare("INSERT INTO review_step (run_id, step, status, output) VALUES (?,?,?,?) ON CONFLICT(run_id, step) DO UPDATE SET status='failed', output=excluded.output").run(run.id, step, "failed", JSON.stringify({ error: message }));
         return getRun(db, run.id);
+      } finally {
+        heartbeat.stop();
       }
     }
     db.prepare("UPDATE review_run SET status = 'complete', step = 'done', error = NULL, lease_owner = NULL, lease_expires_at = NULL, updated_at = datetime('now') WHERE id = ?").run(run.id);

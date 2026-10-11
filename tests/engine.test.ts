@@ -6,7 +6,7 @@ import { closeDb, getDb } from "../lib/db";
 import { previewImport } from "../lib/importer";
 import { recordClientReply, type ReplyReader } from "../lib/reply";
 import { ModelOutputError } from "../lib/llm";
-import { claimRun, enqueueRun, getRun, processRun, retryRun, SimulatedCrash, type Ports } from "../lib/review";
+import { claimRun, enqueueRun, getRun, LeaseLostError, processRun, RetryBlockedError, retryRun, SimulatedCrash, type Ports } from "../lib/review";
 import { commitImport } from "../lib/store";
 
 delete process.env.NEATLOGS_API_KEY;
@@ -178,5 +178,60 @@ describe("review engine", () => {
     expect(getRun(db2, r2).status).toBe("complete");
     expect(recovered.writes).toBe(2);
     expect(db2.prepare("SELECT COUNT(*) AS n FROM decision").get()).toEqual({ n: 3 });
+  });
+
+  it("queues a fresh reassessment for a reply that arrives after an active review has assessed", async () => {
+    const { db, agencyId } = setup();
+    const weekly = enqueueRun(db, agencyId);
+    const run = claimRun(db, "w1")!;
+    await expect(processRun(db, run, "w1", ports(cfo), { crashAfterStep: "assess" })).rejects.toBeInstanceOf(SimulatedCrash);
+    const caseId = (db.prepare("SELECT id FROM case_record WHERE mandate_id = 'M-102'").get() as { id: string }).id;
+    const r = await recordClientReply(db, { caseId, replyDate: "2026-10-12", source: "Client email (simulated)", body: read("reply-M-102.txt"), isSimulated: true }, pauseReader);
+    expect(r.runId).not.toBe(weekly);
+    expect(claimRun(db, "w2")).toBeNull();
+    db.prepare("UPDATE review_run SET lease_expires_at = datetime('now', '-1 seconds') WHERE id = ?").run(weekly);
+    await drain(db, ports(cfo));
+    expect(getRun(db, weekly).status).toBe("complete");
+    expect(getRun(db, r.runId!).status).toBe("complete");
+    expect((db.prepare("SELECT outcome FROM case_record WHERE id = ?").get(caseId) as { outcome: string }).outcome).toBe("client_pause");
+    expect(cfo.tables.get("S Reviewed")?.["Expected Receipts"]).toBe(12000);
+  });
+
+  it("treats each import as the agency's current book: omitted mandates and old notes drop out", async () => {
+    const { db, agencyId } = setup();
+    const mandatesCsv = read("mandates.csv").split("\n").filter((l) => !l.startsWith("M-103")).join("\n").replace("Two candidates at final interview (sample)", "Offer withdrawn (sample)");
+    commitImport(db, previewImport({ clients: read("clients.csv"), mandates: mandatesCsv, finance: read("finance.csv"), updates: "" }), { isSample: true });
+    expect(db.prepare("SELECT id FROM mandate ORDER BY id").all()).toEqual([{ id: "M-101" }, { id: "M-102" }]);
+    const runId = enqueueRun(db, agencyId);
+    await drain(db, ports(cfo));
+    expect(getRun(db, runId).status).toBe("complete");
+    expect(cfo.tables.get("S Reviewed")?.["Expected Receipts"]).toBe(13000);
+    const notes = (db.prepare("SELECT summary FROM evidence WHERE mandate_id = 'M-102' AND source_type = 'candidate_record' AND retired_at IS NULL").all() as { summary: string }[]).map((e) => e.summary);
+    expect(notes).toEqual(["Agency record (final_interview): Offer withdrawn (sample)"]);
+    expect(db.prepare("SELECT COUNT(*) AS n FROM evidence WHERE source_type = 'candidate_record' AND retired_at IS NOT NULL").get()).toEqual({ n: 2 });
+  });
+
+  it("won't retry an old review while another review for the agency is in progress", async () => {
+    const { db, agencyId } = setup();
+    const broken: Ports = { ...ports(cfo), cfo: { read: async () => { throw new CfoError("cfo.ai returned HTTP 503", "transport"); }, write: cfo.write } };
+    const old = enqueueRun(db, agencyId);
+    for (let i = 0; i < 3; i++) {
+      db.prepare("UPDATE review_run SET available_at = NULL WHERE id = ?").run(old);
+      await processRun(db, claimRun(db, "w1")!, "w1", broken);
+    }
+    expect(getRun(db, old).status).toBe("partial");
+    const newer = enqueueRun(db, agencyId);
+    expect(newer).not.toBe(old);
+    expect(() => retryRun(db, old)).toThrow(RetryBlockedError);
+    expect(getRun(db, old).status).toBe("partial");
+  });
+
+  it("stops before writing to cfo.ai when another worker has taken over the review", async () => {
+    const { db, agencyId } = setup();
+    const runId = enqueueRun(db, agencyId);
+    const run = claimRun(db, "w1")!;
+    const stealing: Ports = { ...ports(cfo), cfo: { read: async (b) => { db.prepare("UPDATE review_run SET lease_owner = 'w2' WHERE id = ?").run(runId); return cfo.read(b); }, write: (b, c, i) => cfo.write(b, c, i) } };
+    await expect(processRun(db, run, "w1", stealing)).rejects.toBeInstanceOf(LeaseLostError);
+    expect(cfo.writes).toBe(0);
   });
 });

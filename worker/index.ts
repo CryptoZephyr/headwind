@@ -1,3 +1,4 @@
+import "../lib/env";
 import os from "node:os";
 import { getDb } from "../lib/db";
 import { claimRun, LeaseLostError, processRun, SimulatedCrash } from "../lib/review";

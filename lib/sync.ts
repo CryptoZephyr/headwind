@@ -43,7 +43,7 @@ function matches(read: CfoTableRead, b: CfoBinding, inputs: CashInputs): { ok: b
   return { ok, values: v as Record<string, number> };
 }
 
-export async function syncScenario(db: Database.Database, forecastVersionId: string, scenario: "Reviewed" | "Downside", binding: CfoBinding, inputs: CashInputs, cfo: CfoPort = liveCfo): Promise<SyncResult> {
+export async function syncScenario(db: Database.Database, forecastVersionId: string, scenario: "Reviewed" | "Downside", binding: CfoBinding, inputs: CashInputs, cfo: CfoPort = liveCfo, guard: () => void = () => {}): Promise<SyncResult> {
   const id = stableId("op", forecastVersionId, scenario);
   const payload = { binding, inputs };
   const hash = sha256(payload);
@@ -66,6 +66,7 @@ export async function syncScenario(db: Database.Database, forecastVersionId: str
     update("verified", { result, reconciliation: op.status === "intended" ? "Target already held the intended values; no write sent." : `Previous attempt ended as "${op.status}"; inspection showed the write had landed, so it was not resent.` });
     return result;
   }
+  guard();
   db.prepare("UPDATE external_operation SET status = 'sent', attempts = attempts + 1, updated_at = datetime('now') WHERE id = ?").run(id);
   let written: CfoTableRead;
   try {
