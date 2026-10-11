@@ -412,6 +412,9 @@ describe("decision cases (controlled replay of the 10 evaluation cases)", () => 
     const still = db.prepare("SELECT summary FROM evidence WHERE mandate_id = 'M-102' AND json_extract(payload, '$.status') = 'still_absent'").get() as { summary: string };
     expect(still.summary).toContain("no removal can be inferred");
     expect(latest(db, "M-102").missing.join(" ")).toContain("not found");
+    const since = (JSON.parse((db.prepare("SELECT payload FROM evidence WHERE mandate_id = 'M-102' AND json_extract(payload, '$.status') = 'not_found'").get() as { payload: string }).payload) as { since: string }).since;
+    expect(since).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(overview(db)!.cases.find((x) => x.mandateId === "M-102")!.summary).toContain(`found no matching public listing among listings added since ${since} after an earlier sighting.`);
   });
 
   it("saved and displayed case notes carry the confirmation age from the records", async () => {

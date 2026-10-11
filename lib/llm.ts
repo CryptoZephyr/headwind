@@ -127,7 +127,7 @@ export async function draftCaseNote(input: {
 
   function validate(value: CaseNote): string | null {
     const unknownIds = value.evidence_ids.filter((id) => !allowed.has(id));
-    if (unknownIds.length) return `The model cited evidence that doesn't exist: ${unknownIds.join(", ")}`;
+    if (unknownIds.length) return `The model cited evidence that doesn't exist: ${unknownIds.join(", ")}. Copy IDs exactly from this list: ${[...allowed].join(", ")}.`;
     if (containsUnsupportedClaim(value.summary, agencySuppliedStates)) return "The model's summary claimed an outcome the evidence doesn't confirm.";
     if (questionRaisesUnsupportedOutcome(value.question, agencyText, input.roleTitle)) return "The model's question raised an outcome (paused, cancelled, filled...) that no agency record mentions; ask about the role's status neutrally.";
     return null;

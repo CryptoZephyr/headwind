@@ -6,7 +6,7 @@ import { containsUnsupportedClaim, draftCaseNote, evidenceFallbackNote, ModelOut
 import { decideTreatment, type PolicyInput, type PolicyResult } from "../lib/policy";
 import { modelClient, modelName, startTelemetry, stopTelemetry, workflow } from "../lib/telemetry";
 
-type Cohort = "regenerated_original_v3" | "held_out_informed_fix" | "fresh_round1_informed" | "fresh_round2" | "fresh_round3";
+type Cohort = "regenerated_original_v3" | "held_out_informed_fix" | "fresh_round1_informed" | "fresh_round2" | "fresh_round3" | "fresh_round4";
 interface Case { id: string; cohort: Cohort; kind: string; roleTitle: string; clientName: string; stage: string; policy: Omit<PolicyInput, "stage" | "cashDate">; evidence: EvidenceForModel[]; expectedCaveats: string[] }
 
 const REVIEW_DATE = "2026-10-11";
@@ -117,8 +117,30 @@ const cases: Case[] = [
       ev("ev_k3_co", "live", "2026-10-11", "Crustdata: Harrow Devices shows 18 open roles company-wide; 60 on 2026-07-01 vs 18 on 2026-10-01. Company-level only."),
       ev("ev_k3_list", "live", "2026-10-11", "Crustdata lists \"Senior Firmware Engineer\" at Harrow Devices (added 2026-09-28). This is the first check for this role."),
     ], expectedCaveats: ["Says there is no record of when the client last confirmed the role.", "Says the current listing doesn't confirm the agency's mandate.", "Doesn't treat the company-wide decline as evidence about this role."] },
+  { id: "L1-gone-quiet-decline", cohort: "fresh_round4", kind: "never-seen listing, stale confirmation, company decline, vague remark", roleTitle: "Procurement Manager (fresh-4)", clientName: "Ashgrove Foods (fresh-4)", stage: "interviewing",
+    policy: { lastConfirmedAt: "2026-09-16", listing: { status: "still_absent", checkedOn: "2026-10-11" }, reply: null, companyTrend: trend(55, 20) },
+    evidence: [
+      ev("ev_l1_upd", "agency_supplied", "2026-10-08", "Recruiter note (fresh-4) on 2026-10-08: the hiring manager 'has gone a bit quiet' since the last interview round; no decision was mentioned.", "agency_update"),
+      ev("ev_l1_co", "live", "2026-10-11", "Crustdata: Ashgrove Foods shows 20 open roles company-wide; 55 on 2026-07-01 vs 20 on 2026-10-01. Company-level only."),
+      ev("ev_l1_list", "live", "2026-10-11", "Crustdata's complete search still finds no listing matching \"Procurement Manager\" at Ashgrove Foods added since 2026-09-11. The role hasn't been seen listed since the first check on 2026-10-04, so no removal can be inferred."),
+    ], expectedCaveats: ["States the last confirmation date (2026-09-16) or age (25 days) and that it needs reconfirming.", "Reports the 'gone quiet' remark as reported, not as a pause, freeze or loss of the role.", "Doesn't use the company-wide decline or the never-seen listing as evidence about this role."] },
+  { id: "L2-first-check-no-confirmation-vague-reply", cohort: "fresh_round4", kind: "first check with no listing, no confirmation on record, non-answer reply", roleTitle: "Quality Assurance Lead (fresh-4)", clientName: "Brightwell Labs (fresh-4)", stage: "interviewing",
+    policy: { lastConfirmedAt: null, listing: { status: "baseline_absent", checkedOn: "2026-10-11" }, reply: { outcome: "unclear", pausedUntil: null, replyId: "r_l2", replyDate: "2026-10-09" }, companyTrend: null },
+    evidence: [
+      ev("ev_l2_reply", "agency_supplied", "2026-10-09", "Client reply (fresh-4, 2026-10-09): 'Thanks, noted. Speak soon.'"),
+      ev("ev_l2_list", "live", "2026-10-11", "Baseline: Crustdata's complete search found no listing matching \"Quality Assurance Lead\" at Brightwell Labs added since 2026-09-11. This is the first check for this role and Crustdata gives no earlier listing history for it, so no removal or change can be inferred yet."),
+    ], expectedCaveats: ["Says there is no record of when the client last confirmed the role.", "Says the 2026-10-09 reply doesn't answer whether the role is still active.", "Doesn't treat the first-check absence of a listing as evidence about this role."] },
+  { id: "L3-just-stale-growth-budget-hint", cohort: "fresh_round4", kind: "confirmation one day past the limit, never-seen listing, company growth, second-hand budget hint", roleTitle: "Senior Tax Accountant (fresh-4)", clientName: "Calder & Finch (fresh-4)", stage: "final_interview",
+    policy: { lastConfirmedAt: "2026-09-30", listing: { status: "still_absent", checkedOn: "2026-10-11" }, reply: null, companyTrend: trend(8, 19) },
+    evidence: [
+      ev("ev_l3_upd", "agency_supplied", "2026-10-09", "Recruiter note (fresh-4) on 2026-10-09: the candidate said the hiring manager 'hinted the budget is tight this quarter'.", "agency_update"),
+      ev("ev_l3_co", "live", "2026-10-11", "Crustdata: Calder & Finch shows 19 open roles company-wide; 8 on 2026-07-01 vs 19 on 2026-10-01. Company-level only."),
+      ev("ev_l3_list", "live", "2026-10-11", "Crustdata's complete search still finds no listing matching \"Senior Tax Accountant\" at Calder & Finch added since 2026-09-11. The role hasn't been seen listed since the first check on 2026-10-04, so no removal can be inferred."),
+    ], expectedCaveats: ["States the last confirmation date (2026-09-30) or age (11 days) and that it is past the 10-day limit and needs reconfirming.", "Reports the second-hand budget hint as reported, not as a freeze, pause or cancellation.", "Doesn't use company growth as evidence the role is open, or the never-seen listing as evidence it closed."] },
 ];
 for (const c of cases) {
+  const window = c.evidence.map((e) => e.summary.match(/(?:Crustdata's complete search|Baseline: Crustdata's complete search)[^.]*?since (\d{4}-\d{2}-\d{2})/)?.[1]).find(Boolean);
+  if (window && ["not_found", "still_absent", "baseline_absent"].includes(c.policy.listing.status)) c.policy.listing.searchedSince = window;
   c.policy.remarks = c.evidence.filter((e) => remarkIds.has(e.id)).map((e) => ({ date: e.sourceDate, text: e.summary }));
   if (c.policy.lastConfirmedAt) c.evidence.unshift(ev(`ev_${c.id.slice(0, 3).toLowerCase()}_confirm`, "agency_supplied", c.policy.lastConfirmedAt, `Client record: ${c.clientName} last confirmed its open roles with the agency on ${c.policy.lastConfirmedAt}.`));
 }
@@ -221,11 +243,11 @@ const tally = (rs: Row[]) => ({
   invalidIds: rs.filter((r) => !r.idsValid).length,
 });
 const byCase = Object.fromEntries(cases.map((c) => [c.id, tally(rows.filter((r) => r.caseId === c.id))]));
-const byCohort = Object.fromEntries((["regenerated_original_v3", "held_out_informed_fix", "fresh_round1_informed", "fresh_round2", "fresh_round3"] as Cohort[]).map((k) => [k, tally(rows.filter((r) => r.cohort === k))]));
+const byCohort = Object.fromEntries((["regenerated_original_v3", "held_out_informed_fix", "fresh_round1_informed", "fresh_round2", "fresh_round3", "fresh_round4"] as Cohort[]).map((k) => [k, tally(rows.filter((r) => r.cohort === k))]));
 console.table(byCase);
 console.table(byCohort);
 console.table(validatorProbe.map((p) => ({ text: p.text.slice(0, 60), unsupported: p.unsupported, checker: p.checkerFlags, judge: p.judgeFlags })));
 await stopTelemetry();
 const out = path.join("eval", "results", `revised-note-grading-${new Date().toISOString().replace(/[:.]/g, "-")}.json`);
-fs.writeFileSync(out, JSON.stringify({ reviewDate: REVIEW_DATE, writer: { model: modelName(), temperature: 0, maxTokens: 700, gateway: "LiteLLM" }, judgeSettings: { temperature: 0, maxTokens: 1200, attempts: 3 }, writerAttempts: NOTE_ATTEMPTS, judge: JUDGE, rubric: JUDGE_SYSTEM, cohorts: { regenerated_original_v3: "New cohort: M-102 and M-103 redrawn with the revised writer, client confirmation now in the evidence. Not the original 20 notes, whose text was never stored.", held_out_informed_fix: "H1-H3 from the first grading run. They informed the fix, so they are not held out.", fresh_round1_informed: "F1-F5, fresh in post-fix round 1 (revised-note-grading-2026-10-11T10-46-59-012Z.json). Round 1 found the confirmation date wasn't in the evidence list, so they informed round 2.", fresh_round2: "G1-G3, written after round 2's changes. Round A7's first runs (11-53-33, 11-59-01) used them to tune the listing caveat, remark wording and prompt, so they are no longer fresh.", fresh_round3: "K1-K3, written after all A7 changes and never used to tune them." }, cases, byCase, byCohort, validatorProbe, rows }, null, 1));
+fs.writeFileSync(out, JSON.stringify({ reviewDate: REVIEW_DATE, writer: { model: modelName(), temperature: 0, maxTokens: 700, gateway: "LiteLLM" }, judgeSettings: { temperature: 0, maxTokens: 1200, attempts: 3 }, writerAttempts: NOTE_ATTEMPTS, judge: JUDGE, rubric: JUDGE_SYSTEM, cohorts: { regenerated_original_v3: "New cohort: M-102 and M-103 redrawn with the revised writer, client confirmation now in the evidence. Not the original 20 notes, whose text was never stored.", held_out_informed_fix: "H1-H3 from the first grading run. They informed the fix, so they are not held out.", fresh_round1_informed: "F1-F5, fresh in post-fix round 1 (revised-note-grading-2026-10-11T10-46-59-012Z.json). Round 1 found the confirmation date wasn't in the evidence list, so they informed round 2.", fresh_round2: "G1-G3, written after round 2's changes. Round A7's first runs (11-53-33, 11-59-01) used them to tune the listing caveat, remark wording and prompt, so they are no longer fresh.", fresh_round3: "K1-K3, written after all A7 changes. A8 used K1 to find the missing never-seen-listing caveat, so they are no longer fresh.", fresh_round4: "L1-L3, written with their expected caveats before this run, after the never-seen-listing caveat was added, and never used to tune anything." }, cases, byCase, byCohort, validatorProbe, rows }, null, 1));
 console.log(`saved ${out}`);
