@@ -349,6 +349,49 @@ Unsupported claims and caveat completeness are counted separately:
 
 **Remaining limits:** same as A7. Notes repeat themselves, the judge is inconsistent (now F5 #1 as well), there are only 3 fresh cases, the checks match a fixed list of outcome words, and only one writer model has been tested. One more limit: the never-seen-listing state has no code-written caveat.
 
+## A9. Code-written caveat for never-seen listings, fresh L1-L3 (after merge, fifth round)
+
+**What changed**
+- **Never-seen listings now get a code-written caveat**, as disappeared listings already did. `still_absent` (later empty checks, never seen listed): "Crustdata on {date} still finds no matching public listing for this role, which hasn't been seen listed at any check. A listing that has never been seen is an observation only; it doesn't show this role is paused, cancelled or filled." `baseline_absent` (first empty check) gets the same point with "first check … there is no earlier listing history".
+- The listing states and the forecast are unchanged. A never-seen listing is still not reported as a removal, adds no open question, and moves no money. When a recent confirmation settles the role, no listing caveat is added.
+- **Retry message lists the valid evidence IDs.** The longer required facts made nova-micro miscopy one evidence ID on M-102 (`…afd9` → `…af9`) three times in a row in a first attempt at this regrade, because the rejection only named the bad ID. That run was stopped after 2 code-only fallbacks and isn't counted. The rejection now also lists the IDs to copy from. IDs are still checked strictly; a miscopied ID is never silently fixed.
+- 2 new unit tests (92 in total).
+
+**Fresh cases L1-L3** (cohort `fresh_round4`). They were written with their expected caveats after the fix and before this regrade, and nothing was tuned on them. K1-K3 shaped this fix (A8), so they are no longer counted as fresh.
+- **L1:** never-seen listing, confirmation 25 days old, company-wide decline, recruiter note "the hiring manager has gone a bit quiet".
+- **L2:** first check with no listing, no confirmation on record, client reply "Thanks, noted. Speak soon."
+- **L3:** confirmation 11 days old (one day past the limit), never-seen listing, company growth, a second-hand "budget is tight this quarter" hint.
+
+**Full regrade** (same judge `claude-sonnet-4.6`, rubric and labels as A8; writer nova-micro, temperature 0; artifact `eval/results/revised-note-grading-2026-10-11T17-42-04-287Z.json`; 95 of 97 rows have a neatlogs trace ID, the other 2 are code-only notes)
+
+| Group | Notes | Unsupported outcome claim (judge) | Company data used as role proof | Caveats complete (judge) | Required caveats present (code check) | Passed all |
+|---|---|---|---|---|---|---|
+| Redrawn originals | 20 | 0 / 20 | 0 / 20 | 20 / 20 | 20 / 20 | 20 / 20 |
+| H1-H3 (shaped earlier fixes) | 11 | 0 / 11 | 0 / 11 | 11 / 11 | 11 / 11 | 11 / 11 |
+| F1-F5 (shaped earlier fixes) | 21 | 0 / 21 | 0 / 21 | 20 / 21 | 21 / 21 | 20 / 21 |
+| G1-G3 (shaped A7) | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| K1-K3 (shaped this fix) | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| **L1-L3 (fresh, untouched)** | **15** | **0 / 15** | **0 / 15** | **15 / 15** | **15 / 15** | **15 / 15** |
+| All | 97 | 0 / 97 | 0 / 97 | 96 / 97 | 97 / 97 | 96 / 97 |
+
+- **K1 went from 3 of 5 to 5 of 5**, the failure the fix targeted. It can't be counted as fresh evidence any more.
+- **Writer:** 95 model notes used 103 calls. Every note cited only real evidence IDs, no draft was rejected by the claim or question checks, and no note fell back to code-written text (0 of 97).
+- **Questions:** 95 of 95 model questions ask neutrally about the role's status, with no outcome word.
+- **Validator probes:** unchanged. 9 of 9 unsupported sentences are flagged and 0 of 8 cautious ones, and the judge agrees on all 17.
+- **The new caveat** appears in all 40 notes whose role was never seen listed (F3, G1, K1, L1-L3, M-102).
+
+**Manual inspection**
+- **F4 #3, the only failure, judged incomplete:** the note opens "Meridian Bio has 25 open roles company-wide, with a specific focus on the Clinical Data Lead role". That ties the company count to the role, and the code-written caveat that follows doesn't undo it. I agree with the judge. F4 passed 5 of 5 in A8, so this is the model varying between runs, not a new defect. A code-written "company growth isn't evidence this role is open" sentence for growth trends would close it, but F4 isn't fresh, so this wasn't done here.
+- **Wrong date the judge missed, K1 #1:** the model wrote "since the first check on 2026-09-11". The evidence says the first check was 2026-10-04 and 2026-09-11 is the start of the search window. The code-written caveat right after it is correct, and the judge passed the note. It's 1 of 40 notes with this evidence, but it shows the judge doesn't check dates closely. 3 other notes say "no listing since 2026-09-11", which matches the search window and is fine.
+- **Passes worth a look:** L1 states the conflict, the stale date and the "gone quiet" remark without calling the role frozen. L2 says the reply "doesn't say whether this role is still active". L3 gives the 11-day age and reports the budget hint as second-hand. Four K1/L3 notes say a remark "suggests a potential internal move" or a "tight budget". That's a fair paraphrase of what was reported, not a claimed outcome.
+
+**Remaining limits**
+- Notes still repeat themselves: the model's sentence, then the exact code-written one.
+- The judge is one model, it varies between runs (F4 this round, F5 last round), and it doesn't check dates closely (K1 #1).
+- Only 3 fresh cases (15 notes). The checks match a fixed list of outcome words, and only one writer model (nova-micro) has been tested.
+- Company growth has no code-written caveat, so a note can still tie a rising company count to the role (F4 #3).
+- This is a controlled test. The new caveat hasn't run in a live review or been deployed yet.
+
 # Part B: Completed live reviews
 
 ## B1. One complete weekly review (live Crustdata, live cfo.ai)
