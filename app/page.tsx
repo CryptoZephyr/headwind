@@ -125,6 +125,7 @@ export default function Home() {
             </p>
             <p><strong>{OUTCOME_LABEL[c.outcome ?? c.state] ?? c.state}</strong>{c.pausedUntil && ` until ${c.pausedUntil}`} (version {c.version})</p>
             {c.summary && <p>{c.summary}</p>}
+            {c.listingHistory && <p>{c.listingHistory}</p>}
             {c.openTask && (
               <div>
                 <p>Ask {c.openTask.assignee ?? "the account manager"} by {c.openTask.due}: <em>{c.openTask.question}</em></p>

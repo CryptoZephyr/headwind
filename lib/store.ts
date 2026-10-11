@@ -94,6 +94,9 @@ export function commitImport(db: Database.Database, p: ImportPreview, opts: { is
         `INSERT INTO client (id, agency_id, name, domain, account_manager, last_confirmed_at) VALUES (?,?,?,?,?,?)
          ON CONFLICT(id) DO UPDATE SET name=excluded.name, account_manager=excluded.account_manager, last_confirmed_at=excluded.last_confirmed_at, retired_at=NULL`
       ).run(id, agencyId, c.name, c.domain, c.accountManager, c.lastConfirmedAt);
+      if (c.lastConfirmedAt) {
+        insertEvidence(db, { id: stableId("ev", agencyId, id, "confirmation", c.lastConfirmedAt), agency_id: agencyId, client_id: id, mandate_id: null, source_type: "client_confirmation", provenance: "agency_supplied", source_date: c.lastConfirmedAt, retrieved_at: now, summary: `Client record: ${c.name} last confirmed its open roles with the agency on ${c.lastConfirmedAt}${c.accountManager ? ` (account manager ${c.accountManager})` : ""}.`, payload: JSON.stringify({ lastConfirmedAt: c.lastConfirmedAt, accountManager: c.accountManager }), complete: 1 });
+      }
     }
     for (const m of p.mandates) {
       const clientId = clientIds.get(m.clientDomain)!;

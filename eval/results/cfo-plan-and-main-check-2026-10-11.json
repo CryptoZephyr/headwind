@@ -1,0 +1,340 @@
+{
+ "checked_at": "2026-10-11",
+ "workspace": "Aluko & Oyebode (org 103114)",
+ "how": "inspect_billing (plan, available_plans, usage, integrations), inspect_history on Main Scenario#52f, inspect_scenarios list, inspect_documentation search, all read-only via the server's cfo.ai session",
+ "billing": {
+  "available_plans": {
+   "plans": [
+    {
+     "plan_id": "startup",
+     "plan": "Startup",
+     "monthly_price": "$500",
+     "standard_connections": "5",
+     "premium_connections": "0",
+     "current": false
+    },
+    {
+     "plan_id": "startup-annual",
+     "plan": "Startup",
+     "monthly_price": "$375",
+     "cadence": "annual",
+     "term_price": "$4,500/year",
+     "standard_connections": "5",
+     "premium_connections": "0",
+     "current": false
+    },
+    {
+     "plan_id": "growth",
+     "plan": "Growth",
+     "monthly_price": "$1,500",
+     "standard_connections": "8",
+     "premium_connections": "0",
+     "ai_usage": "4\u00d7 more AI usage than Startup",
+     "current": true
+    },
+    {
+     "plan_id": "growth-annual",
+     "plan": "Growth",
+     "monthly_price": "$1,125",
+     "cadence": "annual",
+     "term_price": "$13,500/year",
+     "standard_connections": "8",
+     "premium_connections": "0",
+     "ai_usage": "4\u00d7 more AI usage than Startup",
+     "current": false
+    }
+   ],
+   "change_in": "Settings \u2192 Billing"
+  },
+  "integrations": {
+   "standard": {
+    "used": 0,
+    "allowed": "8",
+    "can_add_more": true
+   },
+   "premium": {
+    "used": 0,
+    "allowed": "0",
+    "can_add_more": false
+   },
+   "premium_integrations": [
+    "acumatica",
+    "adobe_analytics_data_feed",
+    "anaplan",
+    "aurora",
+    "aurora_postgres",
+    "aws_cost_report",
+    "aws_inventory",
+    "azure_blob_storage",
+    "azure_cosmos_for_mongo",
+    "azure_postgres",
+    "azure_sql_db",
+    "azure_sql_managed_db",
+    "bigquery_db",
+    "business_central",
+    "cockroachdb",
+    "concur",
+    "cosmos",
+    "databricks_db",
+    "db2i_hva",
+    "documentdb",
+    "dynamics_365",
+    "dynamodb",
+    "exact_online",
+    "gcs",
+    "google_analytics_4_export",
+    "google_cloud_mysql",
+    "google_cloud_postgresql",
+    "google_cloud_sqlserver",
+    "heroku_postgres",
+    "magento_mysql",
+    "magento_mysql_rds",
+    "maria",
+    "maria_rds",
+    "microsoft_dynamics_365_fno",
+    "mongo",
+    "mongo_sharded",
+    "mysql",
+    "mysql_azure",
+    "mysql_rds",
+    "netsuite_suiteanalytics",
+    "oracle_fusion_cloud_apps_crm",
+    "oracle_fusion_cloud_apps_fscm",
+    "oracle_fusion_cloud_apps_hcm",
+    "pigment",
+    "postgres",
+    "postgres_rds",
+    "s3",
+    "sage-hr",
+    "sage_intacct",
+    "salesforce_commerce_cloud",
+    "salesforce_marketing_cloud",
+    "sap-successfactors",
+    "sap_business_by_design",
+    "snowflake_db",
+    "snowplow",
+    "sql_server",
+    "sql_server_hva",
+    "sql_server_rds",
+    "sql_server_sap_ecc_hva",
+    "visma",
+    "workday",
+    "workday_financial_management",
+    "workday_strategic_sourcing"
+   ],
+   "can_add_without_another_slot": [],
+   "change_in": "Settings \u2192 Billing"
+  },
+  "plan": {
+   "plan_id": "growth",
+   "plan": "Growth",
+   "monthly_price": "$1,500",
+   "status": "trialing",
+   "note": "this workspace is in a trial; the plan starts billing on the renewal date",
+   "ends_on": "2026-10-24",
+   "caller_can_manage": true,
+   "change_in": "Settings \u2192 Billing"
+  },
+  "usage": {
+   "monthly_ai_usage_used": "<1%",
+   "monthly_usage_resets_on": "2026-10-24",
+   "extra_usage_balance": "$0",
+   "auto_reload": {
+    "enabled": false
+   },
+   "monthly_spend_limit": "$500",
+   "spent_this_cycle": "$0",
+   "caller_can_manage": true,
+   "change_in": "Settings \u2192 Usage"
+  }
+ },
+ "main_changelog_latest": {
+  "entries": [
+   {
+    "actor": {
+     "kind": "user",
+     "display_name": "Tomiwa Adepoju",
+     "is_current_actor": true
+    },
+    "changes": [
+     {
+      "entity_type": "layer",
+      "entity_id": "c88f412f-e993-4e00-9933-cfc087552719",
+      "name": "Headwind Downside (live weekly test 2026-10-11)",
+      "layer_id": "c88f412f-e993-4e00-9933-cfc087552719",
+      "op": "created"
+     }
+    ],
+    "created_at": "2026-10-11T10:08:01.570826Z",
+    "headline": "Created scenario Headwind Downside (live weekly test 2026-10-11)",
+    "id": "280214",
+    "is_merge": false,
+    "is_revert": false,
+    "is_undo": false,
+    "operations": [
+     "created layer"
+    ]
+   },
+   {
+    "actor": {
+     "kind": "user",
+     "display_name": "Tomiwa Adepoju",
+     "is_current_actor": true
+    },
+    "changes": [
+     {
+      "entity_type": "layer",
+      "entity_id": "a3f60c36-c95a-4127-9361-010cf9f68a71",
+      "name": "Headwind Reviewed (live weekly test 2026-10-11)",
+      "layer_id": "a3f60c36-c95a-4127-9361-010cf9f68a71",
+      "op": "created"
+     }
+    ],
+    "created_at": "2026-10-11T10:07:59.52553Z",
+    "headline": "Created scenario Headwind Reviewed (live weekly test 2026-10-11)",
+    "id": "280212",
+    "is_merge": false,
+    "is_revert": false,
+    "is_undo": false,
+    "operations": [
+     "created layer"
+    ]
+   },
+   {
+    "actor": {
+     "kind": "user",
+     "display_name": "Tomiwa Adepoju",
+     "is_current_actor": true
+    },
+    "changes": [
+     {
+      "entity_type": "layer",
+      "entity_id": "c75489a8-19a2-4f3c-924f-330bc7365eff",
+      "name": "Headwind business plan (hypothesis)",
+      "layer_id": "c75489a8-19a2-4f3c-924f-330bc7365eff",
+      "op": "created"
+     }
+    ],
+    "created_at": "2026-10-11T09:48:01.655298Z",
+    "headline": "Created scenario Headwind business plan (hypothesis)",
+    "id": "280127",
+    "is_merge": false,
+    "is_revert": false,
+    "is_undo": false,
+    "operations": [
+     "created layer"
+    ]
+   },
+   {
+    "actor": {
+     "kind": "user",
+     "display_name": "Tomiwa Adepoju",
+     "is_current_actor": true
+    },
+    "changes": [
+     {
+      "entity_type": "layer",
+      "entity_id": "3e2ebc14-0b6e-4961-9253-345e0e3fd114",
+      "name": "Headwind Downside (Recovery test copy)",
+      "layer_id": "3e2ebc14-0b6e-4961-9253-345e0e3fd114",
+      "op": "created"
+     }
+    ],
+    "created_at": "2026-10-11T09:45:11.599991Z",
+    "headline": "Created scenario Headwind Downside (Recovery test copy)",
+    "id": "280118",
+    "is_merge": false,
+    "is_revert": false,
+    "is_undo": false,
+    "operations": [
+     "created layer"
+    ]
+   },
+   {
+    "actor": {
+     "kind": "user",
+     "display_name": "Tomiwa Adepoju",
+     "is_current_actor": true
+    },
+    "changes": [
+     {
+      "entity_type": "layer",
+      "entity_id": "b7ede34f-d04e-4fb9-8595-b52dd3ededaf",
+      "name": "Headwind Reviewed (Recovery test copy)",
+      "layer_id": "b7ede34f-d04e-4fb9-8595-b52dd3ededaf",
+      "op": "created"
+     }
+    ],
+    "created_at": "2026-10-11T09:45:09.223943Z",
+    "headline": "Created scenario Headwind Reviewed (Recovery test copy)",
+    "id": "280116",
+    "is_merge": false,
+    "is_revert": false,
+    "is_undo": false,
+    "operations": [
+     "created layer"
+    ]
+   }
+  ],
+  "next": {
+   "before": "280116"
+  },
+  "total": 5
+ },
+ "scenarios": [
+  {
+   "name": "Headwind Downside (live weekly test 2026-10-11)",
+   "parent": "Main Scenario#52f",
+   "created_at": "2026-10-11T10:08:01.570826Z"
+  },
+  {
+   "name": "Headwind Reviewed (live weekly test 2026-10-11)",
+   "parent": "Main Scenario#52f",
+   "created_at": "2026-10-11T10:07:59.52553Z"
+  },
+  {
+   "name": "Headwind business plan (hypothesis)",
+   "parent": "Main Scenario#52f",
+   "created_at": "2026-10-11T09:48:01.655298Z"
+  },
+  {
+   "name": "Headwind Downside (Recovery test copy)",
+   "parent": "Main Scenario#52f",
+   "created_at": "2026-10-11T09:45:11.599991Z"
+  },
+  {
+   "name": "Headwind Reviewed (Recovery test copy)",
+   "parent": "Main Scenario#52f",
+   "created_at": "2026-10-11T09:45:09.223943Z"
+  },
+  {
+   "name": "Headwind Downside (sample agency)",
+   "parent": "Main Scenario#52f",
+   "created_at": "2026-10-11T01:10:36.152963Z"
+  },
+  {
+   "name": "Headwind Reviewed (sample agency)",
+   "parent": "Main Scenario#52f",
+   "created_at": "2026-10-11T01:10:34.223464Z"
+  },
+  {
+   "name": "Headwind gate probe (synthetic)",
+   "parent": "Main Scenario#52f",
+   "created_at": "2026-10-11T00:09:08.815899Z"
+  },
+  {
+   "name": "Main Scenario",
+   "parent": null,
+   "created_at": "2026-10-10T07:03:34.350996Z"
+  }
+ ],
+ "docs_billing_excerpt": {
+  "type": "text",
+  "record_type": "documentation",
+  "url": "https://docs.cfo.ai/workspace-settings/billing",
+  "title": "Billing and plan",
+  "context": "## Plans\n\nOpen **Settings \u2192 Billing** to see the plans and switch between them. The plan cards show the current prices and limits for your workspace; the shape of each plan is:\n\n* **Free** \u2014 start with your own data. It comes with a one-time allotment of AI credits that does not replenish, accepts CSV uploads as the only data source, and needs no card.\n* **Starter** \u2014 build and run the finance model. Standard AI usage that resets monthly, five standard integrations, a ceiling on synced rows, the MCP server and Slack app, proactive alerts and Triggers, unlimited Models and Scenarios, and one dedicated workspace.\n* **Growth** \u2014 everything in Starter with a multiple of the AI usage, more integrations, and a higher synced-row ceiling.\n* **Enterprise** \u2014 custom pricing and AI credits. Adds premium integrations, including NetSuite and data warehouses, multiple workspaces, SSO / SAML, priority support, and a dedicated Forward Deployed Finance Partner with a shared Slack channel. The card opens a conversation with sales rather than switching the plan.\n\nIf your card is declined when you add it or pay, the form repeats the card provider's reason and adds **Check your payment details or try a different card.**\n\nUse the **Monthly** / **Annual** toggle to compare cadences. Annual is selected by default when you first choose a paid plan and shows the saving against monthly billing. A paid plan starts with a 14-day free trial: select **Start free trial** on the card. Nothing is charged when the trial starts, and the card shows the price that applies per month after the trial. When you sign up, the plan page says **\\$0 today. Cancel anytime before it ends and you won\u2019t be charged, and you still get all 14 days free.** The **Add a payment method** dialog names the date to cancel by. Canceling during the trial does not cut it short.\n\nPlans differ in how many connections of each class you can hold, not in what a connection does. File uploads never count toward the integration limit, and neither do the API and MCP connections Ari calls live; see [API and MCP connections do not sync](/integrations/integrations-directory#api-and-mcp-connections-do-not-sync).",
+  "target": "workspace-settings/billing",
+  "content_scope": "excerpt"
+ }
+}

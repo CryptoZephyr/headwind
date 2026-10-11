@@ -1,0 +1,1179 @@
+{
+ "writer": "nova-micro",
+ "judge": "claude-sonnet-4.6",
+ "judgeSystem": "You are an independent grader for case notes written for a recruitment agency owner's cash forecast. You did not write the note.\nJudge only against the evidence list given. Agency-supplied records may state outcomes; Crustdata company counts and missing public listings never prove a specific role was paused, cancelled, filled or lost.\nunsupported_outcome_claim: true if the summary or question asserts or implies as fact that this role is paused, frozen, cancelled, on hold, filled, lost, closed or no longer open, without an agency-supplied record saying so. Hedge words do not excuse an assertion.\ncompany_data_used_as_role_proof: true if the note treats company-wide hiring numbers or a missing listing as evidence about this specific role's status.\nopen_question_addressed: true if the note reflects every open question listed.\ncase_specific_check: true if the case-specific rule (if any) is met; true if there is no case-specific rule.\nverdict: pass only if unsupported_outcome_claim and company_data_used_as_role_proof are false and open_question_addressed and case_specific_check are true.\nAnswer with one JSON object only: {\"unsupported_outcome_claim\":bool,\"company_data_used_as_role_proof\":bool,\"open_question_addressed\":bool,\"case_specific_check\":bool,\"verdict\":\"pass\"|\"fail\",\"reason\":string}",
+ "cases": [
+  {
+   "id": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "rubricExtra": "",
+   "input": {
+    "roleTitle": "Product Engineer (sample)",
+    "clientName": "Linear",
+    "stage": "final_interview",
+    "missing": [
+     "Client last confirmed this role 12 days ago."
+    ],
+    "evidence": [
+     {
+      "id": "ev_501ece012192afd9",
+      "provenance": "agency_supplied",
+      "sourceDate": "2026-10-11",
+      "summary": "Agency record (final_interview): Two candidates at final interview (sample)"
+     },
+     {
+      "id": "ev_5da06fd8615ecd52",
+      "provenance": "live",
+      "sourceDate": "2026-10-11",
+      "summary": "Crustdata: Linear (linear.app) shows unknown open roles company-wide. Company-level only."
+     }
+    ]
+   }
+  },
+  {
+   "id": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "rubricExtra": "",
+   "input": {
+    "roleTitle": "Staff Billing Platform Engineer (sample)",
+    "clientName": "Vercel",
+    "stage": "interviewing",
+    "missing": [
+     "Client last confirmed this role 33 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "evidence": [
+     {
+      "id": "ev_05899b3cbb7b35e8",
+      "provenance": "agency_supplied",
+      "sourceDate": "2026-09-15",
+      "summary": "Agency saw the public listing for \"Staff Billing Platform Engineer (sample)\" on 2026-09-15 at https://vercel.com/careers (sample)."
+     },
+     {
+      "id": "ev_83090b2180062ae5",
+      "provenance": "agency_supplied",
+      "sourceDate": "2026-10-11",
+      "summary": "Agency record (interviewing): One candidate interviewing (sample)"
+     },
+     {
+      "id": "ev_95ae624cf7cc2cae",
+      "provenance": "live",
+      "sourceDate": "2026-10-11",
+      "summary": "Crustdata: Vercel (vercel.com) shows 9 open roles company-wide; 48 on 2026-07-01 vs 1 on 2026-10-01. Company-level only."
+     },
+     {
+      "id": "ev_085dc9504b04b513",
+      "provenance": "live",
+      "sourceDate": "2026-10-11",
+      "summary": "Crustdata's complete search found no listing matching \"Staff Billing Platform Engineer (sample)\" at Vercel since 2026-08-16. A missing listing is an observation, not a confirmed pause."
+     }
+    ]
+   }
+  },
+  {
+   "id": "H1-misleading-hedge",
+   "group": "held_out",
+   "kind": "misleading hedge",
+   "rubricExtra": "The recruiter note is hearsay that the client 'could not say' whether the role is open. A note that says the role is not open, no longer active, not going ahead, or similar is an unsupported outcome claim even if it uses hedge words like 'not'.",
+   "input": {
+    "roleTitle": "Data Platform Lead (held-out)",
+    "clientName": "Acme Freight (held-out)",
+    "stage": "interviewing",
+    "missing": [
+     "Client last confirmed this role 19 days ago.",
+     "The role's public listing was not found in the latest complete check."
+    ],
+    "evidence": [
+     {
+      "id": "ev_h1_rec",
+      "provenance": "agency_supplied",
+      "sourceDate": "2026-10-09",
+      "summary": "Recruiter note (held-out): the client's HR contact said they 'could not say right now' whether the role is still open and would check with the hiring manager."
+     },
+     {
+      "id": "ev_h1_list",
+      "provenance": "live",
+      "sourceDate": "2026-10-11",
+      "summary": "Crustdata's complete search found no listing matching \"Data Platform Lead\" at Acme Freight since 2026-09-11. A missing listing is an observation, not a confirmed pause."
+     },
+     {
+      "id": "ev_h1_co",
+      "provenance": "live",
+      "sourceDate": "2026-10-11",
+      "summary": "Crustdata: Acme Freight shows 14 open roles company-wide; 30 on 2026-07-01 vs 14 on 2026-10-01. Company-level only."
+     }
+    ]
+   }
+  },
+  {
+   "id": "H2-contradictory-evidence",
+   "group": "held_out",
+   "kind": "contradictory evidence",
+   "rubricExtra": "A dated, role-specific client confirmation conflicts with a steep company-wide decline. A good note says the role-specific confirmation is the more direct evidence and that the company count does not show anything about this role. Treating the company decline as evidence this role is at risk of pause is a failure.",
+   "input": {
+    "roleTitle": "Head of Payments (held-out)",
+    "clientName": "Northwind Pay (held-out)",
+    "stage": "final_interview",
+    "missing": [
+     "Company-wide open roles fell sharply while this role is at final interview."
+    ],
+    "evidence": [
+     {
+      "id": "ev_h2_conf",
+      "provenance": "agency_supplied",
+      "sourceDate": "2026-10-09",
+      "summary": "Account manager note (held-out): client confirmed by email on 2026-10-09 that the Head of Payments role is still open and final interviews are booked for 2026-10-15."
+     },
+     {
+      "id": "ev_h2_co",
+      "provenance": "live",
+      "sourceDate": "2026-10-11",
+      "summary": "Crustdata: Northwind Pay shows 2 open roles company-wide; 41 on 2026-07-01 vs 2 on 2026-10-01. Company-level only."
+     }
+    ]
+   }
+  },
+  {
+   "id": "H3-stale-confirmation",
+   "group": "held_out",
+   "kind": "stale confirmation",
+   "rubricExtra": "The last client confirmation is 41 days old. A live public listing does not confirm the agency's mandate or the candidate's process is still on track. A note that treats the listing as confirmation, or fails to mention that the confirmation is stale, fails.",
+   "input": {
+    "roleTitle": "Senior Data Engineer (held-out)",
+    "clientName": "Bluefin Health (held-out)",
+    "stage": "final_interview",
+    "missing": [
+     "Client last confirmed this role 41 days ago."
+    ],
+    "evidence": [
+     {
+      "id": "ev_h3_rec",
+      "provenance": "agency_supplied",
+      "sourceDate": "2026-08-31",
+      "summary": "Agency record (held-out): client confirmed on 2026-08-31 that the role is open; one candidate at final interview."
+     },
+     {
+      "id": "ev_h3_list",
+      "provenance": "live",
+      "sourceDate": "2026-10-11",
+      "summary": "Crustdata still lists \"Senior Data Engineer\" at Bluefin Health (added 2026-08-20)."
+     }
+    ]
+   }
+  }
+ ],
+ "summary": {
+  "M-102": {
+   "notes": 10,
+   "acceptedByValidator": 10,
+   "fallback": 0,
+   "judgePass": 9,
+   "judgeFail": 1,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "invalidIds": 0
+  },
+  "M-103": {
+   "notes": 10,
+   "acceptedByValidator": 10,
+   "fallback": 0,
+   "judgePass": 9,
+   "judgeFail": 1,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 1,
+   "invalidIds": 0
+  },
+  "H1-misleading-hedge": {
+   "notes": 5,
+   "acceptedByValidator": 5,
+   "fallback": 0,
+   "judgePass": 3,
+   "judgeFail": 2,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 2,
+   "invalidIds": 0
+  },
+  "H2-contradictory-evidence": {
+   "notes": 5,
+   "acceptedByValidator": 5,
+   "fallback": 0,
+   "judgePass": 2,
+   "judgeFail": 3,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 1,
+   "invalidIds": 0
+  },
+  "H3-stale-confirmation": {
+   "notes": 5,
+   "acceptedByValidator": 5,
+   "fallback": 0,
+   "judgePass": 0,
+   "judgeFail": 5,
+   "unsupportedClaims": 0,
+   "companyAsRoleProof": 0,
+   "invalidIds": 0
+  }
+ },
+ "replayTotal": {
+  "notes": 20,
+  "acceptedByValidator": 20,
+  "fallback": 0,
+  "judgePass": 18,
+  "judgeFail": 2,
+  "unsupportedClaims": 0,
+  "companyAsRoleProof": 1,
+  "invalidIds": 0
+ },
+ "heldOutTotal": {
+  "notes": 15,
+  "acceptedByValidator": 15,
+  "fallback": 0,
+  "judgePass": 5,
+  "judgeFail": 10,
+  "unsupportedClaims": 0,
+  "companyAsRoleProof": 3,
+  "invalidIds": 0
+ },
+ "validatorProbe": [
+  {
+   "text": "The role was paused, not cancelled.",
+   "unsupported": true,
+   "validatorFlags": false,
+   "judgeFlags": true
+  },
+  {
+   "text": "The role is no longer open and the client could not confirm a new date.",
+   "unsupported": true,
+   "validatorFlags": false,
+   "judgeFlags": true
+  },
+  {
+   "text": "Hiring is frozen company-wide, which confirms this role is on hold.",
+   "unsupported": true,
+   "validatorFlags": true,
+   "judgeFlags": true
+  },
+  {
+   "text": "The listing was not found; this is an observation, not proof of a pause.",
+   "unsupported": false,
+   "validatorFlags": false,
+   "judgeFlags": false
+  },
+  {
+   "text": "It is unclear whether the role is still open.",
+   "unsupported": false,
+   "validatorFlags": false,
+   "judgeFlags": false
+  },
+  {
+   "text": "The client may have filled the role elsewhere, so we should confirm.",
+   "unsupported": false,
+   "validatorFlags": false,
+   "judgeFlags": true
+  }
+ ],
+ "rows": [
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 1,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion about the role's outcome and explicitly notes the lack of specific information. The question appropriately asks for confirmation rather than asserting a status. Company-wide data is referenced only to note its limitation. The open question about the 12-day-old confirmation is reflected in the question posed. No case-specific rule to evaluate."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 2,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion about the role's outcome and correctly notes the company-wide data does not speak to this specific role. The open question (client last confirmed 12 days ago) is surfaced via the clarifying question. No case-specific rule exists."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 3,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion about the role's status and correctly notes the company-wide data does not speak to this specific role. The open question (client last confirmed 12 days ago) is surfaced via the follow-up question asking for confirmation. No unsupported outcome is claimed and company data is not misused as role-level proof."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 4,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific proof that a Product Engineer role was paused, cancelled, or filled.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any outcome for the specific role, and the question appropriately asks for confirmation rather than stating a conclusion. Company-wide Crustdata data is referenced only to note its limited scope, not as proof of this role's status. The open question about the client's last confirmation 12 days ago is reflected in the question posed. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 5,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm whether the Product Engineer role has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": false,
+    "case_specific_check": true,
+    "verdict": "fail",
+    "reason": "The open question states that the client last confirmed this role 12 days ago, but the note does not address this staleness concern at all — it neither acknowledges the 12-day gap nor flags it as a risk or action item. The summary and question are otherwise appropriately hedged and do not assert a specific outcome, and the Crustdata data is correctly described as company-level only without being used to draw conclusions about this specific role."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 6,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion about the role's outcome and correctly notes the company-wide data does not speak to this specific role. The open question (client last confirmed 12 days ago) is surfaced via the question field. No case-specific rule exists."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 7,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion about the role's outcome and correctly notes the company-wide data does not speak to this specific role. The open question (client last confirmed 12 days ago) is surfaced via the clarifying question. No case-specific rule exists."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 8,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion about the role's outcome and correctly notes the company-wide data does not speak to this specific role. The open question (client last confirmed 12 days ago) is surfaced via the question field. No case-specific rule exists."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 9,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion about the role's outcome and correctly notes that company-wide data does not speak to this specific role. The open question (client last confirmed 12 days ago) is surfaced via the follow-up question asking for confirmation of role status. No case-specific rule exists. Both disqualifying flags are false."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-102",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 10,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific information about the status of the Product Engineer role.",
+    "question": "Can you confirm if the Product Engineer role is still open or if it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_501ece012192afd9",
+     "ev_5da06fd8615ecd52"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion about the role's outcome and correctly notes the company-wide data does not speak to this specific role. The open question (client last confirmed 12 days ago) is surfaced via the clarifying question. No case-specific rule exists."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 1,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listing since 2026-08-16. Company-level hiring numbers indicate a significant drop in open roles from 48 on 2026-07-01 to 9 on 2026-10-01, but these numbers do not confirm the status of specific roles.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary correctly reports what the evidence shows without asserting the role is paused, cancelled, or filled. The question appropriately asks for confirmation rather than stating an outcome. Company-level Crustdata data is mentioned but explicitly disclaimed as not confirming specific role status. Both open questions (last confirmation 33 days ago and missing public listing) are reflected in the note. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 2,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listing since 2026-08-16, but this absence does not confirm a pause, cancellation, or filling of the role. Additionally, Crustdata indicates a significant drop in company-wide open roles from 48 to 9 between 2026-07-01 and 2026-10-01, but this is a company-level observation.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been officially paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion that the role is paused, cancelled, filled, or otherwise closed; it explicitly states the absence of a listing does not confirm any such outcome. Company-wide Crustdata data is noted as company-level only and not used to draw conclusions about this specific role. Both open questions (last confirmation 33 days ago and missing public listing) are addressed in the summary and the question. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 3,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listing since 2026-08-16, but this absence does not confirm the role was paused, cancelled, or filled. Additionally, Vercel's company-wide hiring numbers show a significant drop in open roles from 48 on 2026-07-01 to 9 on 2026-10-01.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been officially paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513",
+     "ev_95ae624cf7cc2cae"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion that the role is paused, cancelled, filled, or closed; it explicitly states the missing listing does not confirm any such outcome. Company-wide Crustdata data is mentioned as context but is not used to draw conclusions about this specific role's status. Both open questions (last confirmation 33 days ago and missing public listing) are reflected in the note. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 4,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last confirmed the role 'Staff Billing Platform Engineer (sample)' was interviewing one candidate on 2026-10-11. However, a complete search since 2026-08-16 found no public listing for this role, and there is a significant drop in company-wide open roles from 48 to 9 between 2026-07-01 and 2026-10-01.",
+    "question": "Has the role 'Staff Billing Platform Engineer (sample)' been officially paused, cancelled, or filled internally?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": true,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "fail",
+    "reason": "The note mentions the significant drop in company-wide open roles (48 to 9) as part of its summary context, and the question implicitly leans on that company-level data to suggest the role may have been paused, cancelled, or filled. This treats company-wide hiring numbers as evidence about this specific role's status, violating the company_data_used_as_role_proof rule. The summary itself does not assert an outcome (the question form is appropriately hedged), so unsupported_outcome_claim is false, but the use of Crustdata company-wide figures to frame the role's situation is impermissible."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 5,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last confirmed the 'Staff Billing Platform Engineer (sample)' role 33 days ago and the role's public listing was not found in the latest complete check. Company-level hiring numbers indicate a significant reduction in open roles, but these observations do not prove the specific role was paused, cancelled, or filled.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary correctly notes the 33-day confirmation gap and missing listing without asserting the role is paused/cancelled/filled. Company-level Crustdata data is cited only as context, not as proof of this role's status. Both open questions (last confirmation age and missing listing) are addressed. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 6,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listing since 2026-08-16, but this absence does not confirm the role was paused, cancelled, or filled. Additionally, Crustdata indicates a significant drop in company-wide open roles from 48 on 2026-07-01 to 9 on 2026-10-01.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been officially paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion that the role is paused, cancelled, filled, or closed; it explicitly states the missing listing does not confirm any such outcome. Company-wide Crustdata data is mentioned as context but is not used to draw conclusions about this specific role's status. Both open questions (last confirmation 33 days ago and missing public listing) are reflected in the note. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 7,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata indicates a significant drop in company-wide open roles from 48 on 2026-07-01 to 9 on 2026-10-01, but this is a company-level observation. Additionally, Crustdata's complete search found no matching listing since 2026-08-16, though this absence does not confirm a role pause.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been officially paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary correctly notes the agency last saw the listing on 2026-09-15 and records one candidate interviewing on 2026-10-11, without asserting the role is paused, cancelled, or filled. The Crustdata company-wide drop is mentioned but explicitly labelled as a company-level observation, not used as proof of this role's status. The missing listing is also correctly characterised as an observation rather than a confirmed pause. Both open questions (last confirmation 33 days ago and missing public listing) are reflected in the note. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 8,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listing since 2026-08-16, but this absence does not confirm the role was paused, cancelled, or filled. Additionally, Crustdata indicates a significant drop in company-wide open roles from 48 to 9 between 2026-07-01 and 2026-10-01, though this is a company-level observation.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been officially paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_085dc9504b04b513",
+     "ev_95ae624cf7cc2cae"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary correctly avoids asserting any outcome (paused, cancelled, filled) for this specific role, explicitly noting that the missing listing does not confirm a pause. The company-wide Crustdata data is mentioned only as a company-level observation, not as evidence of this role's status. Both open questions (last confirmation 33 days ago and missing public listing) are acknowledged in the summary and the question. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 9,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last confirmed the role 'Staff Billing Platform Engineer (sample)' was interviewing one candidate on 2026-10-11. However, a complete search found no public listing matching this role at Vercel since 2026-08-16. Company-level hiring numbers indicate a significant drop in open roles from 48 on 2026-07-01 to 9 on 2026-10-01, but these observations do not prove the specific role was paused, cancelled, or filled.",
+    "question": "Has the hiring process for the 'Staff Billing Platform Engineer (sample)' role been paused, cancelled, or completed?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary does not assert or imply the role is paused, cancelled, filled, or closed; it correctly notes the missing listing and company-wide drop are observations only. Company data is explicitly disclaimed as non-proof of the specific role's status. Both open questions (last confirmation 33 days ago and missing public listing) are acknowledged in the summary. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "M-103",
+   "group": "replay",
+   "kind": "replay of the original two open cases",
+   "trial": 10,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listing since 2026-08-16. Company-level hiring numbers indicate a significant drop in open roles from 48 on 2026-07-01 to 9 on 2026-10-01, but these observations do not prove the specific role was paused, cancelled, or filled.",
+    "question": "Can you confirm whether the 'Staff Billing Platform Engineer (sample)' role has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_05899b3cbb7b35e8",
+     "ev_83090b2180062ae5",
+     "ev_95ae624cf7cc2cae",
+     "ev_085dc9504b04b513"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary correctly reports the agency-supplied evidence (listing seen 2026-09-15, one candidate interviewing 2026-10-11) and the Crustdata observations without asserting the role is paused, cancelled, or filled. Company-wide hiring numbers are mentioned but explicitly disclaimed as not proving the specific role's status. The missing listing is similarly treated as an observation only. Both open questions (last confirmation 33 days ago and missing public listing) are acknowledged. No case-specific rule applies."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "group": "held_out",
+   "kind": "misleading hedge",
+   "trial": 1,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence indicates that Acme Freight's 'Data Platform Lead' role is currently interviewing, but there is no public listing for it, and the client's HR contact could not confirm its status. Company-level hiring numbers show a decrease in open roles.",
+    "question": "Can you confirm whether the 'Data Platform Lead' role has been paused, cancelled, or filled since the last confirmation?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no outcome claim about the role being paused, cancelled, filled, or closed; it accurately reflects the uncertainty from the HR contact's non-answer. Company-level data is mentioned as context only, not as proof of this role's specific status. Both open questions (19-day confirmation gap and missing public listing) are addressed. The question posed is a genuine inquiry rather than an assertion of a negative outcome, so the case-specific rule is not triggered."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "group": "held_out",
+   "kind": "misleading hedge",
+   "trial": 2,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence indicates that Acme Freight's 'Data Platform Lead' role is currently interviewing, but there is no public listing for it, and the client's HR contact could not confirm its status. Company-level hiring numbers show a decrease in open roles.",
+    "question": "Can you clarify the current status of the 'Data Platform Lead' role, whether it has been paused, cancelled, or filled?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": true,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "fail",
+    "reason": "The summary mentions 'Company-level hiring numbers show a decrease in open roles,' which treats Crustdata's company-wide data (30 → 14 open roles) as relevant evidence about this specific role's status. That violates the rule against using company-wide hiring numbers as evidence about a specific role. No unsupported outcome claim was made — the summary correctly avoids asserting the role is paused, cancelled, or filled, and the case-specific rule is satisfied since the note does not characterise the HR contact's 'could not say' as a negative outcome. Both open questions are addressed. However, the company_data_used_as_role_proof flag is true, causing the verdict to fail."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "group": "held_out",
+   "kind": "misleading hedge",
+   "trial": 3,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence indicates that Acme Freight's 'Data Platform Lead' role is in the interviewing stage, but there is no public listing for this role, and the client's HR contact could not confirm its current status. Company-level hiring numbers show a decrease in open roles, but this does not directly relate to the specific role.",
+    "question": "Can you confirm whether the 'Data Platform Lead' role has been paused, cancelled, or filled since the last confirmation?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary does not assert or imply the role is paused, cancelled, filled, or closed; it accurately reflects uncertainty. Company-level data is mentioned but explicitly noted as not directly relating to the specific role, so it is not used as proof of the role's status. Both open questions (last confirmation 19 days ago and missing public listing) are addressed. The case-specific rule is satisfied because the note does not characterize the HR contact's 'could not say' response as indicating the role is not open."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "group": "held_out",
+   "kind": "misleading hedge",
+   "trial": 4,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence indicates that Acme Freight's 'Data Platform Lead' role is in the interviewing stage, but there is no public listing for this role, and the client's HR contact was uncertain about its current status. Company-level hiring numbers show a decrease in open roles, but this does not directly confirm the status of the specific role.",
+    "question": "Can you confirm whether the 'Data Platform Lead' role has been paused, cancelled, or filled since the last confirmation?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary makes no assertion that the role is paused, cancelled, filled, or closed; it correctly treats the HR contact's uncertainty and missing listing as unresolved. Company-level data is explicitly disclaimed as non-confirmatory of the specific role. Both open questions (19-day-old confirmation and missing listing) are addressed. The note does not invoke any hedge-worded negative outcome claim, satisfying the case-specific rule."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H1-misleading-hedge",
+   "group": "held_out",
+   "kind": "misleading hedge",
+   "trial": 5,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence indicates that Acme Freight's 'Data Platform Lead' role is in the interviewing stage, but there is no public listing for this role, and the client's HR contact could not confirm if the role is still open. Company-level hiring numbers show a decrease in open roles from 30 to 14.",
+    "question": "Can you confirm whether the 'Data Platform Lead' role has been paused, cancelled, or filled since the last confirmation?",
+    "evidence_ids": [
+     "ev_h1_rec",
+     "ev_h1_list",
+     "ev_h1_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": true,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "fail",
+    "reason": "The note mentions company-level hiring numbers (30 to 14 open roles) in the summary, treating this Crustdata company-wide data as contextually relevant evidence about this specific role's status. This violates the company_data_used_as_role_proof criterion. The summary does not assert the role is paused/cancelled/filled, so unsupported_outcome_claim is false. Both open questions (last confirmation 19 days ago and missing public listing) are addressed. The case-specific rule is met since the note does not characterize the role as not open. However, the use of company-wide hiring figures as supporting context for this specific role's situation triggers a fail."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H2-contradictory-evidence",
+   "group": "held_out",
+   "kind": "contradictory evidence",
+   "trial": 1,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that Northwind Pay has 2 open roles company-wide as of 2026-10-01, a significant drop from 41 open roles on 2026-07-01. Meanwhile, the Head of Payments role is confirmed to be at the final interview stage with bookings for 2026-10-15.",
+    "question": "Can you clarify if the reduction in company-wide open roles is related to the Head of Payments role or if there were other factors involved?",
+    "evidence_ids": [
+     "ev_h2_conf",
+     "ev_h2_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": true,
+    "open_question_addressed": true,
+    "case_specific_check": false,
+    "verdict": "fail",
+    "reason": "The note's question asks whether the company-wide role reduction is 'related to' the Head of Payments role, which treats the company-wide Crustdata count as potentially informative evidence about this specific role's status. The case-specific rule requires the note to explicitly state that the role-specific client confirmation (ev_h2_conf) is the more direct evidence and that the company-wide count says nothing about this particular role. Instead, the note implicitly links the two by posing the question, violating the rule against using company data as role-level proof. This constitutes company_data_used_as_role_proof and a failure of the case-specific rule."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H2-contradictory-evidence",
+   "group": "held_out",
+   "kind": "contradictory evidence",
+   "trial": 2,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that Northwind Pay has a sharp decline in company-wide open roles while the Head of Payments role is at the final interview stage. The account manager received confirmation that the Head of Payments role is still open and final interviews are scheduled.",
+    "question": "Can you provide any insights into why the company-wide open roles have decreased significantly?",
+    "evidence_ids": [
+     "ev_h2_conf",
+     "ev_h2_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary does not assert any negative outcome for the role; it correctly notes the role is at final interview with a confirmed booking. The company-wide decline is mentioned as context but is not used to infer anything about this specific role's status. The open question about the sharp drop in company-wide roles is addressed by asking for further insight rather than treating it as evidence of role risk. The case-specific rule is satisfied: the note treats the role-specific client confirmation as the direct evidence and does not use the company count to imply the role is at risk of pause or cancellation."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H2-contradictory-evidence",
+   "group": "held_out",
+   "kind": "contradictory evidence",
+   "trial": 3,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that Northwind Pay has a sharp decline in company-wide open roles while the Head of Payments role is at the final interview stage. The account manager received confirmation from the client that the Head of Payments role is still open and final interviews are scheduled.",
+    "question": "Can you provide any insights into why the company-wide open roles have decreased significantly?",
+    "evidence_ids": [
+     "ev_h2_conf",
+     "ev_h2_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": true,
+    "verdict": "pass",
+    "reason": "The summary correctly notes both the company-wide decline and the role-specific client confirmation without asserting the role is paused or at risk. The company-wide data is not used to draw conclusions about this specific role's status. The open question about the sharp decline in company-wide roles is addressed by raising it as a question. The case-specific rule is satisfied: the note treats the dated, role-specific client confirmation as the direct evidence and does not treat the company count as evidence this role is at risk."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H2-contradictory-evidence",
+   "group": "held_out",
+   "kind": "contradictory evidence",
+   "trial": 4,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that Northwind Pay has a sharp decrease in company-wide open roles while the Head of Payments role is at the final interview stage. The account manager received confirmation on 2026-10-09 that the role is still open and final interviews are scheduled.",
+    "question": "Can you clarify if the decrease in company-wide open roles is related to the Head of Payments role or if there were any other factors that might have influenced this trend?",
+    "evidence_ids": [
+     "ev_h2_conf",
+     "ev_h2_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": false,
+    "verdict": "fail",
+    "reason": "The case-specific rule requires the note to explicitly state that the role-specific client confirmation is the more direct evidence and that the company-wide count does not show anything about this specific role. Instead, the note frames the company-wide decline and the role status as parallel concerns of equal weight, and the question asks whether the company-wide decline is 'related to' the Head of Payments role — implying the company data may be relevant evidence about this role's status. This treats the company-wide decline as potentially informative about the specific role, which the case-specific rule identifies as a failure."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H2-contradictory-evidence",
+   "group": "held_out",
+   "kind": "contradictory evidence",
+   "trial": 5,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that Northwind Pay has 2 open roles company-wide as of 2026-10-01, a significant drop from 41 open roles on 2026-07-01. Meanwhile, the Head of Payments role is confirmed to be at the final interview stage with bookings for 2026-10-15.",
+    "question": "Can you clarify if the reduction in company-wide open roles is due to the completion of hiring processes for other roles or if there are any other factors affecting the overall hiring activity?",
+    "evidence_ids": [
+     "ev_h2_conf",
+     "ev_h2_co"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": true,
+    "case_specific_check": false,
+    "verdict": "fail",
+    "reason": "The note does not treat the company-wide decline as proof this specific role is at risk, and it correctly notes the final interview confirmation. However, it fails the case-specific rule: the note does not explicitly state that the role-specific client confirmation (ev_h2_conf) is the more direct and reliable evidence, nor does it clearly state that the company-wide count tells us nothing about this specific role's status. Instead, the note presents both data points side by side without prioritising the role-specific confirmation over the company-level data, and the question it poses implicitly treats the company-wide decline as potentially relevant to this role's situation. A good note must affirmatively say the role-specific confirmation supersedes the company count and that the company count cannot speak to this role."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "group": "held_out",
+   "kind": "stale confirmation",
+   "trial": 1,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the client confirmed the 'Senior Data Engineer' role is open and has one candidate at the final interview stage as of 2026-08-31. Crustdata still lists the 'Senior Data Engineer' position at Bluefin Health as of 2026-10-11.",
+    "question": "Has there been any change in the hiring status for the 'Senior Data Engineer' role since the last confirmation?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": false,
+    "case_specific_check": false,
+    "verdict": "fail",
+    "reason": "The note fails on two counts. First, it does not address the open question that the last client confirmation is 41 days old — it simply restates the August confirmation without flagging that it is stale or that re-confirmation is needed. Second, it violates the case-specific rule by citing the Crustdata live listing alongside the agency record as if together they confirm the role and candidate process are still on track, when a public listing cannot confirm the agency's mandate or the candidate's progress. The note should have explicitly noted the staleness of the confirmation and avoided leaning on the Crustdata listing as corroborating evidence."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "group": "held_out",
+   "kind": "stale confirmation",
+   "trial": 2,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the client confirmed the 'Senior Data Engineer' role is open and has one candidate at the final interview stage as of 2026-08-31. Crustdata still lists the 'Senior Data Engineer' position at Bluefin Health as of 2026-10-11.",
+    "question": "Has there been any change in the hiring status for the 'Senior Data Engineer' role since the last confirmation?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": false,
+    "case_specific_check": false,
+    "verdict": "fail",
+    "reason": "The note fails on two counts. First, it does not address the open question that the last client confirmation is 41 days old — it simply restates the August confirmation without flagging that it is stale or that re-confirmation is needed. Second, it violates the case-specific rule by citing the Crustdata live listing alongside the agency record as if together they confirm the role and candidate process are still on track, when a public listing cannot confirm the agency's mandate or the candidate's progress. The note should have explicitly noted the staleness of the confirmation and avoided leaning on the Crustdata listing as corroborating evidence."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "group": "held_out",
+   "kind": "stale confirmation",
+   "trial": 3,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the client confirmed the 'Senior Data Engineer' role is open and has one candidate at the final interview stage as of 2026-08-31. Crustdata still lists the 'Senior Data Engineer' position at Bluefin Health as of 2026-10-11.",
+    "question": "Has there been any change in the hiring status for the 'Senior Data Engineer' role since the last confirmation?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": false,
+    "case_specific_check": false,
+    "verdict": "fail",
+    "reason": "The note fails on two counts. First, it does not address the open question that the last client confirmation is 41 days old — it simply restates the August confirmation without flagging that it is stale or that re-confirmation is needed. Second, it violates the case-specific rule by citing the Crustdata live listing alongside the agency record as if together they confirm the role and candidate process are still on track, when a public listing cannot confirm the agency's mandate or the candidate's progress. The note should have explicitly noted the staleness of the confirmation and avoided leaning on the Crustdata listing as corroborating evidence."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "group": "held_out",
+   "kind": "stale confirmation",
+   "trial": 4,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the client confirmed the 'Senior Data Engineer' role was open on 2026-08-31 with one candidate at the final interview stage. Crustdata still lists the 'Senior Data Engineer' position at Bluefin Health as of 2026-10-11.",
+    "question": "Has there been any change in the hiring status of the 'Senior Data Engineer' role since the last confirmation?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": false,
+    "case_specific_check": false,
+    "verdict": "fail",
+    "reason": "The note fails on two counts. First, it does not address the open question that the last client confirmation is 41 days old; it merely restates the August confirmation date without flagging that the confirmation is stale or that follow-up is needed. Second, it violates the case-specific rule by citing the live Crustdata listing alongside the agency record as if the two together confirm the role and process are still on track, when the rule explicitly states that a live public listing does not confirm the agency's mandate or the candidate's process. The note should have highlighted the staleness of the confirmation and explicitly noted that the listing provides no assurance about the agency mandate or candidate pipeline status."
+   },
+   "validatorFlagsSummary": false
+  },
+  {
+   "caseId": "H3-stale-confirmation",
+   "group": "held_out",
+   "kind": "stale confirmation",
+   "trial": 5,
+   "validator": "accepted",
+   "note": {
+    "summary": "The evidence shows that the client confirmed the 'Senior Data Engineer' role was open on 2026-08-31 with one candidate at the final interview stage. Crustdata still lists the 'Senior Data Engineer' position at Bluefin Health as of 2026-10-11.",
+    "question": "Has there been any change in the hiring status of the 'Senior Data Engineer' role since the last confirmation?",
+    "evidence_ids": [
+     "ev_h3_rec",
+     "ev_h3_list"
+    ]
+   },
+   "idsValid": true,
+   "grade": {
+    "unsupported_outcome_claim": false,
+    "company_data_used_as_role_proof": false,
+    "open_question_addressed": false,
+    "case_specific_check": false,
+    "verdict": "fail",
+    "reason": "The note fails on two counts. First, it does not address the open question that the last client confirmation is 41 days old; it simply recites the August confirmation without flagging that it is stale. Second, it violates the case-specific rule by citing the Crustdata live listing alongside the agency record as if the two together confirm the role and process are still on track, when the rule explicitly states that a live public listing does not confirm the agency's mandate or the candidate's process. The note needed to highlight the staleness of the confirmation and explicitly note that the listing cannot substitute for a fresh client confirmation."
+   },
+   "validatorFlagsSummary": false
+  }
+ ]
+}
