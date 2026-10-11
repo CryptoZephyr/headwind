@@ -1,0 +1,158 @@
+== prep
+agency agency_1c85d8c526c7d588
+== cfo setup
+Headwind Reviewed (Recovery test copy): table created (change 280117)
+Headwind Downside (Recovery test copy): table created (change 280119)
+{"pageUrl":"https://app.cfo.ai/s/p_AQHKpQYkNTdhY2EzNmYtYzk3OS00ZWQ1LTgzZjUtN2U0NTI3NjhlZDUyJDNlMmViYzE0LTBiNmUtNDk2MS05MjUzLTM0NWUwZTNmZDExNA","reviewed":{"scenario":"Headwind Reviewed (Recovery test copy)","table":"Headwind Reviewed cash (Recovery test copy)","prefix":"HW Reviewed"},"downside":{"scenario":"Headwind Downside (Recovery test copy)","table":"Headwind Downside cash (Recovery test copy)","prefix":"HW Downside"}}
+== reply
+{"replyId":"reply_6604fc51731593d7","duplicate":false,"interpretation":{"outcome":"placed_elsewhere","paused_until":null,"quote":"we filled the Staff Billing Platform Engineer role through another agency last week, so please close it on your side."},"runId":"run_c983bfe2cd644ccb"}
+== worker 1 (crash after assess)
+[worker ip-10-0-10-209:6799] started (single pass)
+[worker] claimed run_c983bfe2cd644ccb (reassess, step assess, attempt 1)
+[worker] Simulated crash after assess; exiting without releasing the lease
+exit 75
+{
+ "run": {
+  "id": "run_c983bfe2cd644ccb",
+  "kind": "reassess",
+  "status": "running",
+  "step": "assess",
+  "attempts": 0,
+  "error": null,
+  "lease_owner": "ip-10-0-10-209:6799",
+  "usage": "{}"
+ },
+ "steps": [
+  {
+   "step": "assess",
+   "status": "done",
+   "completed_at": "2026-10-11 09:45:18"
+  }
+ ],
+ "ops": [
+  {
+   "id": "op_7dd6dd44a20f59f5",
+   "target": "cfo.ai:Headwind Reviewed (sample agency):Headwind Reviewed cash (sample agency)",
+   "status": "verified",
+   "attempts": 0,
+   "reconciliation": "Target already held the intended values; no write sent."
+  },
+  {
+   "id": "op_fc280c906e566c80",
+   "target": "cfo.ai:Headwind Downside (sample agency):Headwind Downside cash (sample agency)",
+   "status": "verified",
+   "attempts": 0,
+   "reconciliation": "Target already held the intended values; no write sent."
+  }
+ ],
+ "decisionsThisRun": {
+  "n": 1
+ }
+}
+== waiting for lease expiry
+== worker 2 (cfo answers lost after write)
+[worker ip-10-0-10-209:6884] started (single pass)
+[worker] claimed run_c983bfe2cd644ccb (reassess, step assess, attempt 1)
+[worker] run_c983bfe2cd644ccb -> retrying: sync_cfo: cfo.ai did not answer in time (injected after the write) trace 077ce0ebcef8363825464dd9ac3dee8f
+{
+ "run": {
+  "id": "run_c983bfe2cd644ccb",
+  "kind": "reassess",
+  "status": "retrying",
+  "step": "sync_cfo",
+  "attempts": 1,
+  "error": "sync_cfo: cfo.ai did not answer in time (injected after the write)",
+  "lease_owner": null,
+  "usage": "{}"
+ },
+ "steps": [
+  {
+   "step": "assess",
+   "status": "done",
+   "completed_at": "2026-10-11 09:45:18"
+  },
+  {
+   "step": "forecast",
+   "status": "done",
+   "completed_at": "2026-10-11 09:47:26"
+  },
+  {
+   "step": "sync_cfo",
+   "status": "failed",
+   "completed_at": null
+  }
+ ],
+ "ops": [
+  {
+   "id": "op_1fc7782059c88abe",
+   "target": "cfo.ai:Headwind Reviewed (Recovery test copy):Headwind Reviewed cash (Recovery test copy)",
+   "status": "unknown",
+   "attempts": 1,
+   "reconciliation": "Write outcome unknown (cfo.ai did not answer in time (injected after the write)). Next attempt inspects cfo.ai before sending anything."
+  },
+  {
+   "id": "op_fc280c906e566c80",
+   "target": "cfo.ai:Headwind Downside (sample agency):Headwind Downside cash (sample agency)",
+   "status": "verified",
+   "attempts": 0,
+   "reconciliation": "Target already held the intended values; no write sent."
+  }
+ ],
+ "decisionsThisRun": {
+  "n": 1
+ }
+}
+== worker 3 (no faults)
+[worker ip-10-0-10-209:6963] started (single pass)
+[worker] claimed run_c983bfe2cd644ccb (reassess, step sync_cfo, attempt 2)
+[worker] run_c983bfe2cd644ccb -> complete trace b8d505b7b040aa58fefac7ec1de106a6
+{
+ "run": {
+  "id": "run_c983bfe2cd644ccb",
+  "kind": "reassess",
+  "status": "complete",
+  "step": "done",
+  "attempts": 1,
+  "error": null,
+  "lease_owner": null,
+  "usage": "{}"
+ },
+ "steps": [
+  {
+   "step": "assess",
+   "status": "done",
+   "completed_at": "2026-10-11 09:45:18"
+  },
+  {
+   "step": "forecast",
+   "status": "done",
+   "completed_at": "2026-10-11 09:47:26"
+  },
+  {
+   "step": "sync_cfo",
+   "status": "done",
+   "completed_at": "2026-10-11 09:47:47"
+  }
+ ],
+ "ops": [
+  {
+   "id": "op_1fc7782059c88abe",
+   "target": "cfo.ai:Headwind Reviewed (Recovery test copy):Headwind Reviewed cash (Recovery test copy)",
+   "status": "verified",
+   "attempts": 1,
+   "reconciliation": "Previous attempt ended as \"unknown\"; inspection showed the write had landed, so it was not resent."
+  },
+  {
+   "id": "op_bc1129335c528493",
+   "target": "cfo.ai:Headwind Downside (Recovery test copy):Headwind Downside cash (Recovery test copy)",
+   "status": "verified",
+   "attempts": 1,
+   "reconciliation": "Readback matched the intended values."
+  }
+ ],
+ "decisionsThisRun": {
+  "n": 1
+ }
+}
+Headwind Reviewed (Recovery test copy) {"entries":[{"actor":{"kind":"user","display_name":"Tomiwa Adepoju","is_current_actor":true},"changes":[{"entity_type":"formula","entity_id":"da8a1839-94e8-4ba7-951a-f43713119e5f","name":"[] = 8000","layer_id":"b7ede34f-d04e-4fb9-8595-b52dd3ededaf","op":"updated"}],"created_at":"2026-10-11T09:47:28.07939Z","headline":"Edited default formula for HW Reviewed Expected Receipts","id":"280124","is_merge":false,"is_revert":false,"is_undo":false,"operations":["updated formula"]},{"actor":{"kind":"user","display_name":"Tomiwa Adepoju","is_current_actor":true},"changes":[{"entity_type":"layer","entity_id":"3e2ebc14-0b6e-4961-9253-345e0e3fd114","name":"Headwind Downside (Recovery test copy)","layer_id":"3e2ebc14-0b6e-4961-9253-345e0e3fd114","op":"created"}],"created_at":"2026-10-11T09:45:11.599991Z","headline":"Created scenario Headwind Downside (Recovery test copy)","id":"280118","is_merge":false,"is_revert":false,"is_undo":false,"operations":["created layer"]},{"actor":{"kind":"user","display_name":"Tomiwa Adepoju","is_current_actor":true},"blocks":[{"block_id":"c1667674-d6f7-40f4-a1e2-57906fc340ff","name":"Headwind Reviewed cash (Recovery test copy)","dependent_tables":0}],"changes":[{"entity_type":"formula","entity_id":"da8a1839-94e8-4ba7-951a-f43713119e5f","name":"[] = 0","layer_id":"b7ede34f-d04e-4fb9-8595-b52dd3ededaf","op":"created"},{"entity_type":"formula","entity_id":"e8177fef-e9e5-412d-9ae7-ce42e11ccc29","name":"[] = 12000","layer_id":"b7ede34f-d04e-4fb9-8595-b52dd3ededaf",
+Headwind Downside (Recovery test copy) {"entries":[{"actor":{"kind":"user","display_name":"Tomiwa Adepoju","is_current_actor":true},"changes":[{"entity_type":"formula","entity_id":"c5c1db87-a471-4521-a7e7-dd2f5cc982a9","name":"[] = 8000","layer_id":"3e2ebc14-0b6e-4961-9253-345e0e3fd114","op":"updated"}],"created_at":"2026-10-11T09:47:46.713881Z","headline":"Edited default formula for HW Downside Expected Receipts","id":"280126","is_merge":false,"is_revert":false,"is_undo":false,"operations":["updated formula"]},{"actor":{"kind":"user","display_name":"Tomiwa Adepoju","is_current_actor":true},"blocks":[{"block_id":"ee6eb62d-eb32-4237-8970-724583c8644c","name":"Headwind Downside cash (Recovery test copy)","dependent_tables":0}],"changes":[{"entity_type":"formula","entity_id":"bc1e14d0-3ca7-4e0b-829e-b0bd2a0483a2","name":"[] = 12000","layer_id":"3e2ebc14-0b6e-4961-9253-345e0e3fd114","op":"created"},{"entity_type":"formula","entity_id":"c5c1db87-a471-4521-a7e7-dd2f5cc982a9","name":"[] = 0","layer_id":"3e2ebc14-0b6e-4961-9253-345e0e3fd114","op":"created"},{"entity_type":"formula","entity_id":"180c843c-7bac-4283-8535-44759922777e","name":"[] = 20000","layer_id":"3e2ebc14-0b6e-4961-9253-345e0e3fd114","op":"created"},{"entity_type":"formula","entity_id":"6022cdfa-dd2a-48e7-8741-d2529b10da77","name":"[] = <runway:properties/2c2d3d3c-c503-43a9-9b4f-c057df3a9099/> + <runway:properties/b411b7b3-638f-45ca-a661-0c90a67d653f/> - <runway:properties/b238ba3a-6a27-4979-bbb6-c1bb3b0bc2b5/> - <runway:properties/97d5eb39-9262-4018-9c04

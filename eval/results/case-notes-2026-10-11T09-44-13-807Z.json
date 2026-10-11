@@ -1,0 +1,576 @@
+{
+  "runId": "run_7cd5b87fd4544ef1",
+  "model": "nova-micro",
+  "trials": 10,
+  "cases": [
+    {
+      "mandateId": "M-102",
+      "input": {
+        "roleTitle": "Product Engineer (sample)",
+        "clientName": "Linear",
+        "stage": "final_interview",
+        "missing": [
+          "Client last confirmed this role 12 days ago."
+        ],
+        "evidence": [
+          {
+            "id": "ev_501ece012192afd9",
+            "provenance": "agency_supplied",
+            "sourceDate": "2026-10-11",
+            "summary": "Agency record (final_interview): Two candidates at final interview (sample)"
+          },
+          {
+            "id": "ev_5da06fd8615ecd52",
+            "provenance": "live",
+            "sourceDate": "2026-10-11",
+            "summary": "Crustdata: Linear (linear.app) shows unknown open roles company-wide. Company-level only."
+          }
+        ]
+      }
+    },
+    {
+      "mandateId": "M-103",
+      "input": {
+        "roleTitle": "Staff Billing Platform Engineer (sample)",
+        "clientName": "Vercel",
+        "stage": "interviewing",
+        "missing": [
+          "Client last confirmed this role 33 days ago.",
+          "The role's public listing was not found in the latest complete check."
+        ],
+        "evidence": [
+          {
+            "id": "ev_05899b3cbb7b35e8",
+            "provenance": "agency_supplied",
+            "sourceDate": "2026-09-15",
+            "summary": "Agency saw the public listing for \"Staff Billing Platform Engineer (sample)\" on 2026-09-15 at https://vercel.com/careers (sample)."
+          },
+          {
+            "id": "ev_83090b2180062ae5",
+            "provenance": "agency_supplied",
+            "sourceDate": "2026-10-11",
+            "summary": "Agency record (interviewing): One candidate interviewing (sample)"
+          },
+          {
+            "id": "ev_95ae624cf7cc2cae",
+            "provenance": "live",
+            "sourceDate": "2026-10-11",
+            "summary": "Crustdata: Vercel (vercel.com) shows 9 open roles company-wide; 48 on 2026-07-01 vs 1 on 2026-10-01. Company-level only."
+          },
+          {
+            "id": "ev_085dc9504b04b513",
+            "provenance": "live",
+            "sourceDate": "2026-10-11",
+            "summary": "Crustdata's complete search found no listing matching \"Staff Billing Platform Engineer (sample)\" at Vercel since 2026-08-16. A missing listing is an observation, not a confirmed pause."
+          }
+        ]
+      }
+    }
+  ],
+  "summary": [
+    {
+      "version": "before",
+      "caseNotes": 20,
+      "accepted": 11,
+      "acceptedAfterRetry": 0,
+      "fallbackNotes": 0,
+      "reviewsStopped": 9,
+      "unsupportedClaimsInSavedNotes": 0,
+      "modelCalls": 20,
+      "tokens": 5413
+    },
+    {
+      "version": "after",
+      "caseNotes": 20,
+      "accepted": 20,
+      "acceptedAfterRetry": 0,
+      "fallbackNotes": 0,
+      "reviewsStopped": 0,
+      "unsupportedClaimsInSavedNotes": 0,
+      "modelCalls": 20,
+      "tokens": 10869
+    }
+  ],
+  "results": [
+    {
+      "version": "before",
+      "trial": 1,
+      "mandateId": "M-102",
+      "traceId": "4daa34abfc3f21e718ed4352531e356f",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that Linear is in the final interview stage for a Product Engineer role, with two candidates at the final interview stage. However, there is no public listing to confirm if the role was filled or cancelled, and only compa",
+      "ms": 958
+    },
+    {
+      "version": "before",
+      "trial": 1,
+      "mandateId": "M-103",
+      "traceId": "bb568b69b6aeafdb1bf63a2cbda1c021",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 723,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 991
+    },
+    {
+      "version": "before",
+      "trial": 2,
+      "mandateId": "M-102",
+      "traceId": "4ec492240e1f6fb3a83e7fd135a96b27",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 357,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 586
+    },
+    {
+      "version": "before",
+      "trial": 2,
+      "mandateId": "M-103",
+      "traceId": "2c3ec8cf70aa86b711decc9abd8eebb9",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listin",
+      "ms": 856
+    },
+    {
+      "version": "before",
+      "trial": 3,
+      "mandateId": "M-102",
+      "traceId": "526c1a9d33869b091af860f64e7ea4ce",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 389,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 699
+    },
+    {
+      "version": "before",
+      "trial": 3,
+      "mandateId": "M-103",
+      "traceId": "667347bbc7bf6ebadc5c18fbe721cff9",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listin",
+      "ms": 888
+    },
+    {
+      "version": "before",
+      "trial": 4,
+      "mandateId": "M-102",
+      "traceId": "00705dbf994504dbb59d4c5917a8dc76",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 566
+    },
+    {
+      "version": "before",
+      "trial": 4,
+      "mandateId": "M-103",
+      "traceId": "9bbf7041c011a1081347b891fa0dd652",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 715,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 813
+    },
+    {
+      "version": "before",
+      "trial": 5,
+      "mandateId": "M-102",
+      "traceId": "6dbd295858522dc19a8bcb5ed0472a25",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific proof that a Product Engineer role was paused, cancelled, or filled.",
+      "ms": 974
+    },
+    {
+      "version": "before",
+      "trial": 5,
+      "mandateId": "M-103",
+      "traceId": "720ab435ac5388929f543e82bedb9f1b",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listin",
+      "ms": 848
+    },
+    {
+      "version": "before",
+      "trial": 6,
+      "mandateId": "M-102",
+      "traceId": "4ba543eaf2cd5899d52990d8ab9e1718",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 614
+    },
+    {
+      "version": "before",
+      "trial": 6,
+      "mandateId": "M-103",
+      "traceId": "b56925b735ded641fa0422f589c6728c",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 721,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 851
+    },
+    {
+      "version": "before",
+      "trial": 7,
+      "mandateId": "M-102",
+      "traceId": "a79fac09d6ed7d075fbb165d600b0dd2",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 629
+    },
+    {
+      "version": "before",
+      "trial": 7,
+      "mandateId": "M-103",
+      "traceId": "4667eca6d40cf4d9267a0b684fe2117b",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15, and one candidate was interviewing as of 2026-10-11. However, a company-level hiring number of 9 open role",
+      "ms": 1060
+    },
+    {
+      "version": "before",
+      "trial": 8,
+      "mandateId": "M-102",
+      "traceId": "5fd99d66025319be4a55a82f8ebfe18d",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 340,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 578
+    },
+    {
+      "version": "before",
+      "trial": 8,
+      "mandateId": "M-103",
+      "traceId": "d74fd356e2c84d16bc55e1130201d0b9",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 716,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 843
+    },
+    {
+      "version": "before",
+      "trial": 9,
+      "mandateId": "M-102",
+      "traceId": "902701ec25e002f7842854637508c5a9",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 590
+    },
+    {
+      "version": "before",
+      "trial": 9,
+      "mandateId": "M-103",
+      "traceId": "1a191eb17a30091d4e9e845d2c331d2b",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that the agency last confirmed the role 'Staff Billing Platform Engineer (sample)' was interviewing one candidate on 2026-10-11. However, a complete search found no public listing matching this role at Vercel since 2026-0",
+      "ms": 811
+    },
+    {
+      "version": "before",
+      "trial": 10,
+      "mandateId": "M-102",
+      "traceId": "d39855e70c878677b26ea2da345e8315",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that there are unknown open roles company-wide for Linear, but it does not provide specific proof that a Product Engineer role was paused, cancelled, or filled.",
+      "ms": 544
+    },
+    {
+      "version": "before",
+      "trial": 10,
+      "mandateId": "M-103",
+      "traceId": "637dd1deebec8ce3c0f7fe9009638644",
+      "outcome": "review_stopped",
+      "modelCalls": 1,
+      "tokens": 0,
+      "unsupportedClaimInNote": false,
+      "rejection": "The model's summary claimed an outcome the evidence doesn't confirm. The evidence shows that the agency last saw the public listing for the 'Staff Billing Platform Engineer (sample)' role on 2026-09-15 and recorded one candidate interviewing on 2026-10-11. Crustdata's complete search found no matching listin",
+      "ms": 826
+    },
+    {
+      "version": "after",
+      "trial": 1,
+      "mandateId": "M-102",
+      "traceId": "6be86f1b7f008c928c0559314b670b70",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 615
+    },
+    {
+      "version": "after",
+      "trial": 1,
+      "mandateId": "M-103",
+      "traceId": "46eb8292089f99ca254aa6d693420b7d",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 705,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 818
+    },
+    {
+      "version": "after",
+      "trial": 2,
+      "mandateId": "M-102",
+      "traceId": "57168aaa95cc1e95b71250eb792fa6b7",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 677
+    },
+    {
+      "version": "after",
+      "trial": 2,
+      "mandateId": "M-103",
+      "traceId": "482a18eab7dbe35ec26238cf5f0fce55",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 732,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 816
+    },
+    {
+      "version": "after",
+      "trial": 3,
+      "mandateId": "M-102",
+      "traceId": "ac5f32fb5a4d298b904dc6cce5400a5e",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 340,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 578
+    },
+    {
+      "version": "after",
+      "trial": 3,
+      "mandateId": "M-103",
+      "traceId": "ded263564c0861cc8747b42b68afe347",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 711,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 969
+    },
+    {
+      "version": "after",
+      "trial": 4,
+      "mandateId": "M-102",
+      "traceId": "bac290a500d41d3eccce1aed55c8b133",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 589
+    },
+    {
+      "version": "after",
+      "trial": 4,
+      "mandateId": "M-103",
+      "traceId": "a2ebf6896325bd71163ab9af7ecd5417",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 721,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 824
+    },
+    {
+      "version": "after",
+      "trial": 5,
+      "mandateId": "M-102",
+      "traceId": "ba8088d043981a1d56ee7f5fe6ac51e7",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 572
+    },
+    {
+      "version": "after",
+      "trial": 5,
+      "mandateId": "M-103",
+      "traceId": "97f37046e99de59ead1533a6ce4bdb15",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 715,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 797
+    },
+    {
+      "version": "after",
+      "trial": 6,
+      "mandateId": "M-102",
+      "traceId": "f0dd639a995bba80b30fedb57a4e14a0",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 362,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 615
+    },
+    {
+      "version": "after",
+      "trial": 6,
+      "mandateId": "M-103",
+      "traceId": "3df4c6c021be4fef69e2cceba385b9d7",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 732,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 863
+    },
+    {
+      "version": "after",
+      "trial": 7,
+      "mandateId": "M-102",
+      "traceId": "7a8c7d92d14793c0c781a6d8219ff86e",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 372,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 644
+    },
+    {
+      "version": "after",
+      "trial": 7,
+      "mandateId": "M-103",
+      "traceId": "12f16ffbfe908ae8b5e308b3f5473d7c",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 728,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 845
+    },
+    {
+      "version": "after",
+      "trial": 8,
+      "mandateId": "M-102",
+      "traceId": "69bfd547e8ae7568ccab129ba6683704",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 363,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 595
+    },
+    {
+      "version": "after",
+      "trial": 8,
+      "mandateId": "M-103",
+      "traceId": "cf838cb37a292994b084060a2f03abcb",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 742,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 885
+    },
+    {
+      "version": "after",
+      "trial": 9,
+      "mandateId": "M-102",
+      "traceId": "b8aa199d749c85345f18092683fa4b50",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 373,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 677
+    },
+    {
+      "version": "after",
+      "trial": 9,
+      "mandateId": "M-103",
+      "traceId": "ff68ca15666eb945ae78cc6e3b28ede6",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 732,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 867
+    },
+    {
+      "version": "after",
+      "trial": 10,
+      "mandateId": "M-102",
+      "traceId": "fa0601ab364730f7fbc3b06ffbd6006c",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 357,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 584
+    },
+    {
+      "version": "after",
+      "trial": 10,
+      "mandateId": "M-103",
+      "traceId": "c307c8502c009e14de4ed8623f98bf9b",
+      "outcome": "accepted",
+      "modelCalls": 1,
+      "tokens": 732,
+      "unsupportedClaimInNote": false,
+      "rejection": null,
+      "ms": 815
+    }
+  ]
+}

@@ -311,3 +311,124 @@ describe("review engine", () => {
     expect(db.prepare("SELECT COUNT(*) AS n FROM review_run").get()).toEqual({ n: 0 });
   });
 });
+
+describe("decision cases (controlled replay of the 10 evaluation cases)", () => {
+  type Db = ReturnType<typeof getDb>;
+  let cfo: FakeCfo;
+  beforeEach(() => { cfo = new FakeCfo(); });
+  const caseOf = (db: Db, m: string) => (db.prepare("SELECT id FROM case_record WHERE mandate_id = ?").get(m) as { id: string }).id;
+  const latest = (db: Db, m: string) => {
+    const d = db.prepare("SELECT d.selected_outcome AS outcome, d.missing_facts AS missing FROM decision d JOIN case_record c ON c.id = d.case_id WHERE c.mandate_id = ? ORDER BY d.case_version DESC LIMIT 1").get(m) as { outcome: string; missing: string };
+    return { outcome: d.outcome, missing: JSON.parse(d.missing) as string[] };
+  };
+  const openTasks = (db: Db, m: string) => (db.prepare("SELECT COUNT(*) AS n FROM task t JOIN case_record c ON c.id = t.case_id WHERE c.mandate_id = ? AND t.status = 'open'").get(m) as { n: number }).n;
+  const receipts = (w: string) => cfo.tables.get(`S ${w}`)!["Expected Receipts"];
+  const reader = (outcome: "client_pause" | "still_active", pausedUntil: string | null = null): ReplyReader => async ({ body }) => ({ read: { outcome, paused_until: pausedUntil, quote: body.slice(0, 40) }, tokens: 5 });
+  const listingFor = (title: string): Ports["fetchListings"] => async () => ({ listings: [{ title, url: "https://example.com/jobs/2", location: null, dateAdded: "2026-10-01" }], totalCount: 1, complete: true, filters: {}, credits: 1 });
+
+  async function weekly(p: Ports = ports(cfo)) {
+    const { db, agencyId } = setup();
+    enqueueRun(db, agencyId);
+    await drain(db, p);
+    return { db, agencyId, p };
+  }
+
+  it("1. listing absent, offer accepted: keeps the fee assumption, no task", async () => {
+    const { db } = await weekly();
+    expect(latest(db, "M-101").outcome).toBe("offer_accepted");
+    expect(openTasks(db, "M-101")).toBe(0);
+    expect(receipts("Reviewed")).toBe(17000);
+  });
+
+  it("2. dated client pause confirmed: removes the receipt from the horizon", async () => {
+    const { db, p } = await weekly();
+    await recordClientReply(db, { caseId: caseOf(db, "M-102"), replyDate: "2026-10-11", source: "email", body: "Paused until February.", isSimulated: true }, reader("client_pause", "2027-02-01"));
+    await drain(db, p);
+    expect(latest(db, "M-102").outcome).toBe("client_pause");
+    expect(receipts("Reviewed")).toBe(12000);
+  });
+
+  it("3. listing absent, outcome unknown: opens a confirmation task and a downside", async () => {
+    const { db } = await weekly();
+    expect(latest(db, "M-103").outcome).toBe("unknown");
+    expect(latest(db, "M-103").missing.join(" ")).toContain("not found");
+    expect(openTasks(db, "M-103")).toBe(1);
+    expect(receipts("Downside")).toBe(8000);
+  });
+
+  it("4. role reposted under a new listing: links it and claims no pause", async () => {
+    const { db } = await weekly({ ...ports(cfo), fetchListings: listingFor("Staff Billing Platform Engineer (sample) - Remote") });
+    const ev = db.prepare("SELECT summary FROM evidence WHERE mandate_id = 'M-103' AND source_type = 'listing_check'").get() as { summary: string };
+    expect(ev.summary).toContain("still lists");
+    expect(latest(db, "M-103").outcome).not.toBe("client_pause");
+    expect(latest(db, "M-103").missing.join(" ")).not.toContain("not found");
+  });
+
+  it("5. company match is ambiguous: blocks the match and takes no financial action", async () => {
+    const p = ports(cfo);
+    const { db } = await weekly({ ...p, fetchCompany: async (d) => ({ ...(await p.fetchCompany(d)), candidates: [{ companyId: "1", name: "A", primaryDomain: "other.com", confidence: 0.6 }, { companyId: "2", name: "B", primaryDomain: "else.com", confidence: 0.5 }] }) });
+    expect(db.prepare("SELECT DISTINCT match_status FROM client").all()).toEqual([{ match_status: "ambiguous" }]);
+    const step = db.prepare("SELECT output FROM review_step WHERE step = 'check_listings'").get() as { output: string };
+    expect(JSON.parse(step.output)["M-103"]).toBe("blocked_by_match");
+    expect(receipts("Reviewed")).toBe(17000);
+  });
+
+  it("6. provider response incomplete: marks it unchecked and claims no disappearance", async () => {
+    const { db } = await weekly({ ...ports(cfo), fetchListings: async () => ({ listings: [], totalCount: null, complete: false, filters: {}, credits: 1 }) });
+    const missing = latest(db, "M-103").missing.join(" ");
+    expect(missing).toContain("didn't finish");
+    expect(missing).not.toContain("not found");
+    expect(openTasks(db, "M-103")).toBe(1);
+  });
+
+  it("7. no earlier listing snapshot: claims no removal", async () => {
+    const { db } = await weekly();
+    const step = db.prepare("SELECT output FROM review_step WHERE step = 'check_listings'").get() as { output: string };
+    expect(JSON.parse(step.output)["M-102"]).toBe("not_checked");
+    expect(latest(db, "M-102").missing.join(" ")).not.toContain("listing");
+  });
+
+  it("8. company-wide decline but the client confirms the role: role-specific evidence wins, both kept", async () => {
+    const p = ports(cfo);
+    const declining: Ports = { ...p, fetchCompany: async (d) => ({ ...(await p.fetchCompany(d)), timeseries: [{ date: "2026-07-01", openJobs: 50 }, { date: "2026-10-01", openJobs: 10 }] }) };
+    const { db } = await weekly(declining);
+    await recordClientReply(db, { caseId: caseOf(db, "M-102"), replyDate: "2026-10-11", source: "email", body: "Still hiring for this role.", isSimulated: true }, reader("still_active"));
+    await drain(db, declining);
+    expect(latest(db, "M-102").outcome).toBe("unreviewed");
+    expect(openTasks(db, "M-102")).toBe(0);
+    expect((db.prepare("SELECT COUNT(*) AS n FROM evidence WHERE source_type = 'company_snapshot' AND summary LIKE '%50 on 2026-07-01%'").get() as { n: number }).n).toBeGreaterThan(0);
+    expect(receipts("Reviewed")).toBe(17000);
+  });
+
+  it("9. a later reply contradicts the earlier decision: reassesses, keeps history, updates the scenario", async () => {
+    const { db, p } = await weekly();
+    const id = caseOf(db, "M-102");
+    await recordClientReply(db, { caseId: id, replyDate: "2026-10-11", source: "email", body: "Paused until February.", isSimulated: true }, reader("client_pause", "2027-02-01"));
+    await drain(db, p);
+    expect(receipts("Reviewed")).toBe(12000);
+    await recordClientReply(db, { caseId: id, replyDate: "2026-10-12", source: "email", body: "Budget came back, we're hiring again.", isSimulated: true }, reader("still_active"));
+    await drain(db, p);
+    expect(latest(db, "M-102").outcome).toBe("unreviewed");
+    expect(db.prepare("SELECT selected_outcome FROM decision WHERE case_id = ? ORDER BY case_version").all(id).map((r) => (r as { selected_outcome: string }).selected_outcome)).toEqual(["unknown", "client_pause", "unreviewed"]);
+    expect(receipts("Reviewed")).toBe(17000);
+  });
+
+  it("10. duplicate reply and concurrent rerun: one task outcome and one financial result", async () => {
+    const { db, agencyId, p } = await weekly();
+    const id = caseOf(db, "M-102");
+    const reply = { caseId: id, replyDate: "2026-10-11", source: "email", body: "Paused until February.", isSimulated: true };
+    await recordClientReply(db, reply, reader("client_pause", "2027-02-01"));
+    const again = await recordClientReply(db, reply, reader("client_pause", "2027-02-01"));
+    expect(again.duplicate).toBe(true);
+    expect(again.runId).toBeNull();
+    const writesBefore = cfo.writes;
+    const run = claimRun(db, "w1")!;
+    expect(claimRun(db, "w2")).toBeNull();
+    await processRun(db, run, "w1", p);
+    enqueueRun(db, agencyId, "reassess");
+    await drain(db, p);
+    expect(cfo.writes - writesBefore).toBe(1);
+    expect(receipts("Reviewed")).toBe(12000);
+    expect((db.prepare("SELECT COUNT(*) AS n FROM client_reply WHERE case_id = ?").get(id) as { n: number }).n).toBe(1);
+  });
+});
