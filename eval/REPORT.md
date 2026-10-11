@@ -40,7 +40,7 @@ How it was run:
 - **Where:** the deployed EC2 server (code from `main`) against live cfo.ai.
 - **Data:** a copy of the production database, with its own synthetic cfo.ai scenarios ("Headwind Reviewed/Downside (Recovery test copy)"). The hosted sample and cfo.ai Main were not touched.
 - **Trigger:** a simulated client reply on M-103 ("filled through another agency") queued a reassessment.
-- **Script:** `deploy/recovery-test.sh`. Full log: `eval/results/live-recovery-2026-10-11.log`.
+- **Script:** `deploy/recovery-test.sh`. It stops on any failed step, requires worker 1 to exit 75, and deletes the database copy when it exits. Full log: `eval/results/live-recovery-2026-10-11.log`.
 
 | Step | Expected | Observed |
 |------|----------|----------|
