@@ -59,4 +59,19 @@ describe("decideTreatment", () => {
     expect(r.outcome).toBe("unreviewed");
     expect(r.caveats.join(" ")).not.toContain("Reported remark");
   });
+  it("a never-seen listing gets an observation-only caveat on the unknown path", () => {
+    const still = decideTreatment({ stage: "interviewing", lastConfirmedAt: "2026-09-20", cashDate: "2026-10-11", listing: { status: "still_absent", checkedOn: "2026-10-11" }, reply: null });
+    expect(still.outcome).toBe("unknown");
+    expect(still.caveats).toContain("Crustdata on 2026-10-11 still finds no matching public listing for this role, which hasn't been seen listed at any check. A listing that has never been seen is an observation only; it doesn't show this role is paused, cancelled or filled.");
+    const first = decideTreatment({ stage: "interviewing", lastConfirmedAt: null, cashDate: "2026-10-11", listing: { status: "baseline_absent" }, reply: null });
+    expect(first.caveats).toContain("Crustdata's first check found no matching public listing for this role, and there is no earlier listing history. A listing that has never been seen is an observation only; it doesn't show this role is paused, cancelled or filled.");
+    expect(first.missing.join(" ")).not.toContain("listing");
+  });
+
+  it("a never-seen listing adds no caveat when a recent confirmation settles the role", () => {
+    const r = decideTreatment({ stage: "final_interview", lastConfirmedAt: "2026-10-09", cashDate: "2026-10-11", listing: { status: "still_absent" }, reply: null });
+    expect(r.outcome).toBe("unreviewed");
+    expect(r.caveats.join(" ")).not.toContain("never been seen");
+  });
 });
+

@@ -107,6 +107,9 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
   if (missing.length === 0) {
     return { outcome: "unreviewed", needsTask: false, considered, missing, caveats, observation: ["Recent client confirmation for this role.", ...caveats].join(" ") };
   }
+  const on = p.listing.checkedOn ? ` on ${p.listing.checkedOn}` : "";
+  if (p.listing.status === "baseline_absent") caveats.push(`Crustdata's first check${on} found no matching public listing for this role, and there is no earlier listing history. A listing that has never been seen is an observation only; it doesn't show this role is paused, cancelled or filled.`);
+  if (p.listing.status === "still_absent") caveats.push(`Crustdata${on} still finds no matching public listing for this role, which hasn't been seen listed at any check. A listing that has never been seen is an observation only; it doesn't show this role is paused, cancelled or filled.`);
   if (p.reply?.outcome === "unclear") caveats.push(`The client's reply${p.reply.replyDate ? ` on ${p.reply.replyDate}` : ""} doesn't say whether this role is still active, so it stays unconfirmed.`);
   for (const r of p.remarks ?? []) caveats.push(`Reported remark${r.date ? ` (${r.date})` : ""}, repeated as said and not a dated client confirmation of this role's status: ${r.text}`);
   return { outcome: "unknown", needsTask: true, considered, missing, caveats, observation: missing.join(" ") };
