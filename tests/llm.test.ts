@@ -49,6 +49,9 @@ describe("containsUnsupportedClaim", () => {
     "The role was possibly delayed; it was cancelled last week.",
     "Unconfirmed reports aside, the role is filled.",
     "The client could not confirm the date and the role is on hold.",
+    "The evidence shows the role was cancelled.",
+    "It is unclear whether the role was paused, but it was cancelled last week.",
+    "Not confirmed, the role was cancelled.",
   ])("rejects a separate assertion that a hedge elsewhere doesn't cover: %s", (text) => {
     expect(containsUnsupportedClaim(text, false)).toBe(true);
   });
@@ -58,6 +61,8 @@ describe("containsUnsupportedClaim", () => {
     "It is unclear whether the role is still open.",
     "The client may have filled the role elsewhere, so we should confirm.",
     "The role may be on hold or cancelled.",
+    "There is no evidence, so far, that the role was cancelled.",
+    "It is unclear whether the role was paused, cancelled or filled.",
   ])("passes a hedged sentence: %s", (text) => {
     expect(containsUnsupportedClaim(text, false)).toBe(false);
   });

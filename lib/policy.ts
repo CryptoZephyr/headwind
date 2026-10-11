@@ -95,7 +95,7 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
       : `Conflicting evidence: ${companyDecline(t)}, while the client confirmed this role on ${p.lastConfirmedAt}. The confirmation is about this role and is dated; the company count covers every role at the company and says nothing about this one, so the dated confirmation for this role is used rather than the company count. Unresolved: whether the company-wide decline will later reach this role, which the next confirmation should check.`);
   }
   if ((p.listing.status === "found" || p.listing.status === "baseline_found") && stale) {
-    caveats.push(`Crustdata ${p.listing.checkedOn ? `on ${p.listing.checkedOn} ` : ""}still lists a matching public role. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.`);
+    caveats.push(`Crustdata ${p.listing.checkedOn ? `on ${p.listing.checkedOn} ` : ""}${p.listing.status === "baseline_found" ? "currently lists a matching public role (first check, no earlier sighting)" : "still lists a matching public role"}. A public listing doesn't confirm the agency's mandate or its candidate's process is still on track.`);
   }
   if (missing.length === 0) {
     return { outcome: "unreviewed", needsTask: false, considered, missing, caveats, observation: ["Recent client confirmation for this role.", ...caveats].join(" ") };

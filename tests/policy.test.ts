@@ -18,6 +18,13 @@ describe("decideTreatment", () => {
     expect(r.caveats.join(" ")).toContain("doesn't confirm the agency's mandate");
   });
 
+  it("first listing sighting with stale confirmation says 'currently lists', not 'still lists'", () => {
+    const r = decideTreatment({ stage: "final_interview", lastConfirmedAt: "2026-08-31", cashDate: "2026-10-11", listing: { status: "baseline_found", checkedOn: "2026-10-11" }, reply: null });
+    const c = r.caveats.join(" ");
+    expect(c).toContain("currently lists a matching public role (first check, no earlier sighting)");
+    expect(c).not.toContain("still lists");
+  });
+
   it("fresh role confirmation against a company-wide decline: both sources and dates, why, and what's unresolved", () => {
     const r = decideTreatment({ stage: "final_interview", lastConfirmedAt: "2026-10-09", cashDate: "2026-10-11", listing: { status: "baseline_absent" }, reply: null, companyTrend: decline });
     expect(r.outcome).toBe("unreviewed");

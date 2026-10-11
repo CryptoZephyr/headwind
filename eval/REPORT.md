@@ -40,7 +40,7 @@ First-time roles and conflicting evidence (cases 7 and 8):
 - **Case 8, a company-wide decline against a dated client confirmation:** the decision note now spells out the conflict and why the confirmation wins: "Client confirmed on 2026-10-11 that this role is still active. Crustdata shows company-wide open roles fell from 50 on 2026-07-01 to 10 on 2026-10-01. That count covers the whole company and says nothing about this role, so the dated confirmation for this role is used and the fee assumption is kept." The case-8 test checks that wording, the dates and the counts.
 - Crustdata's job search only returns current listings with an added date, not a role's past listings, so a first check can't recover earlier history. That's why only a baseline is recorded.
 
-The full suite has **68 of 68 tests passing**: these 10 cases plus 58 tests for recovery, imports, sign-in, calculations and what the model sees.
+The full suite has **74 of 74 tests passing**: these 10 cases plus 64 tests for recovery, imports, sign-in, calculations and what the model sees.
 
 ## A2. What the model sees
 
@@ -214,6 +214,46 @@ Unsupported claims and caveat completeness are counted separately:
 - **Fallback notes (H1):** all 5 were readable and passed, but several drafts were rejected only because of the check's false alarm above.
 - **Repeated text:** when the model already paraphrases a caveat, the code still adds the exact sentence, so some notes say the same thing twice.
 
+## A6. After Devin Review's three findings (PR #3, second round)
+
+**What changed**
+- **"Evidence", "proof" and "observation" no longer count as hedge words.** Before, "The evidence shows the role was cancelled." passed the check. Only real negations and uncertainty words ("no evidence", "not", "unclear whether", "may") now soften a claim.
+- **A hedge now covers a list it governs.** "It is unclear whether the role was paused, cancelled or filled." used to fail on "cancelled or filled", because the check split at every comma; it now passes. A comma-separated part still counts as a separate claim when it has its own verb ("..., the role was cancelled") and isn't a "that/whether/if" continuation, and "but", "and", ";" and similar still start a new claim. "So far" no longer counts as "so", which caused the false alarm on "There is no evidence, so far, that the role was cancelled."
+- **First listing sighting:** when a role's first check finds a listing, the note now says Crustdata "currently lists a matching public role (first check, no earlier sighting)", not "still lists".
+
+**Hedge check probes** (the 9 above plus 3 new ones)
+
+| Sentence | Really unsupported? | Check flags it | Judge flags it |
+|---|---|---|---|
+| The 5 unsupported sentences from A5 | yes | 5 / 5 | 5 / 5 |
+| "The evidence shows the role was cancelled." (new) | yes | yes | yes |
+| "It is unclear whether the role was paused, but it was cancelled last week." (new) | yes | yes | yes |
+| The 3 cautious sentences from A5 | no | 0 / 3 | 0 / 3 |
+| "There is no evidence, so far, that the role was cancelled." | no | **no** (was a false alarm) | no |
+| "It is unclear whether the role was paused, cancelled or filled." (new) | no | no | no |
+
+- The check flags **7 of 7** unsupported sentences and **0 of 5** cautious ones. These are hand-written probes, not a measure of every possible sentence.
+
+**Independent regrade** (same judge, writer, rubric, cases and cohort labels as A5; artifact `eval/results/revised-note-grading-2026-10-11T11-41-49-770Z.json`; 65 of 67 rows have a neatlogs trace ID)
+
+| Group | Notes | Unsupported outcome claim (judge) | Company data used as role proof | Caveats complete (judge) | Required caveats present (code check) | Passed all |
+|---|---|---|---|---|---|---|
+| Redrawn originals | 20 | 2 / 20 | 1 / 20 | 18 / 20 | 20 / 20 | 17 / 20 |
+| H1-H3 (shaped the fix) | 11 | 0 / 11 | 2 / 11 | 9 / 11 | 11 / 11 | 7 / 11 |
+| F1-F5 (shaped the fix) | 21 | 0 / 21 | 0 / 21 | 16 / 21 | 21 / 21 | 16 / 21 |
+| **G1-G3 (fresh)** | **15** | **0 / 15** | **0 / 15** | **9 / 15** | **15 / 15** | **9 / 15** |
+| All | 67 | 2 / 67 | 3 / 67 | 52 / 67 | 67 / 67 | 49 / 67 |
+
+- Every note cited only real evidence IDs (67 of 67).
+- **Fallbacks dropped from 5 to 0:** with the false alarm gone, every H1 note was written by the model. The writer used 73 calls for 65 model notes.
+- **By case:** M-102 10 of 10, M-103 7 of 10, H1 1 of 5, H2 1 of 1, H3 5 of 5, F1 0 of 5, F2-F4 15 of 15, F5 1 of 1, G1 5 of 5, G2 4 of 5, G3 0 of 5.
+- **Don't read the totals as better or worse than A5.** Fewer unsupported claims (2 vs 4) but more company-data flags (3 vs 0), and 49 vs 52 passed overall. Most of the change is H1, where the fallback notes were replaced by model notes.
+
+**Manual inspection of the new flags**
+- **M-103, 2 unsupported plus 1 company-data flag:** in 3 of 10 notes the model wrote that the missing listing was "indicating it may no longer be active". The check lets this through because "may" hedges it, but the judge reads it as treating a missing listing as evidence about the role. I agree with the judge: the hedge doesn't change that the inference rests only on a missing listing. One of these notes also asks whether the role has been "paused, cancelled, or filled".
+- **H1, 2 company-data flags:** both point at the code-written conflict sentence ("Conflicting evidence: ... company-wide open roles fell from 30 to 14 ..., and the client's last confirmation ... Neither settles this role"). That sentence is the one A5 added to name both sources, and it says the company count doesn't settle the role. The judge objects to putting the two side by side at all. I read this as the judge being strict, not as the note using company data as proof. In A5 the same sentence wasn't flagged in the H1 fallback notes, so this judge is not consistent on it.
+- **Still missing (unchanged):** G3 (unclear client reply) 0 of 5, F1 (informal "probably slowing down") 0 of 5, and 2 of 5 H1 notes don't mention HR's "could not say".
+
 # Part B: Completed live reviews
 
 ## B1. One complete weekly review (live Crustdata, live cfo.ai)
@@ -376,8 +416,8 @@ Not validated: price, willingness to pay, adoption, Crustdata's paid credit pric
 # Part D: What is still not shown
 
 1. **Some caveats still depend on the model:** only confirmation age and conflicting sources are written by code. An unclear client reply (G3, 0 of 5) and informal agency remarks (F1, 0 of 5) are often left out. On the only truly fresh cases, 9 of 15 notes had every caveat the judge expected.
-2. **Questions aren't checked:** 4 of 67 notes asked the client about outcomes nothing pointed to. No summary made an unsupported claim on my reading.
-3. **The hedge check has one known false alarm** ("There is no evidence, so far, that ... cancelled"), which forces needless retries and fallbacks. It is a word-pattern check, so it shouldn't be read as a quality grade.
+2. **Questions aren't checked:** in A5, 4 of 67 notes asked the client about outcomes nothing pointed to; in A6 the judge raised this in 1 note. No summary made an unsupported claim on my reading.
+3. **The hedge check is a word pattern.** It now flags 7 of 7 unsupported probe sentences and 0 of 5 cautious ones, but those are hand-written probes. It accepts hedged inferences from a missing listing ("may no longer be active"), which the judge flagged in 3 of 67 notes, and it doesn't read questions.
 4. **Small, partly reused test set:** H1-H3 and F1-F5 both shaped the fix, so only the 3 G cases (15 notes) are untouched, and scores move by a note or two between runs.
 5. **The judge is one model:** nobody else has checked its grades, and some of its failures (F5 in round 1, part of G2) are about wording more than meaning.
 6. **The A3 notes weren't stored:** the A4 and A5 originals were redrawn from the same inputs, not the original 20.

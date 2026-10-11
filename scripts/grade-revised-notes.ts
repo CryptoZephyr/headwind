@@ -171,6 +171,9 @@ const probes = [
   { text: "It is unclear whether the role is still open.", unsupported: false },
   { text: "The client may have filled the role elsewhere, so we should confirm.", unsupported: false },
   { text: "There is no evidence, so far, that the role was cancelled.", unsupported: false },
+  { text: "The evidence shows the role was cancelled.", unsupported: true },
+  { text: "It is unclear whether the role was paused, but it was cancelled last week.", unsupported: true },
+  { text: "It is unclear whether the role was paused, cancelled or filled.", unsupported: false },
 ];
 const probeCase = { roleTitle: "Example role", stage: "interviewing", evidence: [ev("ev_x", "live", REVIEW_DATE, "Crustdata: company-wide open roles fell. Company-level only.")], expectedCaveats: [] };
 const validatorProbe = [];

@@ -9,11 +9,20 @@ export interface EvidenceForModel {
 }
 
 const OUTCOME_WORDS = /\b(pause[sd]?|pausing|freeze|frozen|cancel(?:led|ed|s)?|on hold|filled|lost|closed|withdrawn|shelved|scrapped|halted|no longer (?:open|active|hiring|going ahead|available)|not going ahead|stopped hiring)\b/i;
-const HEDGE_WORDS = /\b(not|no|never|unconfirmed|unverified|uncertain|unclear|unknown|whether|if|may|might|could|possibly|possible|perhaps|cannot|can't|doesn't|didn't|isn't|wasn't|without|observation|proof|evidence)\b/i;
-const CLAUSE_BREAK = /[,;:()\u2014]|\s-\s|\b(?:and|but|while|whereas|although|though|which|so|because|yet)\b/i;
+const HEDGE_WORDS = /\b(not|no|never|unconfirmed|unverified|uncertain|unclear|unknown|whether|if|may|might|could|possibly|possible|perhaps|cannot|can't|doesn't|didn't|isn't|wasn't|without)\b/i;
+const CLAUSE_BREAK = /[;:()\u2014]|\s-\s|\b(?:and|but|while|whereas|although|though|which|so(?! far)|because|yet)\b/i;
+const FINITE_VERB = /\b(is|was|were|are|has|have|had|been|be|shows?|showed|confirms?|confirmed|says?|said|does|did)\b/i;
+const CONTINUATION = /^\s*(that|whether|if)\b/i;
 
 function unsupportedInClause(clause: string): boolean {
-  return [...clause.matchAll(new RegExp(OUTCOME_WORDS.source, "gi"))].some((m) => !HEDGE_WORDS.test(clause.slice(0, m.index)));
+  let carried = false;
+  for (const seg of clause.split(",")) {
+    const inherits: boolean = carried && (CONTINUATION.test(seg) || !FINITE_VERB.test(seg));
+    const outcomes = [...seg.matchAll(new RegExp(OUTCOME_WORDS.source, "gi"))];
+    if (outcomes.some((m) => !inherits && !HEDGE_WORDS.test(seg.slice(0, m.index)))) return true;
+    carried = inherits || HEDGE_WORDS.test(seg);
+  }
+  return false;
 }
 
 export function containsUnsupportedClaim(text: string, agencySuppliedStates: boolean): boolean {
