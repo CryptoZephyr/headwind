@@ -45,6 +45,7 @@ export interface PolicyResult {
   considered: Outcome[];
   missing: string[];
   caveats: string[];
+  coveredSources?: string[];
 }
 
 function daysBetween(a: string, b: string): number {
@@ -114,5 +115,9 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
   if (p.listing.status === "still_absent") caveats.push(`Crustdata${on} still finds no matching public listing for this role${window}, and it hasn't been seen listed at any check. A listing that has never been seen is an observation only; it doesn't show this role is paused, cancelled or filled.`);
   if (p.reply?.outcome === "unclear") caveats.push(`The client's reply${p.reply.replyDate ? ` on ${p.reply.replyDate}` : ""} doesn't say whether this role is still active, so it stays unconfirmed.`);
   for (const r of p.remarks ?? []) caveats.push(`Reported remark${r.date ? ` (${r.date})` : ""}, repeated as said and not a dated client confirmation of this role's status: ${r.text}`);
-  return { outcome: "unknown", needsTask: true, considered, missing, caveats, observation: missing.join(" ") };
+  const coveredSources = ["client_confirmation"];
+  if (declined(t)) coveredSources.push("company_snapshot");
+  if (["not_found", "found", "baseline_found", "baseline_absent", "still_absent"].includes(p.listing.status)) coveredSources.push("listing_check");
+  if (p.remarks?.length) coveredSources.push("agency_update");
+  return { outcome: "unknown", needsTask: true, considered, missing, caveats, coveredSources, observation: missing.join(" ") };
 }

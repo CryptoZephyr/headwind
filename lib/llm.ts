@@ -110,6 +110,7 @@ export async function draftCaseNote(input: {
   stage: string;
   missing: string[];
   requiredFacts?: string[];
+  coveredEvidenceIds?: string[];
   evidence: EvidenceForModel[];
 }): Promise<{ note: CaseNote; tokens: number; calls: number; rejected?: RejectedDraft[] }> {
   const system = [
@@ -117,11 +118,14 @@ export async function draftCaseNote(input: {
     "Write a short neutral summary of what the evidence shows and one question the account manager should ask the client.",
     "Company-level hiring numbers and a missing public listing are observations only. They never prove a specific role was paused, cancelled or filled, so don't draw conclusions about the role from them.",
     "Make the question a neutral one about the role's current status, without listing possible outcomes.",
-    "Required facts are computed from the records and are appended to your summary word for word; don't repeat or contradict them.",
+    "Code adds the facts about client confirmation age, listing checks, company-wide hiring and reported remarks after your summary, so don't write about them. Describe only the evidence you are given.",
+    "Open questions are for your question only; don't restate them in the summary.",
     "Only cite evidence IDs from the list.",
     'Shape: {"summary": string, "question": string, "evidence_ids": string[]}',
   ].join("\n");
-  const allowed = new Set(input.evidence.map((e) => e.id));
+  const covered = new Set(input.coveredEvidenceIds ?? []);
+  const shown = input.evidence.filter((e) => !covered.has(e.id));
+  const allowed = new Set(shown.map((e) => e.id));
   const agencySuppliedStates = input.evidence.some((e) => e.provenance === "agency_supplied" && OUTCOME_WORDS.test(e.summary));
   const agencyText = input.evidence.filter((e) => e.provenance === "agency_supplied").map((e) => e.summary).join(" ");
 
@@ -134,7 +138,7 @@ export async function draftCaseNote(input: {
   }
 
   const requiredFacts = input.requiredFacts ?? [];
-  const baseUser = JSON.stringify({ role: input.roleTitle, client: input.clientName, stage: input.stage, open_questions: input.missing, required_facts: requiredFacts, evidence: input.evidence });
+  const baseUser = JSON.stringify({ role: input.roleTitle, client: input.clientName, stage: input.stage, open_questions: input.missing, evidence: shown });
   let tokens = 0;
   let rejection: ModelOutputError | null = null;
   const rejected: RejectedDraft[] = [];
@@ -144,7 +148,7 @@ export async function draftCaseNote(input: {
       const r: { value: CaseNote; tokens: number } = await askJson(system, user, CaseNoteSchema);
       tokens += r.tokens;
       const problem = validate(r.value);
-      if (!problem) return { note: withRequiredFacts(r.value, requiredFacts), tokens, calls, rejected };
+      if (!problem) return { note: withRequiredFacts({ ...r.value, evidence_ids: [...new Set([...r.value.evidence_ids, ...covered])] }, requiredFacts), tokens, calls, rejected };
       rejection = new ModelOutputError(problem, JSON.stringify(r.value));
     } catch (e) {
       if (!(e instanceof ModelOutputError)) throw e;

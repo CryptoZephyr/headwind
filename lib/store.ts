@@ -153,7 +153,18 @@ export function clients(db: Database.Database, agencyId: string): ClientRecord[]
 }
 
 export function evidenceFor(db: Database.Database, agencyId: string, mandateId: string, clientId: string): EvidenceRecord[] {
-  return db.prepare("SELECT * FROM evidence WHERE agency_id = ? AND retired_at IS NULL AND (mandate_id = ? OR (mandate_id IS NULL AND client_id = ?)) ORDER BY retrieved_at, id").all(agencyId, mandateId, clientId) as EvidenceRecord[];
+  return withoutRepeats(db.prepare("SELECT * FROM evidence WHERE agency_id = ? AND retired_at IS NULL AND (mandate_id = ? OR (mandate_id IS NULL AND client_id = ?)) ORDER BY retrieved_at, id").all(agencyId, mandateId, clientId) as EvidenceRecord[]);
+}
+
+export function withoutRepeats(evidence: EvidenceRecord[]): EvidenceRecord[] {
+  const latest = new Map<string, EvidenceRecord>();
+  for (const e of evidence) {
+    const key = e.source_type === "company_snapshot" ? `company|${e.client_id}` : e.source_type === "listing_check" ? `listing|${e.mandate_id}|${e.summary}` : e.id;
+    const seen = latest.get(key);
+    if (!seen || e.retrieved_at > seen.retrieved_at) latest.set(key, e);
+  }
+  const keep = new Set(latest.values());
+  return evidence.filter((e) => keep.has(e));
 }
 
 export function inputVersion(db: Database.Database, agencyId: string): string {

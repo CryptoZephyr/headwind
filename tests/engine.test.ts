@@ -426,17 +426,17 @@ describe("decision cases (controlled replay of the 10 evaluation cases)", () => 
 
   it("8. company-wide decline but the client confirms the role: role-specific evidence wins, both kept", async () => {
     const p = ports(cfo);
-    const declining: Ports = { ...p, fetchCompany: async (d) => ({ ...(await p.fetchCompany(d)), timeseries: [{ date: "2026-07-01", openJobs: 50 }, { date: "2026-10-01", openJobs: 10 }] }) };
+    const declining: Ports = { ...p, fetchCompany: async (d) => ({ ...(await p.fetchCompany(d)), timeseries: [{ date: "2026-06-01", openJobs: 50 }, { date: "2026-09-01", openJobs: 10 }, { date: `${new Date().toISOString().slice(0, 7)}-01`, openJobs: 1 }] }) };
     const { db } = await weekly(declining);
     await recordClientReply(db, { caseId: caseOf(db, "M-102"), replyDate: "2026-10-11", source: "email", body: "Still hiring for this role.", isSimulated: true }, reader("still_active"));
     await drain(db, declining);
     expect(latest(db, "M-102").outcome).toBe("unreviewed");
     expect(openTasks(db, "M-102")).toBe(0);
-    expect((db.prepare("SELECT COUNT(*) AS n FROM evidence WHERE source_type = 'company_snapshot' AND summary LIKE '%50 on 2026-07-01%'").get() as { n: number }).n).toBeGreaterThan(0);
+    expect((db.prepare("SELECT COUNT(*) AS n FROM evidence WHERE source_type = 'company_snapshot' AND summary LIKE '%50 on 2026-06-01 vs 10 on 2026-09-01.%'").get() as { n: number }).n).toBeGreaterThan(0);
     expect(receipts("Reviewed")).toBe(17000);
     const support = (db.prepare("SELECT support FROM decision WHERE case_id = ? ORDER BY case_version DESC LIMIT 1").get(caseOf(db, "M-102")) as { support: string }).support;
     expect(support).toContain("on 2026-10-11");
-    expect(support).toContain("fell from 50 on 2026-07-01 to 10 on 2026-10-01");
+    expect(support).toContain("fell from 50 on 2026-06-01 to 10 on 2026-09-01");
     expect(support).toContain("dated confirmation for this role is used");
   });
 
@@ -470,6 +470,42 @@ describe("decision cases (controlled replay of the 10 evaluation cases)", () => 
     expect(cfo.writes - writesBefore).toBe(1);
     expect(receipts("Reviewed")).toBe(12000);
     expect((db.prepare("SELECT COUNT(*) AS n FROM client_reply WHERE case_id = ?").get(id) as { n: number }).n).toBe(1);
+  });
+});
+
+describe("repeated checks and code-written facts", () => {
+  it("shows one company snapshot and one copy of an unchanged listing check after repeated reviews", async () => {
+    const cfo = new FakeCfo();
+    const p = ports(cfo);
+    const { db, agencyId } = setup();
+    enqueueRun(db, agencyId);
+    await drain(db, p);
+    enqueueRun(db, agencyId);
+    await drain(db, p);
+    const c = overview(db)!.cases.find((x) => x.mandateId === "M-103")!;
+    const kinds = c.evidence.map((e) => e.source_type);
+    expect(kinds.filter((k) => k === "company_snapshot")).toHaveLength(1);
+    const checks = c.evidence.filter((e) => e.source_type === "listing_check").map((e) => e.summary);
+    expect(new Set(checks).size).toBe(checks.length);
+    expect((db.prepare("SELECT COUNT(*) AS n FROM evidence WHERE source_type = 'company_snapshot'").get() as { n: number }).n).toBeGreaterThan(3);
+  });
+
+  it("marks the evidence the code-written facts already cover, so the model isn't asked to restate it", async () => {
+    const cfo = new FakeCfo();
+    const inputs: Parameters<Ports["draftCaseNote"]>[0][] = [];
+    const p = ports(cfo);
+    const spy: Ports = { ...p, draftCaseNote: async (i) => { inputs.push(i); return p.draftCaseNote(i); } };
+    const { db, agencyId } = setup();
+    enqueueRun(db, agencyId);
+    await drain(db, spy);
+    expect(inputs.length).toBeGreaterThan(0);
+    for (const i of inputs) {
+      const covered = new Set(i.coveredEvidenceIds);
+      const types = (id: string) => (db.prepare("SELECT source_type FROM evidence WHERE id = ?").get(id) as { source_type: string }).source_type;
+      expect(i.evidence.some((e) => covered.has(e.id) && types(e.id) === "client_confirmation")).toBe(true);
+      expect(i.evidence.some((e) => !covered.has(e.id))).toBe(true);
+      expect(i.evidence.filter((e) => !covered.has(e.id)).every((e) => types(e.id) !== "client_confirmation")).toBe(true);
+    }
   });
 });
 
