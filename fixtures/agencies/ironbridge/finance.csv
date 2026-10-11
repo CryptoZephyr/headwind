@@ -1,0 +1,10 @@
+key,value
+agency_name,Ironbridge Engineering Recruitment (sample agency)
+currency,USD
+cash_date,2026-10-11
+horizon_start,2026-11-01
+horizon_end,2026-12-31
+opening_cash,40000
+collectible_receivables,0
+recruiter_pay,30000
+other_expenses,8000

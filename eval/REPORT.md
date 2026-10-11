@@ -584,6 +584,37 @@ Not verified:
 - Crustdata credits and model calls are inside Headwind's price; the agency doesn't pay them separately.
 - An agency that already has cfo.ai for other reasons would pay only the Headwind part, or more if it's on Growth.
 
+## B3. Crustdata coverage on 4 more sample agencies (40 real companies)
+
+The question: does Crustdata know the kind of companies agencies recruit for, beyond Retool, Linear and Vercel?
+
+- **Made up:** the 4 agencies, their 96 roles, fees, stages and candidates (`fixtures/agencies/`, all labelled sample). The role titles are common titles we picked, not roles we knew each company had open.
+- **Real:** the 40 client companies and every Crustdata answer. Each company was looked up with `/company/enrich` and matched with the same rule the live review uses (one result with the exact domain and confidence of at least 0.9). For matched companies, each role was searched with `/job/search` among listings added since 2026-09-11.
+- **Script and raw results:** `scripts/coverage-test.ts`, `eval/results/coverage-2026-10-11T22-42-39-140Z.json`.
+
+| Sample agency | Companies matched | Matched with hiring history (6+ months) | Roles with a matching listing found |
+|---|---|---|---|
+| Ledgerline Search (fintech engineering) | 9 of 10 | 6 of 10 | 4 of 22 |
+| Meridian Health Talent (healthcare, life sciences) | 8 of 10 | 7 of 10 | 4 of 19 |
+| Ironbridge Engineering Recruitment (manufacturing) | 9 of 10 | 6 of 10 | 4 of 22 |
+| Harbour & Vale (UK sales and marketing) | 9 of 10 | 4 of 10 | 0 of 22 |
+| **Total** | **35 of 40** | **23 of 40** | **12 of 85** |
+
+The original sample agency (3 well-known US tech clients) is kept separate: all 3 matched, and none of its 3 sample roles had a listing in the last live run.
+
+**What it shows**
+1. **Matching mostly works, and fails safely.** 35 of 40 matched. The 5 that didn't were blocked, not guessed:
+   - `chime.com` and `recursion.com`: two companies share the domain (Chime and Chime Workplace; Recursion and Exscientia).
+   - `ginkgobioworks.com` and `divergent3d.com`: Crustdata files the company under another domain (`ginkgo.bio`, `divergent.us`).
+   - `onfido.com`: only unrelated look-alikes came back (Qonfido, Konfido).
+   An agency owner would need to confirm these by hand; the importer has no way to pick the right company yet.
+2. **Hiring history is the weak part, and worst for UK firms.** 12 of the 35 matched companies had no hiring data at all. That includes 5 of 9 matched UK clients (Tide, Multiverse, Beamery, Peak, Bloom & Wild). For those, Headwind can only rely on the agency's own records and client confirmations.
+3. **Listing search rarely finds the role.** 12 of 85 searches found a listing, and every search that returned anything matched. Because our role titles were guesses, a miss here doesn't mean the company stopped hiring; it shows how thin role-level evidence will be for most mandates.
+
+**What it doesn't show:** forecast accuracy, or how real agency clients (often smaller and private) compare. It's one day's snapshot.
+
+**Credits:** 123.6 in total, more than the 80 planned. The first attempt hit Crustdata's rate limit after 13 lookups and didn't save its results (about 32 credits lost); the script now paces calls and keeps a local cache. The full run then used 91.2 (90 for lookups, 1.2 for listing searches). Balance went from 167.7 to 44.08, which still covers the two remaining Monday reviews (about 6 each) before the credits expire on Oct 24.
+
 ## C2. Headwind's own business plan (hypothesis)
 
 The plan is in a separate synthetic scenario, "Headwind business plan (hypothesis)", built by `scripts/cfo-business-plan.ts`:

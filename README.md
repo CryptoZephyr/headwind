@@ -133,6 +133,7 @@ All of this is on sample agency data with simulated client replies. The live run
 | Crash in the middle of a run | The worker resumed from the saved step: 0 duplicate cfo.ai writes, 0 duplicate decisions | [Report B2](eval/REPORT.md) |
 | Fixing a real failure | Before the fix, 9 of 20 reviews stopped on a rejected note (case-note acceptance 55% → 100%, 20 trials per version on two cases) | [Report A3](eval/REPORT.md) |
 | Notes graded by a separate model | 97 of 97 case notes passed, with 0 claiming an outcome the evidence doesn't support (controlled test) | [Report A11](eval/REPORT.md) |
+| Does Crustdata know real agency clients? | 4 more sample agencies with 40 real client companies: 35 matched and none matched wrongly (the other 5 were blocked); 23 matched with 6+ months of hiring history (UK firms only 4 of 10); 12 of 85 role searches found a listing | [Report B3](eval/REPORT.md) |
 | AI never sees the answers | Test confirms that fees, probabilities, expected totals and outcome labels are never in the model's input | [Report A2](eval/REPORT.md) |
 | Code checks | 99 tests, lint, typecheck and build pass | `npm test` |
 
@@ -159,7 +160,7 @@ scripts/     live review, cfo.ai setup, evaluation and grading scripts
 tests/       Vitest tests (rules, engine, importer, checker, forecast maths)
 eval/        evaluation report and saved results
 deploy/      systemd services, weekly timer, Caddy, install and recovery-test scripts
-fixtures/    sample CSV files
+fixtures/    sample CSV files (sample/ is the live sample agency; agencies/ holds the 4 coverage-test agencies)
 ```
 
 ## Run locally
@@ -186,6 +187,7 @@ npm run worker                 # runs queued reviews (restart it after code chan
 ## Limitations
 
 - **Only sample data:** one made-up agency, with simulated client replies. No real agency has used it, and forecast accuracy over time isn't proven.
+- **Thin public data for smaller firms:** in the 40-company test, about 4 in 10 clients had no usable hiring history, and most role searches found no listing. For those clients Headwind relies on the agency's own records and client confirmations.
 - **Clues, not answers:** Crustdata has no past listing history for a role, so the first check only sets a starting point. Missing listings and company-wide numbers stay clues.
 - **The AI can still overreach:** in one test run, the AI read "Let's pick this up on our call next week" as "resuming" the role. The checker uses a fixed list of outcome words and missed it.
 - **Grading:** notes are graded by one model, Claude Sonnet 4.6. No person has checked its grades.
@@ -195,6 +197,8 @@ npm run worker                 # runs queued reviews (restart it after code chan
 ## Next steps
 
 - Run it on a real agency's anonymised records for a few weeks and compare the Downside forecast with the fees that actually arrived.
+- Let the owner confirm a blocked company match by hand (4 of the 5 blocked companies in the coverage test could be recovered this way).
+- Show plainly when Crustdata has no hiring data for a client, so the owner knows why a role has less evidence.
 - Add a code-written warning for rising company hiring, matching the one for falling hiring.
 - Support more than one agency per server, with a separate sign-in for each.
 
