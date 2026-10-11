@@ -74,7 +74,12 @@ async function post(payload: object, timeoutMs: number): Promise<{ status: numbe
 
 async function initialise(): Promise<void> {
   sessionId = null;
-  const r = await post({ jsonrpc: "2.0", id: rpcId++, method: "initialize", params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "headwind", version: "0.1" } } }, 30_000);
+  const init = { jsonrpc: "2.0", method: "initialize", params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "headwind", version: "0.1" } } };
+  let r = await post({ ...init, id: rpcId++ }, 30_000);
+  if (r.status === 401 || r.status === 403) {
+    await refreshToken();
+    r = await post({ ...init, id: rpcId++ }, 30_000);
+  }
   if (r.status === 401 || r.status === 403) throw new CfoError("cfo.ai rejected the sign-in", "auth");
   sessionId = r.session;
   await post({ jsonrpc: "2.0", method: "notifications/initialized" }, 30_000);

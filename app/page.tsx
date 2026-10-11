@@ -161,7 +161,7 @@ export default function Home() {
                 <summary>Client replies ({c.replies.length})</summary>
                 <ul>
                   {c.replies.map((r) => (
-                    <li key={r.id}>{r.date} {r.simulated && "(simulated) "}{r.source}: “{r.body}”</li>
+                    <li key={r.id}>{r.date} {r.simulated && "(simulated) "}{r.source}: “{r.body}”{r.reading && <> Read as: {r.reading}.</>}</li>
                   ))}
                 </ul>
               </details>

@@ -2,6 +2,7 @@ import type Database from "better-sqlite3";
 import type { ScenarioResult } from "./scenarios";
 import type { RunRow } from "./review";
 import type { AgencyRow, CfoBindings, EvidenceRecord } from "./store";
+import { OUTCOME_LABEL } from "./format";
 
 export interface CaseView {
   id: string;
@@ -55,7 +56,7 @@ export function overview(db: Database.Database): Overview | null {
       })),
       openTask: task ? { id: task.id!, question: task.question!, assignee: task.assignee, reason: task.priority_reason!, due: task.due_date } : null,
       replies: (db.prepare("SELECT * FROM client_reply WHERE case_id = ? ORDER BY reply_date DESC").all(id) as Record<string, string | number | null>[]).map((x) => ({
-        id: x.id as string, date: x.reply_date as string, source: x.source as string, body: x.body as string, simulated: x.is_simulated === 1, reading: x.interpretation as string | null,
+        id: x.id as string, date: x.reply_date as string, source: x.source as string, body: x.body as string, simulated: x.is_simulated === 1, reading: readReply(x.interpretation as string | null),
       })),
       evidence: db.prepare("SELECT * FROM evidence WHERE agency_id = ? AND (mandate_id = ? OR (mandate_id IS NULL AND client_id = ?)) ORDER BY retrieved_at DESC").all(agency.id, r.mandate_id, r.client_id) as EvidenceRecord[],
     };
@@ -68,4 +69,11 @@ export function overview(db: Database.Database): Overview | null {
     cases,
     forecast: fv ? { runId: fv.run_id!, createdAt: fv.created_at!, intended: JSON.parse(fv.intended!), verification: fv.verification ?? "pending", readback: fv.readback ? JSON.parse(fv.readback) : null } : null,
   };
+}
+
+function readReply(raw: string | null): string | null {
+  if (!raw) return null;
+  const r = JSON.parse(raw) as { outcome: string; paused_until?: string | null };
+  const label = OUTCOME_LABEL[r.outcome] ?? r.outcome;
+  return r.paused_until ? `${label} until ${r.paused_until}` : label;
 }
