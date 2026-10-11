@@ -1,0 +1,4 @@
+mandate_id,client_domain,role_title,location,agreed_fee,stage,placement_probability,fee_trigger,expected_trigger_date,payment_terms_days,candidate_record,listing_url,listing_seen_date
+M-101,retool.com,Senior Software Engineer (sample),San Francisco,10000,offer_accepted,80%,start_date,2026-10-20,30,Offer accepted 2026-10-08; signed offer letter on file (sample),,
+M-102,linear.app,Product Engineer (sample),Remote,10000,final_interview,50%,start_date,2026-10-20,30,Two candidates at final interview (sample),,
+M-103,vercel.com,Staff Billing Platform Engineer (sample),Remote,10000,interviewing,40%,start_date,2026-10-20,30,One candidate interviewing (sample),https://vercel.com/careers (sample),2026-09-15
