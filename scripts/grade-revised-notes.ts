@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import { containsUnsupportedClaim, draftCaseNote, evidenceFallbackNote, ModelOutputError, NOTE_ATTEMPTS, withRequiredFacts, type CaseNote, type EvidenceForModel, type RejectedDraft } from "../lib/llm";
-import { decideTreatment, type PolicyInput, type PolicyResult } from "../lib/policy";
+import { coveredEvidenceIds, decideTreatment, type PolicyInput, type PolicyResult } from "../lib/policy";
 import { modelClient, modelName, startTelemetry, stopTelemetry, workflow } from "../lib/telemetry";
 
 type Cohort = "regenerated_original_v3" | "held_out_informed_fix" | "fresh_round1_informed" | "fresh_round2" | "fresh_round3" | "fresh_round4";
@@ -18,6 +18,12 @@ const ev = (id: string, provenance: string, sourceDate: string, summary: string,
   if (sourceType === "agency_update") remarkIds.add(id);
   return { id, provenance, sourceDate, summary };
 };
+const sourceType = (e: EvidenceForModel): string =>
+  remarkIds.has(e.id) ? "agency_update"
+    : /^Client record:/.test(e.summary) ? "client_confirmation"
+      : /^Crustdata: .*company-wide/.test(e.summary) ? "company_snapshot"
+        : /^(Baseline: )?Crustdata('s)? (complete search|still lists|currently lists|lists|listing search)/.test(e.summary) ? "listing_check"
+          : "other";
 const trend = (fromJobs: number, toJobs: number) => ({ fromDate: "2026-07-01", fromJobs, toDate: "2026-10-01", toJobs });
 const replay = (JSON.parse(fs.readFileSync("eval/results/case-notes-2026-10-11T09-44-13-807Z.json", "utf8")) as { cases: { mandateId: string; input: { evidence: EvidenceForModel[] } }[] }).cases;
 const replayEvidence = (id: string) => replay.find((c) => c.mandateId === id)!.input.evidence;
@@ -177,25 +183,29 @@ async function judge(c: Pick<Case, "roleTitle" | "stage" | "evidence" | "expecte
   throw new Error(`Judge gave no valid grade: ${last.slice(0, 400)}`);
 }
 
-interface Row { caseId: string; cohort: Cohort; kind: string; trial: number; source: "model" | "model_fallback" | "deterministic"; writerCalls: number; rejectedDrafts: RejectedDraft[]; traceId: string | null; policy: PolicyResult; note: CaseNote | { summary: string; question: null; evidence_ids: string[] }; requiredFactsPresent: boolean; checkerFlagsSummary: boolean; idsValid: boolean; grade: Grade }
+interface Row { caseId: string; cohort: Cohort; kind: string; trial: number; source: "model" | "model_fallback" | "code_only" | "deterministic"; writerCalls: number; rejectedDrafts: RejectedDraft[]; traceId: string | null; policy: PolicyResult; note: CaseNote | { summary: string; question: null; evidence_ids: string[] }; requiredFactsPresent: boolean; checkerFlagsSummary: boolean; idsValid: boolean; grade: Grade }
 
 await startTelemetry("headwind.eval.revised_notes");
 const rows: Row[] = [];
 for (const c of cases) {
   const policy = decideTreatment({ ...c.policy, stage: c.stage, cashDate: REVIEW_DATE });
+  const covered = coveredEvidenceIds(c.evidence.map((e) => ({ id: e.id, sourceType: sourceType(e) })), policy.coveredSources);
   const n = !policy.needsTask ? 1 : c.cohort === "regenerated_original_v3" ? TRIALS : OTHER_TRIALS;
   for (let trial = 1; trial <= n; trial++) {
     let row: Omit<Row, "grade" | "requiredFactsPresent" | "checkerFlagsSummary" | "idsValid">;
     if (!policy.needsTask) {
       row = { caseId: c.id, cohort: c.cohort, kind: c.kind, trial, source: "deterministic", writerCalls: 0, rejectedDrafts: [], traceId: null, policy, note: { summary: policy.observation, question: null, evidence_ids: c.evidence.map((e) => e.id) } };
+    } else if (covered.length === c.evidence.length) {
+      const note = evidenceFallbackNote({ observation: (policy.openQuestions ?? [policy.observation]).join(" "), caveats: policy.caveats, evidence: c.evidence, question: `Is the ${c.roleTitle} role at ${c.clientName} still open?` });
+      row = { caseId: c.id, cohort: c.cohort, kind: c.kind, trial, source: "code_only", writerCalls: 0, rejectedDrafts: [], traceId: null, policy, note };
     } else {
       row = await workflow("eval.case_note", async (traceId) => {
         try {
-          const r = await draftCaseNote({ roleTitle: c.roleTitle, clientName: c.clientName, stage: c.stage, missing: policy.missing, requiredFacts: policy.caveats, evidence: c.evidence });
+          const r = await draftCaseNote({ roleTitle: c.roleTitle, clientName: c.clientName, stage: c.stage, missing: policy.openQuestions ?? policy.missing, requiredFacts: policy.caveats, coveredEvidenceIds: covered, evidence: c.evidence });
           return { caseId: c.id, cohort: c.cohort, kind: c.kind, trial, source: "model" as const, writerCalls: r.calls, rejectedDrafts: r.rejected ?? [], traceId, policy, note: withRequiredFacts(r.note, policy.caveats) };
         } catch (e) {
           if (!(e instanceof ModelOutputError)) throw e;
-          const note = evidenceFallbackNote({ observation: policy.observation, caveats: policy.caveats, evidence: c.evidence, question: `Is the ${c.roleTitle} role at ${c.clientName} still open?` });
+          const note = evidenceFallbackNote({ observation: (policy.openQuestions ?? [policy.observation]).join(" "), caveats: policy.caveats, evidence: c.evidence, question: `Is the ${c.roleTitle} role at ${c.clientName} still open?` });
           return { caseId: c.id, cohort: c.cohort, kind: c.kind, trial, source: "model_fallback" as const, writerCalls: NOTE_ATTEMPTS, rejectedDrafts: e.rejected, traceId, policy, note };
         }
       });
@@ -234,6 +244,7 @@ const tally = (rs: Row[]) => ({
   notes: rs.length,
   modelNotes: rs.filter((r) => r.source === "model").length,
   fallbackNotes: rs.filter((r) => r.source === "model_fallback").length,
+  codeOnlyNotes: rs.filter((r) => r.source === "code_only").length,
   deterministicNotes: rs.filter((r) => r.source === "deterministic").length,
   unsupportedClaims: rs.filter((r) => r.grade.unsupported_outcome_claim).length,
   companyAsRoleProof: rs.filter((r) => r.grade.company_data_used_as_role_proof).length,

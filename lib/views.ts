@@ -3,6 +3,7 @@ import type { ScenarioResult } from "./scenarios";
 import type { RunRow } from "./review";
 import type { AgencyRow, CfoBindings, EvidenceRecord } from "./store";
 import { OUTCOME_LABEL } from "./format";
+import { withoutRepeats } from "./store";
 
 export interface CaseView {
   id: string;
@@ -60,7 +61,7 @@ export function overview(db: Database.Database): Overview | null {
       replies: (db.prepare("SELECT * FROM client_reply WHERE case_id = ? ORDER BY reply_date DESC").all(id) as Record<string, string | number | null>[]).map((x) => ({
         id: x.id as string, date: x.reply_date as string, source: x.source as string, body: x.body as string, simulated: x.is_simulated === 1, reading: readReply(x.interpretation as string | null),
       })),
-      evidence,
+      evidence: withoutRepeats(evidence),
       listingHistory: listingHistory(evidence),
     };
   });

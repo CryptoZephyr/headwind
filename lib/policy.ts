@@ -21,6 +21,7 @@ export interface CompanyTrend {
   fromJobs: number;
   toDate: string;
   toJobs: number;
+  openingsCount?: number | null;
 }
 
 export interface PolicyInput {
@@ -45,6 +46,8 @@ export interface PolicyResult {
   considered: Outcome[];
   missing: string[];
   caveats: string[];
+  coveredSources?: string[];
+  openQuestions?: string[];
 }
 
 function daysBetween(a: string, b: string): number {
@@ -65,7 +68,14 @@ function declined(t: CompanyTrend | null | undefined): t is CompanyTrend {
 }
 
 function companyDecline(t: CompanyTrend): string {
-  return `Crustdata shows company-wide open roles fell from ${t.fromJobs} on ${t.fromDate} to ${t.toJobs} on ${t.toDate}`;
+  return `Crustdata shows company-wide open roles fell from ${t.fromJobs} on ${t.fromDate} to ${t.toJobs} on ${t.toDate}${t.openingsCount != null ? ` (${t.openingsCount} openings reported when retrieved)` : ""}`;
+}
+
+export function coveredEvidenceIds(evidence: { id: string; sourceType: string }[], sources: string[] = []): string[] {
+  return sources.flatMap((s) => {
+    const ofType = evidence.filter((e) => e.sourceType === s).map((e) => e.id);
+    return s === "agency_update" ? ofType : ofType.slice(-1);
+  });
 }
 
 export function decideTreatment(p: PolicyInput): PolicyResult {
@@ -93,7 +103,8 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
   if (age === null) missing.push("No record of when the client last confirmed this role.");
   else if (stale) missing.push(`Client last confirmed this role ${age} days ago.`);
   if (p.listing.status === "not_found") missing.push("The role's public listing was not found in the latest complete check.");
-  if (p.listing.status === "incomplete") missing.push("The latest listing check didn't finish, so it's unknown whether the role is still listed.");
+  const openQuestions = p.listing.status === "incomplete" ? ["The latest listing check didn't finish, so it's unknown whether the role is still listed."] : [];
+  missing.push(...openQuestions);
   if (p.reply?.outcome === "unclear") missing.push("The client's reply didn't say whether the role is still active.");
   const caveats = [confirmationCaveat(p)];
   if (declined(t)) {
@@ -114,5 +125,9 @@ export function decideTreatment(p: PolicyInput): PolicyResult {
   if (p.listing.status === "still_absent") caveats.push(`Crustdata${on} still finds no matching public listing for this role${window}, and it hasn't been seen listed at any check. A listing that has never been seen is an observation only; it doesn't show this role is paused, cancelled or filled.`);
   if (p.reply?.outcome === "unclear") caveats.push(`The client's reply${p.reply.replyDate ? ` on ${p.reply.replyDate}` : ""} doesn't say whether this role is still active, so it stays unconfirmed.`);
   for (const r of p.remarks ?? []) caveats.push(`Reported remark${r.date ? ` (${r.date})` : ""}, repeated as said and not a dated client confirmation of this role's status: ${r.text}`);
-  return { outcome: "unknown", needsTask: true, considered, missing, caveats, observation: missing.join(" ") };
+  const coveredSources = ["client_confirmation"];
+  if (declined(t)) coveredSources.push("company_snapshot");
+  if (["not_found", "found", "baseline_found", "baseline_absent", "still_absent"].includes(p.listing.status)) coveredSources.push("listing_check");
+  if (p.remarks?.length) coveredSources.push("agency_update");
+  return { outcome: "unknown", needsTask: true, considered, missing, caveats, coveredSources, openQuestions, observation: missing.join(" ") };
 }

@@ -426,6 +426,47 @@ Unsupported claims and caveat completeness are counted separately:
 - nova-micro miscopies the long M-102 evidence ID about 9 times in 10. The retry catches it, but it costs an extra call each time.
 - This is a controlled test. Neither caveat change has run in a live review or been deployed yet.
 
+## A11. Notes stop restating code-written facts (PR #5, after Devin Review)
+
+**What changed**
+- **Covered records are hidden from the writer.** When code writes a caveat about a record, the writer no longer sees that record. This covers the latest client confirmation, the latest listing check, the latest company snapshot when it shows a decline, and every reported remark. Their IDs are added back to the saved note. Earlier records of the same type, such as an earlier sighting, stay visible.
+- **The prompt matches the coverage.** It no longer names topics to skip. It only says that code adds sentences about records the writer isn't shown. A rising company count or an incomplete search is still the writer's to describe (Devin Review finding).
+- **Open questions:** the writer only gets the open questions that no caveat states. Right now that is just an unfinished listing check.
+- **Code-only notes:** when code already describes every record, the worker skips the model and saves the code-written note. The grading script now does the same.
+- **Decline caveat:** it now carries the snapshot's current count, for example "(9 openings reported when retrieved)". Company trends use complete months only.
+- 99 tests pass.
+
+**Full regrade** (same judge `claude-sonnet-4.6`, rubric, labels and cases as A10; writer nova-micro, temperature 0; artifact `eval/results/revised-note-grading-2026-10-11T19-10-41-677Z.json`; 70 model notes, each with a neatlogs trace ID)
+
+| Group | Notes | Unsupported outcome claim (judge) | Company data used as role proof | Caveats complete (judge) | Required caveats present (code check) | Passed all |
+|---|---|---|---|---|---|---|
+| Redrawn originals | 20 | 0 / 20 | 0 / 20 | 20 / 20 | 20 / 20 | 20 / 20 |
+| H1-H3 | 11 | 0 / 11 | 0 / 11 | 11 / 11 | 11 / 11 | 11 / 11 |
+| F1-F5 | 21 | 0 / 21 | 0 / 21 | 21 / 21 | 21 / 21 | 21 / 21 |
+| G1-G3 | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| K1-K3 | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| L1-L3 | 15 | 0 / 15 | 0 / 15 | 15 / 15 | 15 / 15 | 15 / 15 |
+| All | 97 | 0 / 97 | 0 / 97 | 97 / 97 | 97 / 97 | 97 / 97 |
+
+- **Where the notes come from:** 70 model notes, 25 code-only notes (H1, F1, G1, K3 and L1, where code describes every record) and 2 deterministic notes. The model made 70 calls with 0 rejected drafts, so there were no retries and no fallbacks. The M-102 evidence-ID slip from A10 (9 of 10) didn't recur, probably because the writer now sees fewer IDs.
+- **Restated facts in the model's own words.** Each model note was checked for its own mention of a fact a code caveat already states. This uses a keyword heuristic over the text outside the caveats, comparing A10 with A11:
+
+| Fact restated by the writer | A10 | A11 |
+|---|---|---|
+| Client confirmation age | 84 / 95 | 5 / 70 |
+| Company-wide hiring (when a decline caveat exists) | 29 / 35 | 0 / 20 |
+| Listing (when a listing caveat exists) | 45 / 95 | 29 / 70 |
+
+- The listing count overstates real repeats. It counts every use of "listing", which includes legitimate uncovered records such as "Agency saw the public listing on 2026-09-15" (M-103) and earlier sightings. Example M-103 note start: "The agency observed the public listing … on 2026-09-15. Subsequently, the agency recorded one candidate interviewing…", followed by the code-written caveats.
+
+**Intermediate run, not counted** (`eval/results/revised-note-grading-2026-10-11T19-04-37-825Z.json`): the first regrade on 58cb9b9 sent the writer an empty evidence list in the 5 all-covered cases. All 21 of those drafts were rejected for missing `evidence_ids` and fell back to code-written text. The worker already skipped the model there, so only the eval differed. That run also had 1 judged unsupported claim (K2 #5: the client's "Let's pick this up on our call next week" was rendered as "a discussion about resuming the role"). The claim checker didn't flag it, because "resuming" is not on its outcome-word list.
+
+**Remaining limits**
+- One judge model with run-to-run variance. K2 #5's failure shows the writer can still paraphrase a vague reply into an outcome, and the fixed outcome-word list misses words like "resuming".
+- 25 of 97 notes have no model text. They are accurate but read as a list of caveats.
+- All 15 case groups have now shaped at least one fix or been graded more than once, so none are unseen.
+- This is a controlled test. It isn't deployed and hasn't run in a live review.
+
 # Part B: Completed live reviews
 
 ## B1. One complete weekly review (live Crustdata, live cfo.ai)
