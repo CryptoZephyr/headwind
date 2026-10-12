@@ -2,9 +2,9 @@
 
 **Every Monday, Headwind checks which placement fees a recruitment agency can still count on, and updates its cash forecast.**
 
-Live app: https://54-164-50-152.sslip.io (sign-in needed, sample agency) · Video: not available yet · Evaluation: [eval/REPORT.md](eval/REPORT.md) · Submission: not linked yet
+Live app: https://headwind-app.vercel.app (public pages; the app needs sign-in, sample agency) · Video: not available yet · Evaluation: [eval/REPORT.md](eval/REPORT.md) · Submission: not linked yet
 
-![Headwind dashboard: weekly review status and the three forecasts](docs/images/dashboard.png)
+![Headwind Overview: Reviewed closing cash, the Original / Reviewed / Downside gap and the cfo.ai check](docs/images/dashboard.png)
 
 **Built with:** Crustdata · cfo.ai · neatlogs · Entire · LiteLLM (`nova-micro`) · Next.js · SQLite · AWS EC2
 
@@ -108,7 +108,7 @@ A weekly review has 5 steps: `match_companies → check_listings → assess → 
 
 ## Try it
 
-1. Open https://54-164-50-152.sslip.io. The public page has a sample review you can click through without signing in, and **Docs** explains every screen.
+1. Open https://headwind-app.vercel.app. The public page has a sample review you can click through without signing in, and **Docs** explains every screen.
 2. Sign in (one team password, so ask the author for access). The Overview shows **Reviewed closing cash**, the Original / Reviewed / Downside gap, and whether each scenario is verified in cfo.ai.
 3. **Roles**: open a role to see its decision, the dated evidence, the decision history and any client replies.
 4. In **This week's questions**, paste a client reply. Tick "simulated" for test data. Only that role is reassessed.
@@ -117,7 +117,8 @@ No access? The evidence below and the [evaluation report](eval/REPORT.md) show t
 
 ## What's running
 
-- **Server:** AWS EC2, https://54-164-50-152.sslip.io, running `main` at commit `9583e69` (deployed 2026-10-11).
+- **Public address:** Vercel, https://headwind-app.vercel.app. It serves the front page and docs, and passes sign-in, the app and the API to the server.
+- **Server:** AWS EC2 (also reachable at https://54-164-50-152.sslip.io), running `main` at commit `2747d88` (deployed 2026-10-12).
 - **Services:** web app, worker, Monday 07:00 UTC weekly timer, Caddy for HTTPS.
 - **Data:** one sample agency, Northbeam Talent, with 3 roles at Retool, Linear and Vercel. 6 completed review runs so far.
 
