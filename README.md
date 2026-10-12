@@ -2,7 +2,7 @@
 
 **Every Monday, Headwind checks which placement fees a recruitment agency can still count on, and updates its cash forecast.**
 
-Live app: https://headwind-app.vercel.app (public pages; the app needs sign-in, sample agency) · Video: not available yet · Evaluation: [eval/REPORT.md](eval/REPORT.md) · Submission: not linked yet
+Live app: https://headwind-app.vercel.app (public pages; the app needs sign-in, sample agency) · Video: [watch the 2:46 product video](https://youtu.be/vGDXCuPRTrg) · Evaluation: [eval/REPORT.md](eval/REPORT.md) · Submission: not linked yet
 
 ![Headwind Overview: Reviewed closing cash, the Original / Reviewed / Downside gap and the cfo.ai check](docs/images/dashboard.png)
 
