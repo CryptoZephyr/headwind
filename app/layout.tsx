@@ -1,20 +1,20 @@
-import Link from "next/link";
+import { Geist_Mono, Inter_Tight } from "next/font/google";
 import type { ReactNode } from "react";
+import "./theme.css";
 
-export const metadata = { title: "Headwind", description: "Weekly revenue review for contingent-fee recruitment agencies" };
+const sans = Inter_Tight({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
+
+export const metadata = {
+  title: "Headwind",
+  description: "Weekly revenue check for permanent-placement agencies: which expected fees still hold, which need confirming, and what that does to cash.",
+  icons: { icon: "/brand/headwind-windfold-logo.png" },
+};
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body style={{ fontFamily: "system-ui, sans-serif", maxWidth: 960, margin: "0 auto", padding: 16, lineHeight: 1.5 }}>
-        <header>
-          <Link href="/"><strong>Headwind</strong></Link> · <Link href="/import">Import</Link>{" "}
-          <form method="post" action="/api/logout" style={{ display: "inline" }}>
-            · <button type="submit">Sign out</button>
-          </form>
-        </header>
-        <main>{children}</main>
-      </body>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

@@ -47,11 +47,28 @@ describe("login attempt limit", () => {
     const req = new Request("http://localhost:3000/api/login", { headers: { "x-forwarded-for": "1.2.3.4, 203.0.113.9" } });
     expect(clientKey(req)).toBe("203.0.113.9");
   });
+
+  it("keys on the visitor address from the Vercel front only when the proxy key matches", () => {
+    process.env.HEADWIND_PROXY_KEY = "k1";
+    const headers = { "x-forwarded-for": "198.51.100.7", "x-headwind-client": "203.0.113.5" };
+    expect(clientKey(new Request("http://x/api/login", { headers: { ...headers, "x-headwind-proxy-key": "k1" } }))).toBe("proxy:203.0.113.5");
+    expect(clientKey(new Request("http://x/api/login", { headers: { ...headers, "x-headwind-proxy-key": "nope" } }))).toBe("198.51.100.7");
+    delete process.env.HEADWIND_PROXY_KEY;
+  });
 });
 
 describe("publicUrl", () => {
   it("uses the forwarded host and scheme from the HTTPS proxy", () => {
     const req = new Request("http://localhost:3000/api/login", { headers: { host: "localhost:3000", "x-forwarded-host": "headwind.example", "x-forwarded-proto": "https" } });
     expect(publicUrl(req, "/login").href).toBe("https://headwind.example/login");
+  });
+
+  it("uses the Vercel front's host only when the proxy key matches", () => {
+    process.env.HEADWIND_PROXY_KEY = "k1";
+    const headers = { "x-forwarded-host": "ec2.example", "x-forwarded-proto": "https", "x-headwind-host": "headwind.vercel.app", "x-headwind-proto": "https" };
+    expect(publicUrl(new Request("http://x/api/login", { headers: { ...headers, "x-headwind-proxy-key": "k1" } }), "/app").href).toBe("https://headwind.vercel.app/app");
+    expect(publicUrl(new Request("http://x/api/login", { headers: { ...headers, "x-headwind-proxy-key": "nope" } }), "/app").href).toBe("https://ec2.example/app");
+    expect(publicUrl(new Request("http://x/api/login", { headers }), "/app").href).toBe("https://ec2.example/app");
+    delete process.env.HEADWIND_PROXY_KEY;
   });
 });

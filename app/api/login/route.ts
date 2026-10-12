@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     return back(isLockedOut(db, key) ? "locked" : "wrong");
   }
   clearFailures(db, key);
-  const res = NextResponse.redirect(publicUrl(req, "/"), 303);
+  const res = NextResponse.redirect(publicUrl(req, "/app"), 303);
   res.cookies.set(SESSION_COOKIE, await sessionToken(password), {
     httpOnly: true,
     sameSite: "lax",

@@ -1,4 +1,5 @@
 import type Database from "better-sqlite3";
+import { fromTrustedProxy, PROXY_HEADERS } from "./auth";
 
 const MAX_FAILURES = 5;
 const WINDOW_MS = 15 * 60 * 1000;
@@ -18,5 +19,6 @@ export function clearFailures(db: Database.Database, key: string): void {
 }
 
 export function clientKey(req: Request): string {
+  if (fromTrustedProxy(req)) return `proxy:${req.headers.get(PROXY_HEADERS.client) ?? "unknown"}`;
   return req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() || "local";
 }
