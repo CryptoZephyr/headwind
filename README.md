@@ -4,7 +4,7 @@
 
 Live app: https://headwind-app.vercel.app (public pages; the app needs sign-in, sample agency) · Video: not available yet · Evaluation: [eval/REPORT.md](eval/REPORT.md) · Submission: not linked yet
 
-![Headwind dashboard: weekly review status and the three forecasts](docs/images/dashboard.png)
+![Headwind Overview: Reviewed closing cash, the Original / Reviewed / Downside gap and the cfo.ai check](docs/images/dashboard.png)
 
 **Built with:** Crustdata · cfo.ai · neatlogs · Entire · LiteLLM (`nova-micro`) · Next.js · SQLite · AWS EC2
 
