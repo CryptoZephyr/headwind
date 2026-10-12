@@ -179,10 +179,12 @@ table.data .num { text-align: right; white-space: nowrap; }
 .role-cols h3 + * { margin-top: 0; }
 .evlist { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 12px; }
 .evlist li { display: grid; gap: 4px; justify-items: start; }
+.mobile-only { display: none; }
 @media (max-width: 760px) {
   .role-head { display: none; }
   .role summary { grid-template-columns: 1fr auto; }
   .role summary .num:last-child { display: none; }
+  .mobile-only { display: block; }
   .role-cols { grid-template-columns: 1fr; }
 }
 .setup { display: grid; gap: 16px; max-width: 880px; }
@@ -207,7 +209,7 @@ table.data .num { text-align: right; white-space: nowrap; }
 .import-intro { max-width: 680px; }
 .import-files { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 760px) { .import-files { grid-template-columns: 1fr; } }
-.import fieldset { margin: 0; display: grid; gap: 8px; align-content: start; }
+.import fieldset { margin: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; }
 .import legend { font-weight: 600; padding: 0 4px; }
 .import textarea.mono { font-family: var(--font-mono), monospace; font-size: 13px; }
 
@@ -297,7 +299,7 @@ html { scroll-behavior: smooth; }
 .code { border: 1px solid var(--rule); border-radius: 2px; background: var(--surface); }
 .code-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 4px 4px 12px; border-bottom: 1px solid var(--rule); }
 .code pre { margin: 0; padding: 12px; overflow-x: auto; font-family: var(--font-mono), monospace; font-size: 13px; line-height: 20px; }
-.copy-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px; background: none; border: 1px solid transparent; border-radius: 6px; font: inherit; font-size: 13px; color: var(--text-muted); cursor: pointer; }
+.copy-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px; background: none; border: 1px solid transparent; border-radius: 6px; font: inherit; font-size: 13px; color: var(--text-muted); cursor: pointer; }
 .copy-btn:hover { border-color: var(--control-border); color: var(--text); }
 .err-ref { display: grid; gap: 0; }
 .err-row { border-top: 1px solid var(--rule); padding: 16px 0; display: grid; gap: 8px; }
@@ -313,6 +315,7 @@ table.data th[scope="row"] { background: none; color: var(--text); font-weight: 
   .docs-nav-mobile { display: block; border: 1px solid var(--control-border); border-radius: 6px; background: var(--surface); }
   .docs-nav-mobile summary { min-height: 44px; display: flex; gap: 6px; align-items: center; padding: 0 12px; cursor: pointer; font-weight: 600; }
   .docs-nav-mobile nav { padding: 8px 12px; }
+  .docs-group a { min-height: 44px; }
   .err-row dl { grid-template-columns: 1fr; }
 }
 
@@ -324,3 +327,5 @@ table.data th[scope="row"] { background: none; color: var(--text); font-weight: 
 .hero-img { width: min(760px, 100%); height: auto; }
 .docs-main, .doc-body { min-width: 0; }
 .doc-body, .doc-body section, .walk, .walk-chart { grid-template-columns: minmax(0, 1fr); }
+.import .mono, .doc-body td, .doc-body th { overflow-wrap: anywhere; }
+.import input[type="file"] { max-width: 100%; }

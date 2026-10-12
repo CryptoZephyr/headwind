@@ -7,6 +7,7 @@ import { ReviewControls } from "@/components/ReviewControls";
 import { GapChart, SourceTag, STAGE_LABEL, StatusChip, statusOf } from "@/components/ui";
 import { getDb } from "@/lib/db";
 import { money, OUTCOME_LABEL, percent } from "@/lib/format";
+import { STEPS } from "@/lib/review";
 import { overview, type Overview } from "@/lib/views";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +39,22 @@ function sampleReply(): string | null {
 
 function daysSince(date: string, today: string): number {
   return Math.round((Date.parse(today) - Date.parse(date)) / 86_400_000);
+}
+
+function correctionLabel(intended: NonNullable<Overview["forecast"]>["intended"], cases: Overview["cases"], cur: string): string | undefined {
+  const gap = intended.original.closingCashCents - intended.reviewed.closingCashCents;
+  if (gap <= 0) return undefined;
+  const reviewed = new Map(intended.reviewed.lines.map((l) => [l.mandateId, l.includedCents]));
+  const parts = intended.original.lines
+    .map((l) => ({ id: l.mandateId, cents: l.includedCents - (reviewed.get(l.mandateId) ?? 0) }))
+    .filter((d) => d.cents > 0)
+    .sort((a, b) => b.cents - a.cents)
+    .map((d) => {
+      const c = cases.find((x) => x.mandateId === d.id);
+      const why = c?.outcome ? OUTCOME_LABEL[c.outcome] ?? c.outcome : "review";
+      return `${money(d.cents, cur)} from ${c ? `${c.roleTitle} at ${c.clientName}` : d.id} (${why.toLowerCase()})`;
+    });
+  return parts.length ? `${money(gap, cur)} lower than Original: ${parts.join("; ")}` : undefined;
 }
 
 function stamp(iso: string): string {
@@ -82,8 +99,9 @@ export default function Home() {
   const today = new Date().toISOString().slice(0, 10);
   const open = cases.filter((c) => c.openTask);
   const usage = latest ? (JSON.parse(latest.usage || "{}") as { crustdataCredits?: number; modelCalls?: number }) : {};
-  const done = latest ? latest.steps.filter((s) => s.status === "done").length : 0;
-  const pausedCorrection = cases.some((c) => c.outcome === "client_pause");
+  const plan: readonly string[] = latest ? STEPS[latest.kind as keyof typeof STEPS] ?? [] : [];
+  const stepNo = latest ? plan.indexOf(latest.step) + 1 : 0;
+  const correction = forecast ? correctionLabel(forecast.intended, cases, cur) : undefined;
 
   return (
     <div className="overview">
@@ -108,7 +126,7 @@ export default function Home() {
             <>
               <p>
                 <strong>{latest.kind === "reassess" ? "Reassessment" : "Weekly review"}: {RUN_LABEL[latest.status] ?? latest.status}</strong>
-                {active && latest.status !== "queued" && <> · {STAGE_LABEL[latest.step] ?? "Working"} (step {Math.min(done + 1, latest.steps.length || done + 1)} of {latest.steps.length || "?"})</>}
+                {active && latest.status !== "queued" && <> · {STAGE_LABEL[latest.step] ?? "Working"} {stepNo > 0 && <> (step {stepNo} of {plan.length})</>}</>}
               </p>
               <p className="meta">
                 Started {stamp(latest.created_at)} · {usage.crustdataCredits ?? 0} Crustdata credits · {usage.modelCalls ?? 0} model calls
@@ -154,11 +172,7 @@ export default function Home() {
                 reviewedCents={forecast.intended.reviewed.closingCashCents}
                 downsideCents={forecast.intended.downside.closingCashCents}
                 currency={cur}
-                correctionLabel={
-                  pausedCorrection && forecast.intended.original.closingCashCents > forecast.intended.reviewed.closingCashCents
-                    ? `${money(forecast.intended.original.closingCashCents - forecast.intended.reviewed.closingCashCents, cur)} lower than Original, from client-confirmed changes`
-                    : undefined
-                }
+                correctionLabel={correction}
               />
               <ul className="verify">
                 {(["reviewed", "downside"] as const).map((k) => {
@@ -207,8 +221,11 @@ export default function Home() {
         )}
         {cases.map((c) => {
           const st = statusOf(c.outcome, c.state, Boolean(c.openTask));
-          const lastClient = c.evidence.find((e) => e.provenance !== "live" && e.source_date);
-          const stale = lastClient?.source_date ? daysSince(lastClient.source_date, today) : null;
+          const lastClient = [...c.evidence.filter((e) => e.source_type === "client_confirmation").map((e) => e.source_date), ...c.replies.map((r) => r.date)]
+            .filter((d): d is string => Boolean(d))
+            .sort()
+            .at(-1);
+          const stale = lastClient ? daysSince(lastClient, today) : null;
           return (
             <details key={c.id} className="role" open={Boolean(c.openTask)}>
               <summary>
@@ -218,6 +235,7 @@ export default function Home() {
                 <span className="num">{percent(c.probabilityBps)}</span>
               </summary>
               <div className="role-body">
+                <p className="meta mobile-only">Fee {money(c.feeCents, cur)} · Agency&apos;s placement chance {percent(c.probabilityBps)}</p>
                 {c.summary && <p>{c.summary}</p>}
                 {c.matchStatus !== "matched" && (
                   <p className="banner banner-warn">Company match: {c.matchStatus === "ambiguous" ? "more than one possible company, so no public evidence is used" : c.matchStatus === "not_found" ? "Crustdata doesn't know this company, so no public evidence is used" : "not checked yet"}. The decision relies on agency records and client replies.</p>
