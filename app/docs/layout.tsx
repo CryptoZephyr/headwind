@@ -1,9 +1,9 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { DOCS, GROUPS, href } from "@/components/docs/content";
 import { DocsSearch } from "@/components/docs/DocsSearch";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
+import { ZoneLink } from "@/components/ZoneLink";
 
 export default function DocsLayout({ children }: { children: ReactNode }) {
   const nav = GROUPS.map((g) => ({ group: g, items: DOCS.filter((d) => d.group === g).map((d) => ({ href: href(d), title: d.title })) }));
@@ -16,7 +16,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         <aside className="docs-side">
           <DocsSearch entries={entries} />
           <DocsSidebar nav={nav} />
-          <p className="meta"><Link href="/app">Open the app</Link></p>
+          <p className="meta"><ZoneLink href="/app">Open the app</ZoneLink></p>
         </aside>
         <main id="main" className="docs-main">{children}</main>
       </div>

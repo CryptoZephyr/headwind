@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Brand } from "@/components/Brand";
+import { ZoneLink } from "@/components/ZoneLink";
 
 const MESSAGES: Record<string, string> = {
   wrong: "That password isn't right. Try again.",
@@ -21,7 +21,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           {message && <p id="login-error" role="alert" className="field-error">{message}</p>}
           <button type="submit" className="btn btn-primary">Sign in</button>
         </form>
-        <p className="meta">No password? <Link href="/#sample">See a sample review</Link> without signing in.</p>
+        <p className="meta">No password? <ZoneLink href="/#sample">See a sample review</ZoneLink> without signing in.</p>
       </div>
     </main>
   );

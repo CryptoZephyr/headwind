@@ -20,9 +20,23 @@ export async function isSignedIn(cookie: string | undefined): Promise<boolean> {
   return sameText(cookie, await sessionToken(password));
 }
 
+export const PROXY_HEADERS = {
+  key: "x-headwind-proxy-key",
+  host: "x-headwind-host",
+  proto: "x-headwind-proto",
+  client: "x-headwind-client",
+} as const;
+
+export function fromTrustedProxy(req: Request): boolean {
+  const key = process.env.HEADWIND_PROXY_KEY;
+  const given = req.headers.get(PROXY_HEADERS.key);
+  return Boolean(key && given && sameText(given, key));
+}
+
 export function publicUrl(req: Request, pathname: string): URL {
   const own = new URL(req.url);
-  const proto = req.headers.get("x-forwarded-proto")?.split(",")[0].trim() || own.protocol.replace(":", "");
-  const host = req.headers.get("x-forwarded-host")?.split(",")[0].trim() || req.headers.get("host") || own.host;
+  const proxied = fromTrustedProxy(req);
+  const proto = (proxied && req.headers.get(PROXY_HEADERS.proto)) || req.headers.get("x-forwarded-proto")?.split(",")[0].trim() || own.protocol.replace(":", "");
+  const host = (proxied && req.headers.get(PROXY_HEADERS.host)) || req.headers.get("x-forwarded-host")?.split(",")[0].trim() || req.headers.get("host") || own.host;
   return new URL(pathname, `${proto}://${host}`);
 }

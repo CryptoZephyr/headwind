@@ -182,10 +182,13 @@ export const DOCS: Doc[] = [
           ["CRUSTDATA_API_KEY", "Crustdata key for company and listing checks."],
           ["CFO_TOKEN_FILE", "Path to the cfo.ai OAuth token file."],
           ["NEATLOGS_API_KEY, NEATLOGS_ENDPOINT", "Run traces."],
+          ["HEADWIND_UPSTREAM", "Vercel only. The app server's URL. When set, this copy serves the public pages and passes /app, /import, /login and /api to that server."],
+          ["HEADWIND_PROXY_KEY", "Same secret on Vercel and the app server. The app server trusts the visitor's host and address only from requests carrying it."],
+          ["HEADWIND_ASSET_PREFIX", "App server only, set to /_hw for the Vercel setup, so its page files load through the Vercel address."],
         ]} />
       ) },
       { id: "local", h: "Run locally", body: <CodeBlock code={"npm install\ncp .env.example .env.local\nnpx tsx scripts/seed-sample.ts\nnpm run dev\nnpm run worker"} /> },
-      { id: "deploy", h: "Deploy", body: <p>The <a href={`${REPO}/tree/main/deploy`}>deploy</a> folder runs the web app, worker, weekly timer and Caddy on one Ubuntu 24.04 server. Keys go in <span className="mono">/etc/headwind/env</span>.</p> },
+      { id: "deploy", h: "Deploy", body: <p>The <a href={`${REPO}/tree/main/deploy`}>deploy</a> folder runs the web app, worker, weekly timer and Caddy on one Ubuntu 24.04 server. Keys go in <span className="mono">/etc/headwind/env</span>. For one public address, deploy the same repo to Vercel with HEADWIND_UPSTREAM and HEADWIND_PROXY_KEY set: Vercel serves the landing page and docs, and passes sign-in, the app and the API to the server, where the data and worker stay.</p> },
     ],
   },
   {

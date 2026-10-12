@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Brand } from "@/components/Brand";
+import { ZoneLink } from "@/components/ZoneLink";
 
 export function SiteHeader() {
   return (
@@ -7,9 +7,9 @@ export function SiteHeader() {
       <div className="wrap">
         <Brand />
         <nav className="topnav" aria-label="Site">
-          <Link href="/#how">How it works</Link>
-          <Link href="/docs">Docs</Link>
-          <Link href="/login">Sign in</Link>
+          <ZoneLink href="/#how">How it works</ZoneLink>
+          <ZoneLink href="/docs">Docs</ZoneLink>
+          <ZoneLink href="/login">Sign in</ZoneLink>
         </nav>
       </div>
     </header>
@@ -22,14 +22,14 @@ export function SiteFooter() {
       <div className="wrap footer-inner">
         <div className="footer-cta">
           <h2>See what this week&apos;s review would ask.</h2>
-          <Link className="btn btn-inverse" href="/#sample">See a sample review</Link>
+          <ZoneLink className="btn btn-inverse" href="/#sample">See a sample review</ZoneLink>
         </div>
         <nav aria-label="Footer" className="footer-nav">
-          <Link href="/#sample">Sample review</Link>
-          <Link href="/#how">How it works</Link>
-          <Link href="/docs">Documentation</Link>
-          <Link href="/#faq">FAQ</Link>
-          <Link href="/login">Sign in</Link>
+          <ZoneLink href="/#sample">Sample review</ZoneLink>
+          <ZoneLink href="/#how">How it works</ZoneLink>
+          <ZoneLink href="/docs">Documentation</ZoneLink>
+          <ZoneLink href="/#faq">FAQ</ZoneLink>
+          <ZoneLink href="/login">Sign in</ZoneLink>
           <a href="https://github.com/CryptoZephyr/headwind">Source on GitHub</a>
         </nav>
         <p className="footer-meta">Headwind · MIT licensed · Sample figures on this site are made up and labelled.</p>

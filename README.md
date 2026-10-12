@@ -177,6 +177,7 @@ npm run worker                 # runs queued reviews (restart it after code chan
 - **Checks:** `npm run lint && npm run typecheck && npm test && npm run build`.
 - **Import files:** CSV templates are in `fixtures/sample/`. Money is whole USD, probability is a percentage, and dates are YYYY-MM-DD.
 - **Deploying:** `deploy/` runs everything on one Ubuntu 24.04 server. Put the keys in `/etc/headwind/env`, set `HEADWIND_HOST` in `/etc/headwind/caddy.env`, then run `sudo /opt/headwind/deploy/install.sh`.
+- **One public address (Vercel):** deploy the same repo to Vercel with `HEADWIND_UPSTREAM` (the server's URL) and `HEADWIND_PROXY_KEY`. Vercel serves the landing page and docs, and passes `/login`, `/app`, `/import` and `/api` to the server. On the server, set the same `HEADWIND_PROXY_KEY` and `HEADWIND_ASSET_PREFIX=/_hw`. The database, worker and keys stay on the server.
 
 ## Cost to an agency
 
